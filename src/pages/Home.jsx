@@ -6,7 +6,7 @@ import {
   TeamsModal,
   WodsModal,
   ScoreModal,
-} from "../components/modals";
+} from "../components/Modals";
 import "../sass/home.sass";
 
 const offEvent = {
