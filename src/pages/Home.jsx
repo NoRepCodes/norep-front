@@ -6,31 +6,48 @@ import {
   TeamsModal,
   WodsModal,
   ScoreModal,
-} from "../components/modals";
+} from "../components/Modals";
 import "../sass/home.sass";
 
 const offEvent = {
   name: "Evento Prediseñado",
-  date: "2024/2/31",
+  since: "2024/2/31",
+  until: "2024/4/31",
   place: "Is going to be in a good place, for sure",
   categories: [
-    { name: "Novato", wods: [{
-      name:'Wod 1',
-      limit:150,
-      limit_type:'Reps',
-    },{
-      name:'Wod 2',
-      limit:240,
-      limit_type:'Reps',
-    },{
-      name:'Wod 3',
-      limit:190,
-      limit_type:'Reps',
-    },{
-      name:'Wod 4',
-      limit:300,
-      limit_type:'Reps',
-    }] },
+    {
+      name: "Novato",
+      wods: [
+        {
+          name: "Wod 1",
+          time_cap: 250,
+          amount_cap: null,
+          amount_type: "Reps",
+          wod_type: 3,
+        },
+        {
+          name: "Wod 2",
+          time_cap: 110,
+          amount_cap: 450,
+          amount_type: "Reps",
+          wod_type: 2,
+        },
+        {
+          name: "Wod 3",
+          time_cap: 300,
+          amount_cap: null,
+          amount_type: "Reps",
+          wod_type: 1,
+        },
+        {
+          name: "Wod 4",
+          time_cap: 350,
+          amount_cap: null,
+          amount_type: "Reps",
+          wod_type: 3,
+        },
+      ],
+    },
     { name: "Avanzado", wods: [] },
   ],
   // teams:[['Equpo1',"Equpo2"],[]]
@@ -44,26 +61,10 @@ const offTeams = [
       name: "Team 1",
       box: "Box1",
       wods: [
-        {
-          amount: 0,
-          amount_type: null,
-          tiebrake:0,
-        },
-        {
-          amount: 0,
-          amount_type: null,
-          tiebrake:0,
-        },
-        {
-          amount: 0,
-          amount_type: null,
-          tiebrake:0,
-        },
-        {
-          amount: 0,
-          amount_type: null,
-          tiebrake:0,
-        },
+        { time: 250, amount: 390, amount_type: "Reps", tiebrake: 100 },
+        { time: 90, amount: 450, amount_type: "Reps", tiebrake: 89 },
+        { time: 300, amount: 100, amount_type: "Reps", tiebrake: 80 },
+        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
       ],
     },
     {
@@ -72,26 +73,10 @@ const offTeams = [
       name: "Team 2",
       box: "Box2",
       wods: [
-        {
-          amount: 0,
-          amount_type: null,
-          tiebrake:0,
-        },
-        {
-          amount: 0,
-          amount_type: null,
-          tiebrake:0,
-        },
-        {
-          amount: 0,
-          amount_type: null,
-          tiebrake:0,
-        },
-        {
-          amount: 0,
-          amount_type: null,
-          tiebrake:0,
-        },
+        { time: 250, amount: 250, amount_type: "Reps", tiebrake: 100 },
+        { time: 90, amount: 450, amount_type: "Reps", tiebrake: 90 },
+        { time: 290, amount: 110, amount_type: "Reps", tiebrake: 90 },
+        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
       ],
     },
     {
@@ -100,26 +85,10 @@ const offTeams = [
       name: "Team 3",
       box: "Box3",
       wods: [
-        {
-          amount: 0,
-          amount_type: null,
-          tiebrake:0,
-        },
-        {
-          amount: 0,
-          amount_type: null,
-          tiebrake:0,
-        },
-        {
-          amount: 0,
-          amount_type: null,
-          tiebrake:0,
-        },
-        {
-          amount: 0,
-          amount_type: null,
-          tiebrake:0,
-        },
+        { time: 250, amount: 310, amount_type: "Reps", tiebrake: 80 },
+        { time: 91, amount: 450, amount_type: "Reps", tiebrake: 90 },
+        { time: 150, amount: 300, amount_type: "Reps", tiebrake: 100 },
+        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
       ],
     },
     {
@@ -128,26 +97,10 @@ const offTeams = [
       name: "Team 4",
       box: "Box4",
       wods: [
-        {
-          amount: 0,
-          amount_type: null,
-          tiebrake:0,
-        },
-        {
-          amount: 0,
-          amount_type: null,
-          tiebrake:0,
-        },
-        {
-          amount: 0,
-          amount_type: null,
-          tiebrake:0,
-        },
-        {
-          amount: 0,
-          amount_type: null,
-          tiebrake:0,
-        },
+        { time: 250, amount: 325, amount_type: "Reps", tiebrake: 90 },
+        { time: 60, amount: 390, amount_type: "Reps", tiebrake: 90 },
+        { time: 350, amount: 300, amount_type: "Reps", tiebrake: 90 },
+        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
       ],
     },
   ],
@@ -164,18 +117,19 @@ function Home() {
   const [categ, setCateg] = useState(0);
 
   const toggle = () => {
+    // console.log(event.categories[0].wods);
     if (theme === "dark") setTheme("light");
     else setTheme("dark");
   };
 
   const delEvent = () => {
-    setEvent(false)
-    setTeams([])
-    setCateg(0)
+    setEvent(false);
+    setTeams([]);
+    setCateg(0);
   };
   const generateE = () => {
-    setEvent(offEvent)
-    setTeams(offTeams)
+    setEvent(offEvent);
+    setTeams(offTeams);
   };
   const openE = () => setEventModal(!eventModal);
   const openW = () => setWodModal(!wodModal);
@@ -210,9 +164,8 @@ function Home() {
     aux[categ] = [...data];
     aux[categ].forEach((team) => {
       event.categories[categ].wods.forEach((elm) => {
-        team.wods.push({ amount: 0, amount_type: null, tiebrake: 0 });
+        team.wods.push({  time: 0, amount: 0, amount_type: null, tiebrake: 0});
       });
-      console.log((team.points = 0));
     });
     setTeams(aux);
   };
@@ -250,15 +203,15 @@ function Home() {
         <Moon set={toggle} />
         {!event ? (
           <>
-          <Btn text="Crear Evento" action={openE} />
-          <Btn text="Generar Evento" action={generateE} />
+            <Btn text="Crear Evento" action={openE} />
+            <Btn text="Generar Evento" action={generateE} />
           </>
-
         ) : (
           <>
             <Btn text="Eliminar Evento" action={delEvent} />
             <p className="event_name">{event.name}</p>
-            <p>Fecha: {event.date}</p>
+            <p>Inicio: {event.since}</p>
+            <p>Cierre: {event.until}</p>
             <p>Lugar: {event.place}</p>
 
             <div className="categ_ctn">
@@ -276,19 +229,28 @@ function Home() {
             </div>
             {event.categories[categ].wods.length > 0 && (
               <>
-              <div className="wods_ctn">
-                <p>Wods: </p>
-                {event.categories[categ].wods.map((wod, index) => (
-                  <p key={index}>{wod.name},</p>
-                ))}
-              </div>
-              <div className="wods_ctn">
-                <p>Wods Caps: </p>
-                {event.categories[categ].wods.map((wod, index) => (
-                  <p key={index}>{wod.limit},</p>
-                ))}
-              </div>
-
+                <div className="wods_ctn">
+                  <p>Wods: </p>
+                  {event.categories[categ].wods.map((wod, index) => (
+                    <p key={index}>
+                      {wod.name} {w_o_d(wod.wod_type)} ,
+                    </p>
+                  ))}
+                </div>
+                <div className="wods_ctn">
+                  <p>Wods Time caps: </p>
+                  {event.categories[categ].wods.map((wod, index) => (
+                    <p key={index}>{wod.time_cap},</p>
+                  ))}
+                </div>
+                <div className="wods_ctn">
+                  <p>Wods Reps caps: </p>
+                  {event.categories[categ].wods.map((wod, index) => (
+                    <p key={index}>
+                      {wod.amount_cap === null ? 0 : wod.amount_cap},
+                    </p>
+                  ))}
+                </div>
               </>
             )}
             {teams[categ] && teams[categ].length > 0 && (
@@ -370,7 +332,7 @@ const Table = ({ event, categ, teams }) => {
 
   useEffect(() => {
     setInfo(order(teams[categ], event, categ));
-  }, [teams,categ]);
+  }, [teams, categ]);
 
   return (
     <div className="table">
@@ -415,12 +377,12 @@ const order = (data, event, categ) => {
     team.points = 0;
     team.percent = 0;
   });
-  // console.log(teams);
 
   let wl = event.categories[categ].wods.length;
   let ppw = Math.floor(100 / teams.length);
   let wodsData = [];
 
+  // console.log(teams)
   ////// PUSH DATA TO WODS DATA (Re arrange)
   for (let i = 0; i < wl; i++) {
     wodsData.push([]);
@@ -428,39 +390,30 @@ const order = (data, event, categ) => {
       wodsData[i].push({
         name: team.name,
         amount: team.wods[i]?.amount ? team.wods[i].amount : 0,
+        time: team.wods[i]?.time ? team.wods[i].time : null,
+        amount_type: team.wods[i]?.amount_type
+          ? team.wods[i].amount_type
+          : null,
         tiebrake: team.wods[i]?.tiebrake ? team.wods[i].tiebrake : 0,
         percent: team.wods[i]?.percent ? team.wods[i].percent : 0,
       });
     });
   }
+
+  // let result;
   ////// APPLY POINTS AND PERCENT
   wodsData.forEach((wod, windex) => {
-    wod.sort((a, b) => {
-      if (a.amount < b.amount) return 1;
-      else if (a.amount > b.amount) return -1;
-      if (a.amount === b.amount) {
-        if (a.tiebrake > b.tiebrake) return 1;
-        else if (a.tiebrake < b.tiebrake) return -1;
-      }
-    });
-    let limit = parseInt(event.categories[categ].wods[windex].limit);
-    wod.forEach((team, index) => {
-      if (team.amount !== 0) {
-        team.percent = (team.amount * 100) / limit;
-        if (index === 0) {
-          team.points = 100;
-        } else {
-          if (team.amount === wod[index - 1].amount) {
-            team.points = wod[index - 1].points;
-            team.percent = wod[index - 1].percent - 0.02;
-          } else {
-            team.points = ppw * (teams.length - index);
-            // team.percent = ppw * (teams.length - index);
-          }
-        }
-      }
-    });
+    let ogWod = event.categories[categ].wods[windex];
+    if (ogWod.wod_type === 1) {
+      AMRAP_points(ogWod, wod, teams.length);
+    } else if (ogWod.wod_type === 2) {
+      FORTIME_points(ogWod, wod,teams.length);
+    } else if (ogWod.wod_type === 3) {
+      RM_points(ogWod, wod,teams.length);
+    }
   });
+
+  console.log(wodsData)
 
   teams.forEach((team) => {
     wodsData.forEach((wod) => {
@@ -482,3 +435,180 @@ const order = (data, event, categ) => {
   return teams;
   // return [];
 };
+
+const w_o_d = (num) => {
+  switch (num) {
+    case 1:
+      return "AMRAP";
+    case 2:
+      return "FORTIME";
+    case 3:
+      return "RM";
+      break;
+
+    default:
+      break;
+  }
+};
+
+const AMRAP_points = async (ogWod, wod, tl) => {
+  let ppw = Math.floor(100 / tl);
+  wod.sort((a, b) => {
+    if (a.amount < b.amount) return 1;
+    else if (a.amount > b.amount) return -1;
+    else if (a.amount === b.amount) {
+      if (a.time > b.time) return 1;
+      else if (a.time < b.time) return -1;
+      else if (a.time === b.time) {
+        if (a.tiebrake > b.tiebrake) return 1;
+        else if (a.tiebrake < b.tiebrake) return -1;
+        else if (a.tiebrake === b.tiebrake) return 0;
+      }
+    }
+  });
+
+  wod.forEach((team, index) => {
+    if (team.amount !== 0) {
+      if (index === 0) {
+        team.percent = 100;
+        team.points = 100;
+      } else {
+        if (
+          team.amount === wod[index - 1].amount &&
+          team.time === wod[index - 1].time &&
+          team.tiebrake === wod[index - 1].tiebrake
+        ) {
+          team.points = wod[index - 1].points;
+          team.percent = wod[index - 1].percent;
+        } else if (team.amount === wod[index - 1].amount) {
+          team.points = wod[index - 1].points;
+          team.percent = wod[index - 1].percent - 10 / tl;
+        } else {
+          team.percent = (team.amount * 100) / wod[0].amount;
+          team.points = ppw * (tl - index);
+        }
+      }
+    }
+  });
+
+  // console.log(wod);
+};
+const FORTIME_points = (ogWod, wod,tl) => {
+  let ppw = Math.floor(100 / tl);
+  wod.sort((a, b) => {
+    if (a.amount < b.amount) return 1;
+    else if (a.amount > b.amount) return -1;
+    else if (a.amount === b.amount) {
+      if (a.time > b.time) return 1;
+      else if (a.time < b.time) return -1;
+      else if (a.time === b.time) {
+        if (a.tiebrake > b.tiebrake) return 1;
+        else if (a.tiebrake < b.tiebrake) return -1;
+        else if (a.tiebrake === b.tiebrake) return 0;
+      }
+    }
+  });
+
+  wod.forEach((team, index) => {
+    if (team.amount !== 0) {
+      team.percent = (team.amount * 100) / ogWod.amount_cap 
+      if (index === 0) {
+        team.points = 100;
+      } else {
+        if (
+          team.amount === wod[index - 1].amount &&
+          team.time === wod[index - 1].time &&
+          team.tiebrake === wod[index - 1].tiebrake
+        ) {
+          team.points = wod[index - 1].points;
+          team.percent = wod[index - 1].percent;
+        } else if (team.amount === wod[index - 1].amount) {
+          team.points = wod[index - 1].points;
+          team.percent = wod[index - 1].percent - 10 / tl;
+        } else {
+          team.points = ppw * (tl - index);
+        }
+      }
+    }
+  });
+};
+const RM_points = (ogWod, wod,tl) => {
+  let ppw = Math.floor(100 / tl);
+  wod.sort((a, b) => {
+    if (a.amount < b.amount) return 1;
+    else if (a.amount > b.amount) return -1;
+    else if (a.amount === b.amount) {
+      if (a.time > b.time) return 1;
+      else if (a.time < b.time) return -1;
+      else if (a.time === b.time) {
+        if (a.tiebrake > b.tiebrake) return 1;
+        else if (a.tiebrake < b.tiebrake) return -1;
+        else if (a.tiebrake === b.tiebrake) return 0;
+      }
+    }
+  });
+
+  wod.forEach((team, index) => {
+    if (team.amount !== 0) {
+      if (index === 0) {
+        team.percent = 100;
+        team.points = 100;
+      } else {
+        if (
+          team.amount === wod[index - 1].amount &&
+          team.time === wod[index - 1].time &&
+          team.tiebrake === wod[index - 1].tiebrake
+        ) {
+          team.points = wod[index - 1].points;
+          team.percent = wod[index - 1].percent;
+        } else if (team.amount === wod[index - 1].amount) {
+          team.points = wod[index - 1].points;
+          team.percent = wod[index - 1].percent - 10 / tl;
+        } else {
+          team.percent = (team.amount * 100) / wod[0].amount;
+          team.points = ppw * (tl - index);
+        }
+      }
+    }
+  });
+};
+
+/*
+  Generalmente el timepo se caba antes que las reps
+  Por ende, evaluar reps o peso antes del tiempo
+
+  Añadir las fehcas
+
+  Amrap (Al registrar : Tiempo y Reps) 
+     en 10 mins tienes q hacer la maxima repeticion de rondas 
+     en X{Tiempo} hicieron Y{Reps}
+  Fortime (Al registrar: Tiempo y Reps)
+    en 10 mins terminar todo
+    en X{Tiempo} hicieron Y{Reps} si faltaron, se colocan CAPS+
+    (En caso de que los equipos tengan 100% de rendimiento, si terminan todo, alli se evalua el tiempo y luego el tiebrake)
+  RM (Al registrar: peso o repeticiones) 
+    Maximo peso en 10 mins 
+    X{Peso/Reps} en Y{Tiempo} (el tiempo se evalua en el wod para saber el rendimiento)
+
+    Evaluar tiempo en cuanto a segundos no a numero, ya que menor tiempo mayor prioridad
+
+    Actualizar wods, categorias, y usuarios
+    Los usuarios no pueden ver los wods
+
+
+    Restar porcentaje = a cantidad de equipos , 100 / cantidad de equipos
+
+
+
+
+    //// Ejemplo de Circuito
+    218 time cap
+
+    pen 1min timecap 18+1 214reps 0.12 + 214 (por aqui va)
+
+    207 reps sin pen 
+
+    201 sin pen
+
+    Ultimo wods con penalizacion, el ejercicio va a ocupar un porcentaje en base a todos los ejercicios, si hay penalizacion, se va a calculcar el ejercicio que se penaliza por la cantida de reps
+*/
