@@ -29,11 +29,11 @@ const Cross = ({ close }) => {
   );
 };
 
-const LabelInput = ({ label, name, ...props }) => {
+const LabelInput = ({ label, name, ph = false, ...props }) => {
   return (
     <div className="InputLabel">
       <p>{label}</p>
-      <input {...props} name={name} id={name} placeholder={label} />
+      <input {...props} name={name} placeholder={ph ? ph : label} />
     </div>
   );
 };
@@ -64,7 +64,8 @@ const Modal = ({ children, title, close }) => {
 export const CreateEventModal = ({ close, update }) => {
   const [inputs, setInputs] = useState({
     name: "",
-    date: "",
+    since: "",
+    until: "",
     place: "",
     categories: [],
   });
@@ -85,13 +86,16 @@ export const CreateEventModal = ({ close, update }) => {
   };
 
   const confirm = () => {
-    update(inputs);
+    if(inputs.categories.length !== 0){
+      update(inputs);
+    }
   };
 
   return (
     <Modal title="Crear Evento" close={close}>
       <LabelInput label="Nombre" name="name" {...{ onChange }} />
-      <LabelInput label="Fecha" name="date" type="date" {...{ onChange }} />
+      <LabelInput label="Inicio" name="since" type="date" {...{ onChange }} />
+      <LabelInput label="Cierre" name="until" type="date" {...{ onChange }} />
       <LabelInput label="Ubicacion" name="place" {...{ onChange }} />
       {inputs.categories.map((item, index) => (
         <ArrayInput
@@ -115,15 +119,23 @@ export const CreateEventModal = ({ close, update }) => {
 export const WodsModal = ({ close, update }) => {
   const [inputs, setInputs] = useState([]);
 
-  const plusWod = () => {
-    setInputs([
-      ...inputs,
-      {
-        name: "",
-        limit: "",
-        limit_type: "Reps",
-      },
-    ]);
+  const plusWod = (wod_type) => {
+    let info = {
+      name: "",
+      time_cap: "",
+      amount_cap: "",
+      amount_type: "",
+      wod_type,
+    };
+    if (wod_type === 1) {
+      info = { ...info, amount_cap: null, amount_type: "Reps" };
+    } else if (wod_type === 2) {
+      info = { ...info, amount_type: "Reps" };
+    } else if (wod_type === 3) {
+      info = { ...info, amount_cap: null, amount_type: "Reps" };
+    }
+
+    setInputs([...inputs, info]);
   };
 
   const set = (value, att, index) => {
@@ -134,14 +146,31 @@ export const WodsModal = ({ close, update }) => {
 
   const confirm = () => {
     update(inputs);
+    // console.log(inputs);
   };
+
+  const cAMRAP = () => plusWod(1);
+  const cFORTIME = () => plusWod(2);
+  const cRM = () => plusWod(3);
+
   return (
     <Modal title="Añadir Wods" close={close}>
-      {inputs.map((item, index) => (
-        <TypeInput set={set} key={index} item={item} index={index} />
-      ))}
-      <div className="plus_category" onClick={plusWod}>
-        <p>Añadir</p>
+      {inputs.map((item, index) => {
+        if (item.wod_type === 1) {
+          return <InputAMRAP set={set} item={item} key={index} index={index} />;
+        } else if (item.wod_type === 2) {
+          return (
+            <InputFORTIME set={set} item={item} key={index} index={index} />
+          );
+        } else if (item.wod_type === 3) {
+          return <InputRM set={set} item={item} key={index} index={index} />;
+        }
+      })}
+      {/* <InputRM set={set} /> */}
+      <div className="wod_type_btns">
+        <p onClick={cAMRAP}>AMRAP</p>
+        <p onClick={cFORTIME}>FORTIME</p>
+        <p onClick={cRM}>RM</p>
       </div>
       {inputs.length > 0 && (
         <div className="btn" onClick={confirm}>
@@ -225,8 +254,7 @@ const TypeInput = ({ set, item, index }) => {
   const toggleType = () => {
     let auxVal = item.limit_type;
     if (auxVal === "Reps") auxVal = "Lbs";
-    else if (auxVal === "Lbs") auxVal = "Time";
-    else if (auxVal === "Time") auxVal = "Reps";
+    else auxVal = "Reps";
     set(auxVal, "limit_type", index);
   };
   const text = (e) => {
@@ -250,14 +278,20 @@ const TypeInput = ({ set, item, index }) => {
   );
 };
 
-export const ScoreModal = ({ close, index, teams, wod,update }) => {
+export const ScoreModal = ({ close, index, teams, wod, update }) => {
   const [inputs, setInputs] = useState([]);
 
   useEffect(() => {
     if (inputs.length === 0) {
       let aux = [];
       teams.forEach((team) => {
-        aux.push({ amount: 0, tiebrake: 0, amount_type: wod.limit_type,name:team.name });
+        aux.push({
+          amount: 0,
+          time:wod.wod_type === 3 ?wod.time_cap:0,
+          tiebrake: 0,
+          amount_type: wod.amount_type,
+          name: team.name,
+        });
       });
       setInputs(aux);
     }
@@ -270,8 +304,12 @@ export const ScoreModal = ({ close, index, teams, wod,update }) => {
     setInputs(aux);
   };
 
-  const confirm = ()=>{
-    update(inputs,index-1)
+  const confirm = () => {
+    update(inputs, index - 1);
+  };
+
+  if(inputs.length === 0){
+    return null
   }
 
   return (
@@ -282,7 +320,7 @@ export const ScoreModal = ({ close, index, teams, wod,update }) => {
             <div className="team_input" key={tindex}>
               <div className="InputLabel">
                 <div className="abs_btn">
-                  <p>{wod.limit_type}</p>
+                  <p>{wod.amount_type}</p>
                 </div>
                 <p>{team.name}</p>
                 <input
@@ -294,6 +332,19 @@ export const ScoreModal = ({ close, index, teams, wod,update }) => {
                   name="amount"
                 />
               </div>
+              {wod.wod_type !== 3 && (
+                <div className="InputLabel">
+                  <p>Tiempo</p>
+                  <input
+                    type="text"
+                    onChange={(e) => {
+                      onChange(tindex, e);
+                    }}
+                    value={inputs[tindex].time}
+                    name="time"
+                  />
+                </div>
+              )}
               <div className="InputLabel">
                 <p>Tie Brake</p>
                 <input
@@ -313,5 +364,80 @@ export const ScoreModal = ({ close, index, teams, wod,update }) => {
         <p>Confirmar</p>
       </div>
     </Modal>
+  );
+};
+
+const InputAMRAP = ({ set, index }) => {
+  const onChange = (e) => {
+    const att = e.target.getAttribute("name");
+    let value = e.target.value;
+    set(value, att, index);
+  };
+  return (
+    <div className="inp_amrap_ctn">
+      <LabelInput
+        label={`AMRAP: Wod ${index + 1}`}
+        name="name"
+        {...{ onChange }}
+        ph="Nombre"
+      />
+      <LabelInput label="Tiempo limite" name="time_cap" {...{ onChange }} />
+    </div>
+  );
+};
+const InputFORTIME = ({ set, index }) => {
+  const onChange = (e) => {
+    const att = e.target.getAttribute("name");
+    let value = e.target.value;
+    set(value, att, index);
+  };
+  return (
+    <div className="inp_amrap_ctn">
+      <LabelInput
+        label={`FORTIME: Wod ${index + 1}`}
+        name="name"
+        {...{ onChange }}
+        ph="Nombre"
+      />
+      <LabelInput label="Tiempo limite" name="time_cap" {...{ onChange }} />
+      <LabelInput
+        label="Repeticiones limite"
+        name="amount_cap"
+        {...{ onChange }}
+      />
+    </div>
+  );
+};
+const InputRM = ({ set, index }) => {
+  const [t, setT] = useState("Reps");
+  const onChange = (e) => {
+    const att = e.target.getAttribute("name");
+    let value = e.target.value;
+    set(value, att, index);
+  };
+
+  useEffect(() => {
+    set(t, "amount_type", index);
+  }, [t]);
+
+  const toggleType = () => {
+    if (t === "Reps") setT("Lbs");
+    else if (t === "Lbs") setT("Reps");
+  };
+
+  return (
+    <div className="inp_amrap_ctn">
+      <LabelInput
+        label={`RM: Wod ${index + 1}`}
+        name="name"
+        {...{ onChange }}
+        ph="Nombre"
+      />
+      <LabelInput label="Tiempo limite" name="time_cap" {...{ onChange }} />
+      <p>Tipo de cantidad:</p>
+      <div className="btn_toggle_type" onClick={toggleType}>
+        <p>{t}</p>
+      </div>
+    </div>
   );
 };
