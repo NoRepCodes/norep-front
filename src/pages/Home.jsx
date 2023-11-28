@@ -176,6 +176,7 @@ function Home() {
     aux[categ].forEach((team) => {
       let fi = data.findIndex((elm) => elm.name === team.name);
       let info = {
+        time: data[fi] ? parseInt(data[fi].time) : 0, 
         amount: parseInt(data[fi].amount),
         tiebrake: parseInt(data[fi].tiebrake),
         amount_type: data[fi].amount_type,
@@ -356,7 +357,15 @@ const Table = ({ event, categ, teams }) => {
           <p className="th">{item.box}</p>
           {item.wods.map((wod, indexW) => (
             <p className="th" key={indexW}>
-              {wod.amount} {wod.amount_type}
+              {event.categories[categ].wods[indexW] && event.categories[categ].wods[indexW].wod_type===2 ?(<>
+              {wod.amount !== 0 && wod.amount < event.categories[categ].wods[indexW].amount_cap ?(
+                <>
+                {`CAPS+ ${event.categories[categ].wods[indexW].amount_cap - wod.amount} `}
+                </>
+              ):<>{wod.amount} {wod.amount_type}</>}
+              </>) :
+              <>{wod.amount} {wod.amount_type}</>
+              }
             </p>
           ))}
           <p className="th">{JSON.stringify(item.points)}</p>
@@ -382,7 +391,6 @@ const order = (data, event, categ) => {
   let ppw = Math.floor(100 / teams.length);
   let wodsData = [];
 
-  // console.log(teams)
   ////// PUSH DATA TO WODS DATA (Re arrange)
   for (let i = 0; i < wl; i++) {
     wodsData.push([]);
@@ -400,6 +408,8 @@ const order = (data, event, categ) => {
     });
   }
 
+  // console.log(wodsData)
+
   // let result;
   ////// APPLY POINTS AND PERCENT
   wodsData.forEach((wod, windex) => {
@@ -413,7 +423,7 @@ const order = (data, event, categ) => {
     }
   });
 
-  console.log(wodsData)
+  // console.log(wodsData)
 
   teams.forEach((team) => {
     wodsData.forEach((wod) => {
@@ -431,7 +441,7 @@ const order = (data, event, categ) => {
 
   teams.sort((a, b) => b.percent - a.percent);
 
-  // console.log(teams);
+  console.log(teams);
   return teams;
   // return [];
 };
@@ -510,8 +520,10 @@ const FORTIME_points = (ogWod, wod,tl) => {
   });
 
   wod.forEach((team, index) => {
+    // console.log(wod)
     if (team.amount !== 0) {
       team.percent = (team.amount * 100) / ogWod.amount_cap 
+      // console.log(team.percent + team.name)
       if (index === 0) {
         team.points = 100;
       } else {
@@ -529,7 +541,13 @@ const FORTIME_points = (ogWod, wod,tl) => {
           team.points = ppw * (tl - index);
         }
       }
+
+      if(team.amount < ogWod.amount_cap){
+        team.amount_type = 'Caps +'
+        team.amount = ogWod.amount_cap - team.amount 
+      }
     }
+    
   });
 };
 const RM_points = (ogWod, wod,tl) => {
@@ -549,6 +567,7 @@ const RM_points = (ogWod, wod,tl) => {
   });
 
   wod.forEach((team, index) => {
+    
     if (team.amount !== 0) {
       if (index === 0) {
         team.percent = 100;
@@ -565,11 +584,13 @@ const RM_points = (ogWod, wod,tl) => {
           team.points = wod[index - 1].points;
           team.percent = wod[index - 1].percent - 10 / tl;
         } else {
-          team.percent = (team.amount * 100) / wod[0].amount;
+          team.percent = ppw * (tl - index);
           team.points = ppw * (tl - index);
+          console.log(team)
         }
       }
     }
+    // console.log(team.percent +" "+ team.name)
   });
 };
 

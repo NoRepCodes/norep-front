@@ -284,6 +284,7 @@ export const ScoreModal = ({ close, index, teams, wod, update }) => {
   useEffect(() => {
     if (inputs.length === 0) {
       let aux = [];
+      console.log(wod.wod_type === 3 ?wod.time_cap:0)
       teams.forEach((team) => {
         aux.push({
           amount: 0,
@@ -305,6 +306,7 @@ export const ScoreModal = ({ close, index, teams, wod, update }) => {
   };
 
   const confirm = () => {
+    console.log(inputs)
     update(inputs, index - 1);
   };
 
