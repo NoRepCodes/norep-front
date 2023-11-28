@@ -20,10 +20,10 @@ const offEvent = {
       wods: [
         {
           name: "Wod 1",
-          time_cap: 250,
+          time_cap: 300,
           amount_cap: null,
           amount_type: "Reps",
-          wod_type: 3,
+          wod_type: 1,
         },
         {
           name: "Wod 2",
@@ -34,14 +34,7 @@ const offEvent = {
         },
         {
           name: "Wod 3",
-          time_cap: 300,
-          amount_cap: null,
-          amount_type: "Reps",
-          wod_type: 1,
-        },
-        {
-          name: "Wod 4",
-          time_cap: 350,
+          time_cap: 250,
           amount_cap: null,
           amount_type: "Reps",
           wod_type: 3,
@@ -61,9 +54,8 @@ const offTeams = [
       name: "Team 1",
       box: "Box1",
       wods: [
-        { time: 250, amount: 390, amount_type: "Reps", tiebrake: 100 },
-        { time: 90, amount: 450, amount_type: "Reps", tiebrake: 89 },
-        { time: 300, amount: 100, amount_type: "Reps", tiebrake: 80 },
+        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
+        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
         { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
       ],
     },
@@ -73,9 +65,8 @@ const offTeams = [
       name: "Team 2",
       box: "Box2",
       wods: [
-        { time: 250, amount: 250, amount_type: "Reps", tiebrake: 100 },
-        { time: 90, amount: 450, amount_type: "Reps", tiebrake: 90 },
-        { time: 290, amount: 110, amount_type: "Reps", tiebrake: 90 },
+        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
+        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
         { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
       ],
     },
@@ -85,24 +76,11 @@ const offTeams = [
       name: "Team 3",
       box: "Box3",
       wods: [
-        { time: 250, amount: 310, amount_type: "Reps", tiebrake: 80 },
-        { time: 91, amount: 450, amount_type: "Reps", tiebrake: 90 },
-        { time: 150, amount: 300, amount_type: "Reps", tiebrake: 100 },
+        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
+        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
         { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
       ],
-    },
-    {
-      points: 0,
-      percent: 0,
-      name: "Team 4",
-      box: "Box4",
-      wods: [
-        { time: 250, amount: 325, amount_type: "Reps", tiebrake: 90 },
-        { time: 60, amount: 390, amount_type: "Reps", tiebrake: 90 },
-        { time: 350, amount: 300, amount_type: "Reps", tiebrake: 90 },
-        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
-      ],
-    },
+    }
   ],
 ];
 
@@ -164,7 +142,7 @@ function Home() {
     aux[categ] = [...data];
     aux[categ].forEach((team) => {
       event.categories[categ].wods.forEach((elm) => {
-        team.wods.push({  time: 0, amount: 0, amount_type: null, tiebrake: 0});
+        team.wods.push({ time: 0, amount: 0, amount_type: null, tiebrake: 0 });
       });
     });
     setTeams(aux);
@@ -176,7 +154,7 @@ function Home() {
     aux[categ].forEach((team) => {
       let fi = data.findIndex((elm) => elm.name === team.name);
       let info = {
-        time: data[fi] ? parseInt(data[fi].time) : 0, 
+        time: data[fi] ? parseInt(data[fi].time) : 0,
         amount: parseInt(data[fi].amount),
         tiebrake: parseInt(data[fi].tiebrake),
         amount_type: data[fi].amount_type,
@@ -357,15 +335,29 @@ const Table = ({ event, categ, teams }) => {
           <p className="th">{item.box}</p>
           {item.wods.map((wod, indexW) => (
             <p className="th" key={indexW}>
-              {event.categories[categ].wods[indexW] && event.categories[categ].wods[indexW].wod_type===2 ?(<>
-              {wod.amount !== 0 && wod.amount < event.categories[categ].wods[indexW].amount_cap ?(
+              {event.categories[categ].wods[indexW] &&
+              event.categories[categ].wods[indexW].wod_type === 2 ? (
                 <>
-                {`CAPS+ ${event.categories[categ].wods[indexW].amount_cap - wod.amount} `}
+                  {wod.amount !== 0 &&
+                  wod.amount <
+                    event.categories[categ].wods[indexW].amount_cap ? (
+                    <>
+                      {`CAPS+ ${
+                        event.categories[categ].wods[indexW].amount_cap -
+                        wod.amount
+                      } `}
+                    </>
+                  ) : (
+                    <>
+                      {wod.amount} {wod.amount_type}
+                    </>
+                  )}
                 </>
-              ):<>{wod.amount} {wod.amount_type}</>}
-              </>) :
-              <>{wod.amount} {wod.amount_type}</>
-              }
+              ) : (
+                <>
+                  {wod.amount} {wod.amount_type}
+                </>
+              )}
             </p>
           ))}
           <p className="th">{JSON.stringify(item.points)}</p>
@@ -417,9 +409,9 @@ const order = (data, event, categ) => {
     if (ogWod.wod_type === 1) {
       AMRAP_points(ogWod, wod, teams.length);
     } else if (ogWod.wod_type === 2) {
-      FORTIME_points(ogWod, wod,teams.length);
+      FORTIME_points(ogWod, wod, teams.length);
     } else if (ogWod.wod_type === 3) {
-      RM_points(ogWod, wod,teams.length);
+      RM_points(ogWod, wod, teams.length);
     }
   });
 
@@ -434,6 +426,7 @@ const order = (data, event, categ) => {
         team.percent += wod[fi].percent;
       }
     });
+    // console.log(team)
   });
   teams.forEach((team) => {
     team.percent = parseFloat((team.percent / wl).toFixed(3));
@@ -441,7 +434,7 @@ const order = (data, event, categ) => {
 
   teams.sort((a, b) => b.percent - a.percent);
 
-  console.log(teams);
+  // console.log(teams);
   return teams;
   // return [];
 };
@@ -503,7 +496,7 @@ const AMRAP_points = async (ogWod, wod, tl) => {
 
   // console.log(wod);
 };
-const FORTIME_points = (ogWod, wod,tl) => {
+const FORTIME_points = (ogWod, wod, tl) => {
   let ppw = Math.floor(100 / tl);
   wod.sort((a, b) => {
     if (a.amount < b.amount) return 1;
@@ -522,9 +515,10 @@ const FORTIME_points = (ogWod, wod,tl) => {
   wod.forEach((team, index) => {
     // console.log(wod)
     if (team.amount !== 0) {
-      team.percent = (team.amount * 100) / ogWod.amount_cap 
+      // team.percent = (team.amount * 100) / ogWod.amount_cap
       // console.log(team.percent + team.name)
       if (index === 0) {
+        team.percent = 100;
         team.points = 100;
       } else {
         if (
@@ -538,19 +532,21 @@ const FORTIME_points = (ogWod, wod,tl) => {
           team.points = wod[index - 1].points;
           team.percent = wod[index - 1].percent - 10 / tl;
         } else {
+          team.percent = ppw * (tl - index);
           team.points = ppw * (tl - index);
         }
       }
 
-      if(team.amount < ogWod.amount_cap){
-        team.amount_type = 'Caps +'
-        team.amount = ogWod.amount_cap - team.amount 
+      if (team.amount < ogWod.amount_cap) {
+        team.amount_type = "Caps +";
+        team.amount = ogWod.amount_cap - team.amount;
       }
     }
-    
+    console.log(team.percent + team.name);
+    // console.log(team)
   });
 };
-const RM_points = (ogWod, wod,tl) => {
+const RM_points = (ogWod, wod, tl) => {
   let ppw = Math.floor(100 / tl);
   wod.sort((a, b) => {
     if (a.amount < b.amount) return 1;
@@ -567,7 +563,6 @@ const RM_points = (ogWod, wod,tl) => {
   });
 
   wod.forEach((team, index) => {
-    
     if (team.amount !== 0) {
       if (index === 0) {
         team.percent = 100;
@@ -586,7 +581,7 @@ const RM_points = (ogWod, wod,tl) => {
         } else {
           team.percent = ppw * (tl - index);
           team.points = ppw * (tl - index);
-          console.log(team)
+          // console.log(team)
         }
       }
     }
