@@ -20,24 +20,31 @@ const offEvent = {
       wods: [
         {
           name: "Wod 1",
-          time_cap: 300,
-          amount_cap: null,
+          time_cap: 800,
+          amount_cap: 230,
           amount_type: "Reps",
           wod_type: 1,
         },
         {
           name: "Wod 2",
-          time_cap: 110,
-          amount_cap: 450,
+          time_cap: 1500,
+          amount_cap: 230,
           amount_type: "Reps",
           wod_type: 2,
         },
         {
           name: "Wod 3",
-          time_cap: 250,
+          time_cap: 500,
           amount_cap: null,
           amount_type: "Reps",
           wod_type: 3,
+        },
+        {
+          name: "Wod 2",
+          time_cap: 1800,
+          amount_cap: 360,
+          amount_type: "Reps",
+          wod_type: 2,
         },
       ],
     },
@@ -54,7 +61,8 @@ const offTeams = [
       name: "Team 1",
       box: "Box1",
       wods: [
-        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
+        { time: 0, amount: 75, amount_type: null, tiebrake: 0 },
+        { time: 1310, amount: 230, amount_type: null, tiebrake: 450 },
         { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
         { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
       ],
@@ -65,7 +73,8 @@ const offTeams = [
       name: "Team 2",
       box: "Box2",
       wods: [
-        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
+        { time: 0, amount: 92, amount_type: null, tiebrake: 0 },
+        { time: 1500, amount: 180, amount_type: null, tiebrake: 650 },
         { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
         { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
       ],
@@ -76,11 +85,36 @@ const offTeams = [
       name: "Team 3",
       box: "Box3",
       wods: [
-        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
+        { time: 0, amount: 65, amount_type: null, tiebrake: 0 },
+        { time: 1500, amount: 229, amount_type: null, tiebrake: 415 },
         { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
         { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
       ],
-    }
+    },
+    {
+      points: 0,
+      percent: 0,
+      name: "Team 4",
+      box: "Box 4",
+      wods: [
+        { time: 0, amount: 77, amount_type: null, tiebrake: 0 },
+        { time: 1311, amount: 230, amount_type: null, tiebrake: 440 },
+        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
+        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
+      ],
+    },
+    {
+      points: 0,
+      percent: 0,
+      name: "Team 5",
+      box: "Box 5",
+      wods: [
+        { time: 0, amount: 97, amount_type: null, tiebrake: 0 },
+        { time: 1313, amount: 230, amount_type: null, tiebrake: 438 },
+        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
+        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
+      ],
+    },
   ],
 ];
 
@@ -400,9 +434,6 @@ const order = (data, event, categ) => {
     });
   }
 
-  // console.log(wodsData)
-
-  // let result;
   ////// APPLY POINTS AND PERCENT
   wodsData.forEach((wod, windex) => {
     let ogWod = event.categories[categ].wods[windex];
@@ -415,7 +446,6 @@ const order = (data, event, categ) => {
     }
   });
 
-  // console.log(wodsData)
 
   teams.forEach((team) => {
     wodsData.forEach((wod) => {
@@ -426,15 +456,12 @@ const order = (data, event, categ) => {
         team.percent += wod[fi].percent;
       }
     });
-    // console.log(team)
   });
   teams.forEach((team) => {
     team.percent = parseFloat((team.percent / wl).toFixed(3));
   });
 
-  teams.sort((a, b) => b.percent - a.percent);
-
-  // console.log(teams);
+  TieBreaker(teams);
   return teams;
   // return [];
 };
@@ -470,6 +497,7 @@ const AMRAP_points = async (ogWod, wod, tl) => {
     }
   });
 
+  // console.log(wod)
   wod.forEach((team, index) => {
     if (team.amount !== 0) {
       if (index === 0) {
@@ -484,10 +512,12 @@ const AMRAP_points = async (ogWod, wod, tl) => {
           team.points = wod[index - 1].points;
           team.percent = wod[index - 1].percent;
         } else if (team.amount === wod[index - 1].amount) {
-          team.points = wod[index - 1].points;
-          team.percent = wod[index - 1].percent - 10 / tl;
+          team.points = ppw * (tl - index);
+          team.percent = ppw * (tl - index);
+          // team.percent = wod[index - 1].percent - 10 / tl;
         } else {
-          team.percent = (team.amount * 100) / wod[0].amount;
+          // team.percent = (team.amount * 100) / wod[0].amount;
+          team.percent = ppw * (tl - index);
           team.points = ppw * (tl - index);
         }
       }
@@ -512,6 +542,8 @@ const FORTIME_points = (ogWod, wod, tl) => {
     }
   });
 
+  // console.log(wod)
+
   wod.forEach((team, index) => {
     // console.log(wod)
     if (team.amount !== 0) {
@@ -529,8 +561,9 @@ const FORTIME_points = (ogWod, wod, tl) => {
           team.points = wod[index - 1].points;
           team.percent = wod[index - 1].percent;
         } else if (team.amount === wod[index - 1].amount) {
-          team.points = wod[index - 1].points;
-          team.percent = wod[index - 1].percent - 10 / tl;
+          team.points = ppw * (tl - index);
+          // team.percent = wod[index - 1].percent - 10 / tl;
+          team.percent = ppw * (tl - index);
         } else {
           team.percent = ppw * (tl - index);
           team.points = ppw * (tl - index);
@@ -542,9 +575,11 @@ const FORTIME_points = (ogWod, wod, tl) => {
         team.amount = ogWod.amount_cap - team.amount;
       }
     }
-    console.log(team.percent + team.name);
+    // console.log(team.percent + team.name);
     // console.log(team)
   });
+
+  // console.log(wod);
 };
 const RM_points = (ogWod, wod, tl) => {
   let ppw = Math.floor(100 / tl);
@@ -576,8 +611,9 @@ const RM_points = (ogWod, wod, tl) => {
           team.points = wod[index - 1].points;
           team.percent = wod[index - 1].percent;
         } else if (team.amount === wod[index - 1].amount) {
-          team.points = wod[index - 1].points;
-          team.percent = wod[index - 1].percent - 10 / tl;
+          team.points = ppw * (tl - index);
+          team.percent = ppw * (tl - index);
+          // team.percent = wod[index - 1].percent - 10 / tl;
         } else {
           team.percent = ppw * (tl - index);
           team.points = ppw * (tl - index);
@@ -587,6 +623,41 @@ const RM_points = (ogWod, wod, tl) => {
     }
     // console.log(team.percent +" "+ team.name)
   });
+};
+
+const TieBreaker = (teams) => {
+
+  //// TO DO Recorrer equipos y evaluar a todos aquellos que tengan la misma cantidad y sumar los tiebrakes, quien tenga menor tiebrake, tiene mejor rendimiento
+  
+  // Añadir el total de tiebrake a todos los equipos
+  teams.forEach(team => {
+    team.tiebrake_total = 0
+    team.wods.forEach(wod=>{
+      team.tiebrake_total += wod.tiebrake
+    })
+  });
+  
+  // Ordenar por prioridad de puntos, en caso de empate, tiebrake
+  teams.sort((a, b) => {
+    if (a.points < b.points) return 1;
+    else if (a.points > b.points) return -1;
+    else if (a.points === b.points) {
+      if (a.tiebrake_total > b.tiebrake_total) return 1;
+      else if (a.tiebrake_total < b.tiebrake_total) return -1;
+    }
+  });
+  
+  //Reducir porcentaje en base a la diferencia de tiebrake con el equipo anterior
+  teams.forEach((team,index)=>{
+    if(index !== 0 ){
+      if(team.points === teams[index-1].points){
+        let formula = (100 - (teams[index-1].tiebrake_total * 100) / team.tiebrake_total) / teams.length
+        console.log(formula)
+        team.percent = parseFloat((team.percent - formula).toFixed(3))
+      }
+    }
+  })
+  console.log(teams)
 };
 
 /*
@@ -627,4 +698,9 @@ const RM_points = (ogWod, wod, tl) => {
     201 sin pen
 
     Ultimo wods con penalizacion, el ejercicio va a ocupar un porcentaje en base a todos los ejercicios, si hay penalizacion, se va a calculcar el ejercicio que se penaliza por la cantida de reps
+
+    En caso de empatar todo HASTA EL TIEBRAKE , alli si colocarle la misma cantidad de puntos
+    porcentaje igual a los puntos HASTA QUE haya empate de varios equipos
+
+    que los wods se vean luego de la fecha limite, cargar el DATE desde el servidor
 */
