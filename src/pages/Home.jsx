@@ -657,6 +657,10 @@ const TieBreaker = (teams) => {
       }
     }
   })
+  teams.sort((a, b) => {
+    if (a.percent < b.percent) return 1;
+    else if (a.percent > b.percent) return -1
+  });
   console.log(teams)
 };
 
