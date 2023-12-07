@@ -1,0 +1,261 @@
+@use 'var' as v
+
+@function fs($num)
+
+  @return calc($num *1vw + $num*1vh)
+
+.results
+  // height: 120vh
+  width: 90vw
+  display: flex
+  flex-direction: column
+  justify-content: center
+  padding: 5em 0vw
+  align-self: center
+  box-sizing: border-box
+
+.back_btn_ctn
+  background-color: v.$fourth
+  width: 13em
+  min-height: 3em
+  display: flex
+  align-items: center
+  justify-content: center
+  h1
+    color: #eee
+    font-size: .9em
+  span
+    color: v.$primary
+    text-decoration: underline
+
+.results_ctn
+  // border: 1px solid v.$fourth
+  height: 100%
+  width: 100%
+  display: flex
+  flex-direction: row
+  box-sizing: border-box
+
+.results_aside
+  width: fs(12)
+  display: flex
+  flex-direction: column
+  box-sizing: border-box
+  gap: 2em
+
+  .ra_event
+    display: flex
+    flex-direction: column
+    box-sizing: border-box
+    width: 100%
+    border: 1px solid v.$fourth
+
+    img
+      width: 100%
+    .categ_ctn
+      background-color: v.$primary
+      display: flex
+      flex-direction: column
+      position: relative
+      border-top: 1px solid v.$fourth
+      h6
+        padding: 1.5rem 1.5rem
+        height: 6rem
+        font-size: 2em
+        color: v.$fourth
+        box-sizing: border-box
+    .categ_dropdown
+      border-top: 1px solid v.$fourth
+      padding: 1em 1.5em
+      height: 64px
+      box-sizing: border-box
+      cursor: pointer
+      display: flex
+      justify-content: space-between
+      align-items: center
+      p
+        text-decoration: underline
+
+    .abs_categ_dropdown
+      position: absolute
+      width: 100%
+      background-color: v.$primary
+      z-index: 200
+      left: 0px
+      bottom: -98px
+      outline: 1px solid #181818
+
+      p
+        text-decoration: none
+        padding: 1em 1.5em
+        outline: 1px solid v.$fourth
+        margin-top: 1px
+        &:nth-child(1)
+          margin-top: 0px
+        &:hover
+          background-color: darken(v.$primary,20 )
+
+  .user_input
+    position: relative
+    width: 100%
+    border: 1px solid v.$fourth
+    box-sizing: border-box
+    input
+      padding: .9em 1em
+      width: 100%
+      box-sizing: border-box
+
+.results_info
+  display: flex
+  flex-direction: column
+  width: calc( 90vw - fs(12) )
+  height: 100%
+  position: relative
+
+  .resp_categories_ctn
+    display: none
+  .user_input
+    display: none
+
+.ri_header
+  position: relative
+  display: flex
+  flex-direction: column
+  min-height: fs(12)
+  padding: fs(2)
+  box-sizing: border-box
+  border: 1px solid v.$fourth
+  border-left: 0px
+  justify-content: space-between
+  width: 100%
+
+  .ri_header_top
+    display: flex
+    flex-direction: column
+    gap: .5em
+    h1
+      font-size: 1.2em
+    .ri_title
+      font-weight: bold
+      font-size: 1.5em
+    .corner
+      position: absolute
+      width: 10em
+      height: 10em
+      right: 1.5em
+      top: 1.5em
+    .resp_ri_img
+      display: none
+
+  .ri_header_bot
+    display: flex
+    .rhb_left
+      display: flex
+      flex-direction: column
+      gap: 1.5em
+
+      .ri_date
+        color: lighten(v.$fourth,60 )
+
+// @media screen and (width < 1360px)
+//   .results_aside
+//     width: 250px !important
+//     // background-color: red
+
+@media screen and (width < 1000px)
+  .results
+    padding-top: 2em
+    .back_btn_ctn
+      display: none !important
+    .results_ctn
+      flex-direction: column
+      .results_info
+        width: 100%
+        .user_input
+          position: relative
+          width: 100%
+          border: 1px solid v.$fourth
+          border-bottom: 0px
+          box-sizing: border-box
+          input
+            padding: 10px .5em 10px 2rem
+            width: 100%
+            box-sizing: border-box
+            font-size: .5em
+            font-family: 'Roboto'
+      .results_aside
+        width: 100% !important
+        display: none
+        .ra_event
+          width: 250px
+
+      .ri_header
+        position: relative
+        min-height: auto
+        height: fs(12)
+        padding: .9em
+        padding-left: calc( fs(12) + 1em )
+        border-bottom: 0px
+
+        .corner
+          width: fs(6)
+          height: fs(6)
+          right: .9em
+          top: .9em
+
+        h1
+          font-size: fs(1)
+        .ri_title
+          font-size: fs(1.2)
+        .ri_header_top
+          gap: .3em
+        .ri_header_bot
+          .rhb_left
+            gap: .4em
+
+      .resp_ri_img
+        height: 100%
+        // width: fs(12)
+        position: absolute
+        left: 0px
+        top: 0px
+        display: flex
+
+    .resp_categories_ctn
+      display: flex
+      height: 36px
+      width: 100%
+      background-color: v.$primary
+      border: 1px solid #181818
+      box-sizing: border-box
+      padding: 1em 1.5em
+      box-sizing: border-box
+      cursor: pointer
+      display: flex
+      justify-content: space-between
+      align-items: center
+      position: relative
+      p
+        text-decoration: underline
+        font-size: .6em
+
+    .abs_resp_categ_dropdown
+      position: absolute
+      width: 100%
+      background-color: v.$primary
+      z-index: 1300
+      left: 0px
+      top: 35px
+      border: 1px solid #181818
+      box-sizing: border-box
+
+      p
+        text-decoration: none
+        padding: .7rem 1.5rem
+        outline: 1px solid v.$fourth
+        margin-top: 1px
+        font-size: .6em
+        &:nth-child(1)
+          margin-top: 0px
+        &:hover
+          background-color: darken(v.$primary,20 )

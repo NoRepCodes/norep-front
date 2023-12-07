@@ -122,6 +122,16 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+a:visited{
+  text-decoration: none;
+  color: inherit;
+}
+a{
+  text-decoration: none;
+}
+/* a:hover { text-decoration: none; color:yellow; }
+a:focus { text-decoration: none; color:orange; }
+a:active { text-decoration: none; color:teal; } */
 
 input{
 	border: none;
@@ -132,6 +142,34 @@ input{
 body {
   display: flex;
   position: relative;
-  background-color: #181818;
+  /* background-color: #181818; */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* width: 100%;
+  height: 100%; */
+}
+
+#root{
+  display: flex;
+  position: relative;
+  /* background-color: #181818; */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  width: 100%;
+  height: 100%;
+}
+
+.error_page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+  gap: 2em;
+}
+.error_page h6{
+  font-size: 5em;
+  color: #181818;
+}
+
+.error_page p{
+  font-weight: bold;
 }

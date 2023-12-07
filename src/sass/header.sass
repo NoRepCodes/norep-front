@@ -1,0 +1,200 @@
+@use 'var' as v
+
+.page_ctn
+  display: flex
+  flex-direction: column
+  width: 100%
+  height: 100%
+
+.header_ctn
+  background-color: v.$fourth
+  height: 100px
+  border-bottom: 1px solid #fff
+  width: 100%
+  display: flex
+  flex-direction: row
+  // gap: 1px
+  align-items: center
+  box-sizing: border-box
+
+  a
+    height: 100%
+  .hamb_ctn
+    display: none
+
+  .link
+    position: relative
+    cursor: pointer
+    height: 100%
+    display: flex
+    align-items: center
+    justify-content: center
+    // border-bottom: 10px solid v.$primary
+    box-sizing: border-box
+    width: 5em
+
+    &_active
+      position: absolute
+      bottom: 0px
+      height: 8px
+      background-color: v.$primary
+      width: 100%
+
+.logo_ctn
+  width: 150px
+  // background-color: #eee
+  height: 100%
+  margin-right: 2em
+  display: flex
+  border-right: 1px solid #fff
+  box-sizing: border-box
+
+  img
+    margin: auto
+    // width: 100px
+    height: 100%
+
+.searchbar
+  width: 13em
+  display: flex
+  flex-direction: row
+  align-items: center
+  margin-left: auto
+  margin-right: 1.5em
+  border: 1px solid #fff
+  border-radius: 24px
+  padding: 8px 12px
+
+  p
+    color: #fff
+
+.header_downbar
+  background-color: v.$fourth
+  width: 100%
+  height: 50px
+  border-bottom: 1px solid #fff
+  box-sizing: border-box
+  display: flex
+  flex-direction: row
+  align-items: center
+  padding: 0px 2em
+  gap: 4em
+
+.sm_link
+  display: flex
+  p
+    font-size: 14px
+    color: #eee
+
+////////
+.slider
+  --slider-inner-width: 5000px
+  --slider-speed: 64s
+
+@keyframes scroll
+  0%
+    transform: translateX(-5%)
+  100%
+    transform: translateX(calc((0px - var(--slider-inner-width)) - 5%))
+.slider
+  -webkit-transform: translate3d(0, 0, 0)
+  animation: scroll linear infinite var(--slider-speed)
+  width: calc(2 * var(--slider-inner-width))
+  transition: animation-play-state ease 0.3s
+
+.slider_ctn
+  height: 42px
+  width: 100%
+  overflow: hidden
+  position: sticky
+  background-color: v.$primary
+  bottom: 0
+  display: flex
+  z-index: 1300
+
+  .slider
+    display: flex
+    align-items: center
+    flex-direction: row
+    gap: 1em
+    width: 100%
+    height: 100%
+
+    .slider__slide
+      height: 100%
+      min-width: 600px
+      // flex-grow: 1
+      // flex-basis: 0
+      display: flex
+      align-items: center
+      justify-content: space-evenly
+      gap: 1em
+      .update_text
+        font-weight: bold
+        // font-size: 14px
+        color: v.$fourth
+      .name_event
+        font-weight: bold
+        // font-size: 14px
+        color: v.$fourth
+
+@media screen and (width < 1000px)
+  .header_ctn
+    position: sticky
+    top: 0px
+    height: 72px
+    z-index: 1400
+    a
+      display: none
+    .searchbar
+      display: none
+  .header_downbar
+    display: none !important
+  .logo_ctn
+    display: flex !important
+    width: 100px
+    
+    img
+      height: 100%
+
+
+  .hamb_ctn
+    margin-left: auto
+    display: flex !important
+    height: 100%
+    // width: 64px
+    // background-color: red
+    position: relative
+    align-items: center
+    justify-content: center
+    padding: 0px 1.5em
+    box-sizing: border-box
+    // position: relative
+
+  .hamb_dropdown
+    position: absolute
+    height: 100%
+    width: 100%
+    background-color: #181818
+    top: 72px
+    left: 0px
+    z-index: 1350
+    display: flex
+    flex-direction: column
+
+    .link
+      width: 100%
+      h6
+        font-size: 1.5em
+        padding: 1.5rem 1.5rem
+        border-bottom: 1px solid #fff
+    // border: 1px solid #fff
+
+  .slider_ctn
+    height: 24px
+    p
+      font-size: .7em
+    .slider
+      .slider__slide
+        min-width: 450px
+
