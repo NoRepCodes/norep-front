@@ -1,4 +1,4 @@
-export const url = "norep-back.vercel.app/" 
+export const url = "http://norep-back.vercel.app/" 
 // export const url = "http://192.168.1.111:4000/" 
 
 
