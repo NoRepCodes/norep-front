@@ -1,630 +1,199 @@
-import React from "react";
-import { useEffect } from "react";
-import { useState } from "react";
-import {
-  CreateEventModal,
-  TeamsModal,
-  WodsModal,
-  ScoreModal,
-} from "../components/Modals";
+import React, { useEffect } from "react";
+import { Banner } from "../components/Banner";
+import eventcard from "../images/EC.png";
+// import heroimg from "../images/h1.png";
+import heroimg from "../images/hero.png";
 import "../sass/home.sass";
+import "../sass/calendar.sass";
+import { getEventsHome } from "../api/events.api";
+import { useState } from "react";
+import moment from "moment";
+import "moment/dist/locale/es";
+import { useContext } from "react";
+import { Context } from "../components/Context";
+import { Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 
-const offEvent = {
-  name: "Evento Prediseñado",
-  since: "2024/2/31",
-  until: "2024/4/31",
-  place: "Is going to be in a good place, for sure",
-  categories: [
-    {
-      name: "Novato",
-      wods: [
-        {
-          name: "Wod 1",
-          time_cap: 300,
-          amount_cap: null,
-          amount_type: "Reps",
-          wod_type: 1,
-        },
-        {
-          name: "Wod 2",
-          time_cap: 110,
-          amount_cap: 450,
-          amount_type: "Reps",
-          wod_type: 2,
-        },
-        {
-          name: "Wod 3",
-          time_cap: 250,
-          amount_cap: null,
-          amount_type: "Reps",
-          wod_type: 3,
-        },
-      ],
-    },
-    { name: "Avanzado", wods: [] },
-  ],
-  // teams:[['Equpo1',"Equpo2"],[]]
-};
+const Home = () => {
+  const {events,time} = useContext(Context)
 
-const offTeams = [
-  [
-    {
-      points: 0,
-      percent: 0,
-      name: "Team 1",
-      box: "Box1",
-      wods: [
-        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
-        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
-        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
-      ],
-    },
-    {
-      points: 0,
-      percent: 0,
-      name: "Team 2",
-      box: "Box2",
-      wods: [
-        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
-        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
-        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
-      ],
-    },
-    {
-      points: 0,
-      percent: 0,
-      name: "Team 3",
-      box: "Box3",
-      wods: [
-        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
-        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
-        { time: 0, amount: 0, amount_type: null, tiebrake: 0 },
-      ],
-    }
-  ],
-];
-
-function Home() {
-  const [theme, setTheme] = useState("dark");
-  const [eventModal, setEventModal] = useState(false);
-  const [wodModal, setWodModal] = useState(false);
-  const [teamModal, setTeamModal] = useState(false);
-  const [scoreModal, setScoreModal] = useState(false);
-  const [event, setEvent] = useState(false);
-  const [teams, setTeams] = useState([]);
-  const [categ, setCateg] = useState(0);
-
-  const toggle = () => {
-    // console.log(event.categories[0].wods);
-    if (theme === "dark") setTheme("light");
-    else setTheme("dark");
-  };
-
-  const delEvent = () => {
-    setEvent(false);
-    setTeams([]);
-    setCateg(0);
-  };
-  const generateE = () => {
-    setEvent(offEvent);
-    setTeams(offTeams);
-  };
-  const openE = () => setEventModal(!eventModal);
-  const openW = () => setWodModal(!wodModal);
-  const openT = () => setTeamModal(!teamModal);
-  const openS = (index) => setScoreModal(index);
-  const closeS = () => setScoreModal(false);
-
-  const update = (data) => {
-    let aux = [];
-    // let aux2 = [...event.teams, []];
-    // aux2.push([]);
-    data.categories.forEach((item) => {
-      aux.push({ name: item, wods: [] });
-    });
-    openE();
-    setEvent({ ...data, categories: aux });
-  };
-
-  const selectCateg = (name) => {
-    setCateg(name);
-  };
-
-  const updateWod = (data) => {
-    openW();
-    let aux = [...event.categories];
-    aux[categ].wods = data;
-    setEvent({ ...event, categories: aux });
-  };
-  const updateTeams = (data) => {
-    openT();
-    let aux = [...teams];
-    aux[categ] = [...data];
-    aux[categ].forEach((team) => {
-      event.categories[categ].wods.forEach((elm) => {
-        team.wods.push({ time: 0, amount: 0, amount_type: null, tiebrake: 0 });
-      });
-    });
-    setTeams(aux);
-  };
-
-  const updateScores = (data, index) => {
-    closeS();
-    let aux = [...teams];
-    aux[categ].forEach((team) => {
-      let fi = data.findIndex((elm) => elm.name === team.name);
-      let info = {
-        time: data[fi] ? parseInt(data[fi].time) : 0,
-        amount: parseInt(data[fi].amount),
-        tiebrake: parseInt(data[fi].tiebrake),
-        amount_type: data[fi].amount_type,
-      };
-      team.wods[index] = info;
-    });
-    setTeams(aux);
+  const click = () => {
+    // console.log(moment().locale("es"));
+    // let aux = moment.unix(events[0].until).format("DD, MMM.")
+    // console.log(time);
   };
 
   return (
-    <div className={`home_ctn ${theme}`}>
-      {eventModal && <CreateEventModal close={openE} update={update} />}
-      {wodModal && <WodsModal close={openW} update={updateWod} />}
-      {teamModal && <TeamsModal close={openT} update={updateTeams} />}
-      {scoreModal && (
-        <ScoreModal
-          close={closeS}
-          index={scoreModal}
-          teams={teams[categ]}
-          wod={event.categories[categ].wods[scoreModal - 1]}
-          update={updateScores}
-        />
-      )}
-      <div className="ctn">
-        <Moon set={toggle} />
-        {!event ? (
-          <>
-            <Btn text="Crear Evento" action={openE} />
-            <Btn text="Generar Evento" action={generateE} />
-          </>
-        ) : (
-          <>
-            <Btn text="Eliminar Evento" action={delEvent} />
-            <p className="event_name">{event.name}</p>
-            <p>Inicio: {event.since}</p>
-            <p>Cierre: {event.until}</p>
-            <p>Lugar: {event.place}</p>
-
-            <div className="categ_ctn">
-              {event.categories.map((item, index) => (
-                <div
-                  onClick={() => {
-                    selectCateg(index);
-                  }}
-                  className={`categ_btn ${index === categ && "categ_active"}`}
-                  key={index}
-                >
-                  <p>{item.name}</p>
-                </div>
-              ))}
-            </div>
-            {event.categories[categ].wods.length > 0 && (
-              <>
-                <div className="wods_ctn">
-                  <p>Wods: </p>
-                  {event.categories[categ].wods.map((wod, index) => (
-                    <p key={index}>
-                      {wod.name} {w_o_d(wod.wod_type)} ,
-                    </p>
-                  ))}
-                </div>
-                <div className="wods_ctn">
-                  <p>Wods Time caps: </p>
-                  {event.categories[categ].wods.map((wod, index) => (
-                    <p key={index}>{wod.time_cap},</p>
-                  ))}
-                </div>
-                <div className="wods_ctn">
-                  <p>Wods Reps caps: </p>
-                  {event.categories[categ].wods.map((wod, index) => (
-                    <p key={index}>
-                      {wod.amount_cap === null ? 0 : wod.amount_cap},
-                    </p>
-                  ))}
-                </div>
-              </>
-            )}
-            {teams[categ] && teams[categ].length > 0 && (
-              <div className="wods_ctn">
-                <p>Equipos: </p>
-                {teams[categ].map((item, index) => (
-                  <p key={index}>{item.name},</p>
-                ))}
-              </div>
-            )}
-          </>
-        )}
-
-        {event && teams[categ] && event.categories[categ].wods.length > 0 && (
-          <div className="small_btns_ctn">
-            {event.categories[categ].wods.map((wod, index) => (
-              <BtnSmall
-                text={`Resultados Wod ${index + 1}`}
-                action={openS}
-                key={index}
-                index={index}
-              />
-            ))}
-          </div>
-        )}
-        {event && event.categories[categ].wods.length === 0 && (
-          <Btn text="Añadir Wods" action={openW} />
-        )}
-
-        {event && !teams[categ] && <Btn text="Añadir Equipos" action={openT} />}
-
-        {event && teams[categ] && (
-          <>
-            <p className="event_name">Resultados</p>
-            <Table event={event} teams={teams} categ={categ} />
-          </>
-        )}
+    <div className="Home">
+      <div className="hero_info_ctn" id="NOREP" >
+        <h6>
+          #<span>TEAM</span> NO REP
+        </h6>
+        {/* <p>Conoce acerca del equipo y nuestra mision</p>
+        <div className="more_info">
+          <p>Mas informacion</p>
+        </div> */}
+        <img src={heroimg} alt="heroimg" className="heroimg" />
       </div>
+
+      <div className="home_content">
+        <div className="event_cell first_cell">
+          <h6 className="big_text">EVENTOS</h6>
+          <p className="short_text">
+            calendario de competencias <br />
+            que cubrimos
+          </p>
+          <Link className="more_info" to="eventos">
+            <p>Mas informacion</p>
+          </Link>
+        </div>
+        <div className="event_cell cards_cells">
+          <EventTimeText text="EN CURSO" />
+          {events.map((event) => {
+            let days = moment.unix(event.until).diff(time, "days");
+            if (days <= 7 && days >= 0) {
+              return <EventCard key={event._id} event={event} />;
+            }
+          })}
+          {/* <EventCard />
+          <EventCard /> */}
+        </div>
+        <div className="event_cell cards_cells">
+          <EventTimeText text="PRÓXIMAS" />
+          {events.map((event) => {
+            let days = moment.unix(event.until).diff(time, "days");
+            if (days > 7) {
+              return <EventCard key={event._id} event={event} />;
+            }
+          })}
+          {/* <EventCard />
+          <EventCard />
+          <EventCard /> */}
+        </div>
+      </div>
+      <Calendar {...{ events, time }} />
+      <Banner />
     </div>
   );
-}
+};
 
 export default Home;
 
-const Moon = ({ set }) => {
+const EventTimeText = ({ text }) => {
   return (
-    <svg
-      onClick={set}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-    >
-      <path d="M0 12c0 6.627 5.373 12 12 12s12-5.373 12-12-5.373-12-12-12-12 5.373-12 12zm2 0c0-5.514 4.486-10 10-10v20c-5.514 0-10-4.486-10-10z" />
-    </svg>
-  );
-};
-
-const Btn = ({ text, action }) => {
-  return (
-    <div className="btn_home" onClick={action}>
-      <p>{text}</p>
-    </div>
-  );
-};
-const BtnSmall = ({ text, action, index }) => {
-  let onClick = () => {
-    action(index + 1);
-  };
-  return (
-    <div className="btn_small" onClick={onClick}>
-      <p>{text}</p>
+    <div className="ett">
+      <h5>{text}</h5>
     </div>
   );
 };
 
-const Table = ({ event, categ, teams }) => {
-  const [info, setInfo] = useState([]);
+const offevent = {
+  name: "FITGAMES",
+  since: 1701595869,
+  until: 1704288686,
+};
+const convertDate = (date) => moment.unix(date).format("DD, MMM");
+
+export const EventCard = ({ event = offevent }) => {
+  return (
+    <HashLink className="event_card" to={`/resultados/${event._id}#top`} >
+      <img src={eventcard} alt="" />
+      <div className="ec_info">
+        <h1 className="ec_date">
+          {convertDate(event.since)} - {convertDate(event.until)}
+        </h1>
+        <div className="ec_info_mid">
+          <h1>{event.name}</h1>
+          <h1>{event.categories[0]?.name}</h1>
+          <h1>{event.categories[1]?.name}</h1>
+        </div>
+        <div>
+          <h1 className="ec_mi">Mas informacion</h1>
+        </div>
+      </div>
+    </HashLink>
+  );
+};
+
+const getMonths = (time) => {
+  return [
+    moment(time).add(-3, "M").format("MM-YYYY"),
+    moment(time).add(-2, "M").format("MM-YYYY"),
+    moment(time).add(-1, "M").format("MM-YYYY"),
+    moment(time).format("MM-YYYY"),
+    moment(time).add(1, "M").format("MM-YYYY"),
+    moment(time).add(2, "M").format("MM-YYYY"),
+  ];
+};
+const getMonthsNames = (time) => {
+  return [
+    moment(time).add(-3, "M").format("MMM").replace(".", "").toUpperCase(),
+    moment(time).add(-2, "M").format("MMM").replace(".", "").toUpperCase(),
+    moment(time).add(-1, "M").format("MMM").replace(".", "").toUpperCase(),
+    moment(time).format("MMM").replace(".", "").toUpperCase(),
+    moment(time).add(1, "M").format("MMM").replace(".", "").toUpperCase(),
+    moment(time).add(2, "M").format("MMM").replace(".", "").toUpperCase(),
+  ];
+};
+
+const Calendar = ({ events, time }) => {
+  const [months, setMonths] = useState([]);
+  const [epm, setEpm] = useState([]);
 
   useEffect(() => {
-    setInfo(order(teams[categ], event, categ));
-  }, [teams, categ]);
+    setMonths(getMonthsNames());
+    setEpm(getMonths());
+  }, [events]);
+
+  const click = () => {};
 
   return (
-    <div className="table">
-      <div className="table_ctn">
-        <p className="th">Position</p>
-        <p className="th">Equipo</p>
-        <p className="th">Box</p>
-        {event.categories[categ].wods.map((wod, index) => (
-          <p className="th" key={index}>
-            {wod.name}
-          </p>
+    <div className="calendar" id="Calendar" >
+      <h6 className="title" onClick={click}>
+        CALENDARIO
+      </h6>
+      <p className="subtitle">Competencias que cubrimos</p>
+      <div className="calendar_ctn">
+        {months.map((row, index) => (
+          <CalendarRow day={row} key={index}>
+            {events.map((event, index2) => {
+              if (epm[index] === moment.unix(event.since).format("MM-YYYY")) {
+                return <CalendarCard event={event} key={index2} />;
+              }
+            })}
+          </CalendarRow>
         ))}
-        <p className="th">Puntos</p>
-        <p className="th">Porcentaje</p>
       </div>
-
-      {info.map((item, index) => (
-        <div className="table_ctn" key={index}>
-          <p className="th">{index + 1}</p>
-          <p className="th">{item.name}</p>
-          <p className="th">{item.box}</p>
-          {item.wods.map((wod, indexW) => (
-            <p className="th" key={indexW}>
-              {event.categories[categ].wods[indexW] &&
-              event.categories[categ].wods[indexW].wod_type === 2 ? (
-                <>
-                  {wod.amount !== 0 &&
-                  wod.amount <
-                    event.categories[categ].wods[indexW].amount_cap ? (
-                    <>
-                      {`CAPS+ ${
-                        event.categories[categ].wods[indexW].amount_cap -
-                        wod.amount
-                      } `}
-                    </>
-                  ) : (
-                    <>
-                      {wod.amount} {wod.amount_type}
-                    </>
-                  )}
-                </>
-              ) : (
-                <>
-                  {wod.amount} {wod.amount_type}
-                </>
-              )}
-            </p>
-          ))}
-          <p className="th">{JSON.stringify(item.points)}</p>
-          <p className="th">{item.percent}%</p>
-        </div>
-      ))}
     </div>
   );
 };
 
-const order = (data, event, categ) => {
-  let teams = [];
-  data.forEach((item) => {
-    teams.push(item);
-  });
-
-  teams.forEach((team) => {
-    team.points = 0;
-    team.percent = 0;
-  });
-
-  let wl = event.categories[categ].wods.length;
-  let ppw = Math.floor(100 / teams.length);
-  let wodsData = [];
-
-  ////// PUSH DATA TO WODS DATA (Re arrange)
-  for (let i = 0; i < wl; i++) {
-    wodsData.push([]);
-    teams.forEach((team) => {
-      wodsData[i].push({
-        name: team.name,
-        amount: team.wods[i]?.amount ? team.wods[i].amount : 0,
-        time: team.wods[i]?.time ? team.wods[i].time : null,
-        amount_type: team.wods[i]?.amount_type
-          ? team.wods[i].amount_type
-          : null,
-        tiebrake: team.wods[i]?.tiebrake ? team.wods[i].tiebrake : 0,
-        percent: team.wods[i]?.percent ? team.wods[i].percent : 0,
-      });
-    });
-  }
-
-  // console.log(wodsData)
-
-  // let result;
-  ////// APPLY POINTS AND PERCENT
-  wodsData.forEach((wod, windex) => {
-    let ogWod = event.categories[categ].wods[windex];
-    if (ogWod.wod_type === 1) {
-      AMRAP_points(ogWod, wod, teams.length);
-    } else if (ogWod.wod_type === 2) {
-      FORTIME_points(ogWod, wod, teams.length);
-    } else if (ogWod.wod_type === 3) {
-      RM_points(ogWod, wod, teams.length);
-    }
-  });
-
-  // console.log(wodsData)
-
-  teams.forEach((team) => {
-    wodsData.forEach((wod) => {
-      let fi = wod.findIndex((elm) => elm.name === team.name);
-      if (team.percent === undefined) team.percent = 0;
-      if (wod[fi].points !== undefined) {
-        team.points += wod[fi].points;
-        team.percent += wod[fi].percent;
-      }
-    });
-    // console.log(team)
-  });
-  teams.forEach((team) => {
-    team.percent = parseFloat((team.percent / wl).toFixed(3));
-  });
-
-  teams.sort((a, b) => b.percent - a.percent);
-
-  // console.log(teams);
-  return teams;
-  // return [];
+const CalendarRow = ({ day, children }) => {
+  return (
+    <div className="calendar_row">
+      <h6>{day}</h6>
+      <hr />
+      <div className="calendar_cards_ctn">
+        {children}
+        <div className="test"></div>
+      </div>
+    </div>
+  );
 };
 
-const w_o_d = (num) => {
-  switch (num) {
-    case 1:
-      return "AMRAP";
-    case 2:
-      return "FORTIME";
-    case 3:
-      return "RM";
-      break;
-
-    default:
-      break;
-  }
+const convertDateIM = (date) => moment.unix(date).format("DD");
+const CalendarCard = ({ event }) => {
+  return (
+    <HashLink className="calendar_card" to={`/resultados/${event?._id}#top`} >
+      <div className="cc_top">
+        <h1 className="cc_title">{event.name}</h1>
+        <h1 className="cc_categ">{event.categories[0]?.name}</h1>
+        <h1 className="cc_date">{event.categories[1]?.name}</h1>
+      </div>
+      <div className="cc_bot">
+        <h1>Ver Tabla</h1>
+        <p className="cc_date2" >{convertDateIM(event.since)} - {convertDateIM(event.until)}</p>
+      </div>
+    </HashLink>
+  );
 };
-
-const AMRAP_points = async (ogWod, wod, tl) => {
-  let ppw = Math.floor(100 / tl);
-  wod.sort((a, b) => {
-    if (a.amount < b.amount) return 1;
-    else if (a.amount > b.amount) return -1;
-    else if (a.amount === b.amount) {
-      if (a.time > b.time) return 1;
-      else if (a.time < b.time) return -1;
-      else if (a.time === b.time) {
-        if (a.tiebrake > b.tiebrake) return 1;
-        else if (a.tiebrake < b.tiebrake) return -1;
-        else if (a.tiebrake === b.tiebrake) return 0;
-      }
-    }
-  });
-
-  wod.forEach((team, index) => {
-    if (team.amount !== 0) {
-      if (index === 0) {
-        team.percent = 100;
-        team.points = 100;
-      } else {
-        if (
-          team.amount === wod[index - 1].amount &&
-          team.time === wod[index - 1].time &&
-          team.tiebrake === wod[index - 1].tiebrake
-        ) {
-          team.points = wod[index - 1].points;
-          team.percent = wod[index - 1].percent;
-        } else if (team.amount === wod[index - 1].amount) {
-          team.points = wod[index - 1].points;
-          team.percent = wod[index - 1].percent - 10 / tl;
-        } else {
-          team.percent = (team.amount * 100) / wod[0].amount;
-          team.points = ppw * (tl - index);
-        }
-      }
-    }
-  });
-
-  // console.log(wod);
-};
-const FORTIME_points = (ogWod, wod, tl) => {
-  let ppw = Math.floor(100 / tl);
-  wod.sort((a, b) => {
-    if (a.amount < b.amount) return 1;
-    else if (a.amount > b.amount) return -1;
-    else if (a.amount === b.amount) {
-      if (a.time > b.time) return 1;
-      else if (a.time < b.time) return -1;
-      else if (a.time === b.time) {
-        if (a.tiebrake > b.tiebrake) return 1;
-        else if (a.tiebrake < b.tiebrake) return -1;
-        else if (a.tiebrake === b.tiebrake) return 0;
-      }
-    }
-  });
-
-  wod.forEach((team, index) => {
-    // console.log(wod)
-    if (team.amount !== 0) {
-      // team.percent = (team.amount * 100) / ogWod.amount_cap
-      // console.log(team.percent + team.name)
-      if (index === 0) {
-        team.percent = 100;
-        team.points = 100;
-      } else {
-        if (
-          team.amount === wod[index - 1].amount &&
-          team.time === wod[index - 1].time &&
-          team.tiebrake === wod[index - 1].tiebrake
-        ) {
-          team.points = wod[index - 1].points;
-          team.percent = wod[index - 1].percent;
-        } else if (team.amount === wod[index - 1].amount) {
-          team.points = wod[index - 1].points;
-          team.percent = wod[index - 1].percent - 10 / tl;
-        } else {
-          team.percent = ppw * (tl - index);
-          team.points = ppw * (tl - index);
-        }
-      }
-
-      if (team.amount < ogWod.amount_cap) {
-        team.amount_type = "Caps +";
-        team.amount = ogWod.amount_cap - team.amount;
-      }
-    }
-    console.log(team.percent + team.name);
-    // console.log(team)
-  });
-};
-const RM_points = (ogWod, wod, tl) => {
-  let ppw = Math.floor(100 / tl);
-  wod.sort((a, b) => {
-    if (a.amount < b.amount) return 1;
-    else if (a.amount > b.amount) return -1;
-    else if (a.amount === b.amount) {
-      if (a.time > b.time) return 1;
-      else if (a.time < b.time) return -1;
-      else if (a.time === b.time) {
-        if (a.tiebrake > b.tiebrake) return 1;
-        else if (a.tiebrake < b.tiebrake) return -1;
-        else if (a.tiebrake === b.tiebrake) return 0;
-      }
-    }
-  });
-
-  wod.forEach((team, index) => {
-    if (team.amount !== 0) {
-      if (index === 0) {
-        team.percent = 100;
-        team.points = 100;
-      } else {
-        if (
-          team.amount === wod[index - 1].amount &&
-          team.time === wod[index - 1].time &&
-          team.tiebrake === wod[index - 1].tiebrake
-        ) {
-          team.points = wod[index - 1].points;
-          team.percent = wod[index - 1].percent;
-        } else if (team.amount === wod[index - 1].amount) {
-          team.points = wod[index - 1].points;
-          team.percent = wod[index - 1].percent - 10 / tl;
-        } else {
-          team.percent = ppw * (tl - index);
-          team.points = ppw * (tl - index);
-          // console.log(team)
-        }
-      }
-    }
-    // console.log(team.percent +" "+ team.name)
-  });
-};
-
-/*
-  Generalmente el timepo se caba antes que las reps
-  Por ende, evaluar reps o peso antes del tiempo
-
-  Añadir las fehcas
-
-  Amrap (Al registrar : Tiempo y Reps) 
-     en 10 mins tienes q hacer la maxima repeticion de rondas 
-     en X{Tiempo} hicieron Y{Reps}
-  Fortime (Al registrar: Tiempo y Reps)
-    en 10 mins terminar todo
-    en X{Tiempo} hicieron Y{Reps} si faltaron, se colocan CAPS+
-    (En caso de que los equipos tengan 100% de rendimiento, si terminan todo, alli se evalua el tiempo y luego el tiebrake)
-  RM (Al registrar: peso o repeticiones) 
-    Maximo peso en 10 mins 
-    X{Peso/Reps} en Y{Tiempo} (el tiempo se evalua en el wod para saber el rendimiento)
-
-    Evaluar tiempo en cuanto a segundos no a numero, ya que menor tiempo mayor prioridad
-
-    Actualizar wods, categorias, y usuarios
-    Los usuarios no pueden ver los wods
-
-
-    Restar porcentaje = a cantidad de equipos , 100 / cantidad de equipos
-
-
-
-
-    //// Ejemplo de Circuito
-    218 time cap
-
-    pen 1min timecap 18+1 214reps 0.12 + 214 (por aqui va)
-
-    207 reps sin pen 
-
-    201 sin pen
-
-    Ultimo wods con penalizacion, el ejercicio va a ocupar un porcentaje en base a todos los ejercicios, si hay penalizacion, se va a calculcar el ejercicio que se penaliza por la cantida de reps
-*/

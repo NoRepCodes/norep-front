@@ -1,0 +1,228 @@
+@use 'var' as v
+
+.table
+  display: flex
+  flex-direction: column
+  width: 100%
+  height: 60vh
+  overflow: auto
+  box-sizing: border-box
+  border-right: 1px solid #181818
+  position: relative
+
+  .table_header
+    display: flex
+    flex-direction: row
+    min-height: 4em
+    box-sizing: border-box
+    position: sticky
+    top: 0
+    background-color: #fff
+    z-index: 1000
+
+    .header_names
+      min-width: 100%
+      height: 100%
+      display: flex
+      flex-direction: row
+      gap: 2em
+      z-index: 500
+      padding: 0px 1.5em
+      box-sizing: border-box
+      border-bottom: 1px solid #181818
+      background-color: #fff
+
+    .header_points
+      z-index: 600
+      .line
+        height: 50%
+        width: 1px
+        background-color: v.$fourth
+      h1
+        font-size: .9em
+      .btn_abs
+        position: absolute
+        left: -1.25rem
+        width: calc(2.5rem - 1px)
+        height: calc(2.5rem - 1px)
+        border-radius: 100%
+        display: flex
+        align-items: center
+        justify-content: center
+        box-sizing: border-box
+        border: 1px solid v.$fourth
+        background-color: #fff
+
+.th_cell,.tu_cell
+  // width: 120px
+  min-width: 135px
+  box-sizing: border-box
+  display: flex
+  height: 100%
+  align-items: center
+  justify-content: center
+  h1
+    font-size: .8em
+    font-weight: bold
+    text-align: center
+    width: 100%
+
+.th_pos,.tu_pos
+  width: auto !important
+  min-width: 70px !important
+.th_name,.tu_name
+  min-width: 150px
+  width: 150px
+  h1
+    text-align: left !important
+
+.tu_pos,.tu_name
+  display: flex
+  align-items: center
+  h1
+    font-size: .8em
+.tu_pos
+  justify-content: center
+
+.tu_cell
+  flex-direction: column
+  gap: .3em
+  .pos
+    font-weight: bold
+  h1
+    font-weight: normal
+    text-align: center
+
+.table_user
+  display: flex
+  flex-direction: row
+  min-height: 4em
+  height: 4em
+  padding-left: 1.5em
+  box-sizing: border-box
+  width: auto
+  .tu_ctn
+    min-width: 100%
+    gap: 2em
+    position: relative
+    height: 100%
+    box-sizing: border-box
+    border-bottom: 1px solid #181818
+    display: flex
+    flex-direction: row
+    z-index: 200
+    padding-right: 1.5em
+
+.tu_points,.header_points
+  min-width: 220px
+  width: 220px
+  height: auto
+  display: flex
+  flex-direction: row
+  justify-content: space-evenly
+  align-items: center
+  position: sticky
+  right: 0px
+  border-left: 1px solid #181818
+  border-bottom: 1px solid #181818
+  background-color: #fff
+  z-index: 400
+  h1
+    font-size: .8em
+    width: 50%
+    text-align: center
+
+.no_b
+  border-bottom: 1px solid #eeeeee00 !important
+
+// .rotate
+//   transform: rotate(180deg)
+
+@media screen and (width < 1000px)
+  .table
+    border-left: 1px solid #181818
+    border-right: 1px solid #181818
+    border-bottom: 1px solid #181818
+
+    .table_header
+      min-height: 3em
+      .header_names
+        padding: 0px .3em
+        gap: 1em
+        min-width: calc( 100% + 100px )
+      .header_points
+        width: 100px
+        min-width: 100px
+        h1
+          font-size: .4em
+          font-weight: bold
+        .line
+          background-color: #18181866
+
+  .th_cell,.tu_cell
+    min-width: 50px
+    h1
+      font-size: .4em
+
+  .th_name,.tu_name
+    width: 60px
+    min-width: 60px
+
+  .th_pos,.tu_pos
+    min-width: 50px !important
+    width: 50px !important
+
+  .table_user
+    padding-left: .3em
+    height: 3em
+    min-height: 3em
+    min-width: calc( 100% + 100px )
+    .tu_ctn
+      gap: 1em
+      padding-right: .3em
+    .tu_pos,.tu_name
+      font-size: .6em
+
+  .tu_points
+    width: 100px
+    min-width: 100px
+    h1
+      font-size: .4em
+      font-weight: bold
+      .line
+        background-color: #18181866
+
+//   .header_pa
+//     padding-left: 0em !important
+
+//   .table_user
+//     padding: 0px .5em
+
+//   .tu_cell,.tu_cell,.th_cell,.tu_name
+//     h1
+//       font-size: 10px !important
+
+//   .th_cell,.tu_cell
+//     min-width: 0px !important
+//     width: 80px !important
+
+//   .tu_name,.th_name
+//     width: 120px  !important
+
+//   .header_points
+//     width: 150px !important
+//     h1
+//       font-size: 12px !important
+//   .header_wods
+//     width: calc(100% - 150px) !important
+
+//   .tu_points
+//     width: calc(150px - .5em) !important
+
+//   .tu_points_pa 
+//     width: calc( 100% + .5em ) !important
+//   .tu_ctn
+//     width: calc(100% - calc(149px - .5em)) !important
+
+//   .btn_abs
+//     display: none !important

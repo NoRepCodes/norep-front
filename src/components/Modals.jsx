@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import "../sass/modals.sass";
+import "../sass/table.sass";
 
 const ModalHeader = ({ title = "", close }) => {
   return (
