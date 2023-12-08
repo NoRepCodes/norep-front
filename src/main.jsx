@@ -5,6 +5,7 @@ import { getEventsHome } from "./api/events.api";
 import { Context } from "./components/Context";
 import { Header } from "./components/Header";
 import "./index.css";
+import { AdminLogin } from "./pages/AdminLogin";
 import { Events } from "./pages/Events";
 import Home from "./pages/Home";
 import { Results } from "./pages/Results";
@@ -43,11 +44,16 @@ const router = createBrowserRouter([
         path: "resultados/:_id",
         element: <Results />,
       },
+      {
+        path: "admin",
+        element: <AdminLogin />,
+      },
     ],
   },
 ]);
 
 const App = () => {
+  const [admin, setAdmin] = useState(false)
   const [events, setEvents] = useState([]);
   const [time, setTime] = useState(0);
   useEffect(() => {
@@ -61,7 +67,7 @@ const App = () => {
   }, []);
 
   return (
-    <Context.Provider value={{ events, time }}>
+    <Context.Provider value={{ events, time,admin, setAdmin,setEvents }}>
       <React.StrictMode>
         <RouterProvider router={router} />
       </React.StrictMode>

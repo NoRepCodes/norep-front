@@ -9,14 +9,33 @@ import { Banner } from "../components/Banner";
 import { Context } from "../components/Context";
 import { findTeams } from "../api/events.api";
 import moment from "moment";
+import {
+  EditResultsModal,
+  EditTeamsModal,
+  EditWodsModal,
+} from "../components/Modals";
 
 export const Results = () => {
   let { _id } = useParams();
-  const { events } = useContext(Context);
+  const { events, setEvents, admin } = useContext(Context);
   const [event, setEvent] = useState(null);
   const [categ, setCateg] = useState(1);
   const [teams, setTeams] = useState(null);
   const [input, setInput] = useState("");
+
+  const [wodsModal, setWodsModal] = useState(false);
+  const toggleWodsM = () => {
+    setWodsModal(!wodsModal);
+  };
+  const [resuModal, setResuModal] = useState(false);
+  const toggleResuM = () => {
+    setResuModal(!resuModal);
+  };
+
+  const [teamModal, setTeamModal] = useState(false);
+  const toggleTeamModal = () => {
+    setTeamModal(!teamModal);
+  };
 
   useEffect(() => {
     if (events && _id) {
@@ -42,16 +61,49 @@ export const Results = () => {
     // console.log(event)
     // console.log(categ)
     // console.log(state);
+    // console.log(teams)
   };
+
+  if (event === null) return <></>;
 
   return (
     <>
+      {wodsModal && (
+        <EditWodsModal
+          close={toggleWodsM}
+          {...{ event, categ, setEvents, events }}
+        />
+      )}
+      {resuModal && (
+        <EditResultsModal
+          close={toggleResuM}
+          {...{ event, categ, teams, setTeams }}
+        />
+      )}
+      {teamModal && (
+        <EditTeamsModal close={toggleTeamModal} {...{ event, categ,set:setTeams }} />
+      )}
       <div className="results" onClick={click} id="top">
-        <Link className="back_btn_ctn" to="/eventos">
-          <h1>
-            Regresar a <span>EVENTOS</span>
-          </h1>
-        </Link>
+        <div className="btns_ctn">
+          <Link className="back_btn_ctn" to="/eventos">
+            <h1>
+              Regresar a <span>EVENTOS</span>
+            </h1>
+          </Link>
+          {admin && (
+            <>
+              <div className="wods_btn" onClick={toggleWodsM}>
+                <h1>Editar Wods</h1>
+              </div>
+              <div className="teams_btn" onClick={toggleTeamModal}>
+                <h1>Añadir Equipos</h1>
+              </div>
+              <div className="results_btn" onClick={toggleResuM}>
+                <h1>Editar Resultados</h1>
+              </div>
+            </>
+          )}
+        </div>
         <div className="results_ctn">
           <ResultAside {...{ input, setInput, event, categ, setCateg }} />
           <ResultInfo {...{ input, event, categ, setCateg, teams, setInput }} />
@@ -74,7 +126,8 @@ const ResultAside = ({ event, categ, setCateg, input, setInput }) => {
   return (
     <div className="results_aside">
       <div className="ra_event">
-        <img src={eventimg} alt="" />
+        <img src={event?.image_url} alt="portada" />
+        {/* <img src={eventimg} alt="" /> */}
         <div className="categ_ctn">
           <h6>CATEGORIAS</h6>
           <div className="categ_dropdown" onClick={toggle}>
@@ -202,9 +255,9 @@ const Table = ({ input, event, categ, teams }) => {
 
   useEffect(() => {
     if (teams) {
-      (async ()=>{
+      (async () => {
         setInfo(await order(teams, event, categ));
-      })()
+      })();
     }
   }, [teams, categ]);
 
@@ -395,7 +448,6 @@ const order = async (data, event, categ) => {
   let ppw = Math.floor(100 / teams.length);
   let wodsData = [];
 
-
   ////// PUSH DATA TO WODS DATA (Re arrange)
   for (let i = 0; i < wl; i++) {
     wodsData.push([]);
@@ -429,7 +481,7 @@ const order = async (data, event, categ) => {
   teams.forEach((team) => {
     wodsData.forEach((wod, windex) => {
       let fi = wod.findIndex((elm) => elm.name === team.name);
-      if (team.percent === undefined ) team.percent = 0;
+      if (team.percent === undefined) team.percent = 0;
       if (wod[fi].points !== undefined) {
         team.points += wod[fi].points;
         team.percent += wod[fi].percent;
@@ -438,10 +490,15 @@ const order = async (data, event, categ) => {
     });
   });
   teams.forEach((team) => {
-    team.percent = parseFloat((team.percent / wl).toFixed(3));
+    let perc = parseFloat((team.percent / wl).toFixed(3))
+    if(Number.isNaN(perc)){
+      team.percent = 0
+    }else{
+      team.percent = perc
+    }
   });
 
-  if(teams[0].percent !== 0){
+  if (teams[0]?.percent !== 0) {
     TieBreaker(teams);
   }
   teams.forEach((team) => {
@@ -618,7 +675,7 @@ const TieBreaker = (teams) => {
   teams.forEach((team) => {
     team.tiebrake_total = 0;
     team.wods.forEach((wod) => {
-      if(wod.tiebrake !== undefined){
+      if (wod.tiebrake !== undefined) {
         team.tiebrake_total += wod.tiebrake;
       }
     });
@@ -642,9 +699,11 @@ const TieBreaker = (teams) => {
           (100 -
             (teams[index - 1].tiebrake_total * 100) / team.tiebrake_total) /
           teams.length;
-        team.percent = parseFloat((team.percent - formula).toFixed(3));
-        // console.log(teams[index - 1].tiebrake_total)
-        // console.log(team.tiebrake_total)
+        if(Number.isNaN(formula)){
+          team.percent = 0
+        }else{
+          team.percent = parseFloat((team.percent - formula).toFixed(3));
+        }
       }
     }
   });

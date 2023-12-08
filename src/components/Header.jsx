@@ -1,19 +1,27 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, Outlet, useHref } from "react-router-dom";
 import "../sass/header.sass";
+import "../sass/modals.sass";
 import logo from "../images/white.png";
 import { Footer } from "./Footer";
+import { Context } from "./Context";
+import { CreateEventModal } from "./Modals";
 
 export const Header = ({ children }) => {
+  const { admin,setEvents } = useContext(Context);
   const href = useHref();
-  const [openMenu, setOpenMenu] = useState(false);
+  const [openMenu, setOpenMenu] = useState(true);
   const toggleMenu = () => {
     setOpenMenu(!openMenu);
   };
+
+  const [openCreate, setOpenCreate] = useState(false)
+  const toggleModal = ()=> setOpenCreate(!openCreate)
   // console.log(href);
 
   return (
     <div className="page_ctn">
+      {openCreate && <CreateEventModal close={toggleModal} setEvents={setEvents} />}
       <div className="header_ctn">
         <Link className="logo_ctn" to="/">
           <img src={logo} alt="logo" />
@@ -36,7 +44,26 @@ export const Header = ({ children }) => {
             {href === "/" && <div className="link_active" />}
           </div>
         </Link>
-
+        {admin && (
+          <div className="btn_create" onClick={toggleModal} >
+            <svg
+              clipRule="evenodd"
+              fillRule="evenodd"
+              strokeLinejoin="round"
+              strokeMiterlimit="2"
+              width={24}
+              height={24}
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m11 11h-7.25c-.414 0-.75.336-.75.75s.336.75.75.75h7.25v7.25c0 .414.336.75.75.75s.75-.336.75-.75v-7.25h7.25c.414 0 .75-.336.75-.75s-.336-.75-.75-.75h-7.25v-7.25c0-.414-.336-.75-.75-.75s-.75.336-.75.75z"
+                fillRule="nonzero"
+              />
+            </svg>
+            <h6>CREAR EVENTO</h6>
+          </div>
+        )}
         {/* <div className="searchbar">
           <p>Buscar...</p>
         </div> */}
@@ -53,19 +80,19 @@ export const Header = ({ children }) => {
       </div>
       {openMenu && (
         <div className="hamb_dropdown">
-        <Link to="eventos">
-          <div className="link" onClick={toggleMenu} >
-            <h6>EVENTOS</h6>
-            {href === "/eventos" && <div className="link_active" />}
-          </div>
-        </Link>
-        <Link to="/">
-          <div className="link" onClick={toggleMenu} >
-            <h6>NO REP</h6>
-            {href === "/" && <div className="link_active" />}
-          </div>
-        </Link>
-      </div>
+          <Link to="eventos">
+            <div className="link" onClick={toggleMenu}>
+              <h6>EVENTOS</h6>
+              {href === "/eventos" && <div className="link_active" />}
+            </div>
+          </Link>
+          <Link to="/">
+            <div className="link" onClick={toggleMenu}>
+              <h6>NO REP</h6>
+              {href === "/" && <div className="link_active" />}
+            </div>
+          </Link>
+        </div>
       )}
       <Outlet />
       {children}

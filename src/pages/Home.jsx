@@ -97,7 +97,8 @@ const convertDate = (date) => moment.unix(date).format("DD, MMM");
 export const EventCard = ({ event = offevent }) => {
   return (
     <HashLink className="event_card" to={`/resultados/${event._id}#top`} >
-      <img src={eventcard} alt="" />
+      {/* <img src={eventcard} alt="" /> */}
+      <img src={event.image_url} alt="portada" />
       <div className="ec_info">
         <h1 className="ec_date">
           {convertDate(event.since)} - {convertDate(event.until)}
