@@ -14,19 +14,30 @@
   align-self: center
   box-sizing: border-box
 
-.back_btn_ctn
-  background-color: v.$fourth
-  width: 13em
-  min-height: 3em
+.btns_ctn
   display: flex
-  align-items: center
-  justify-content: center
-  h1
-    color: #eee
-    font-size: .9em
-  span
-    color: v.$primary
-    text-decoration: underline
+  flex-direction: row
+  gap: 2em
+  .back_btn_ctn,.wods_btn,.results_btn,.teams_btn
+    background-color: v.$fourth
+    // width: 13em
+    padding: 0px 2em
+    min-height: 3em
+    display: flex
+    align-items: center
+    justify-content: center
+    cursor: pointer
+    h1
+      color: #eee
+      font-size: .9em
+    span
+      color: v.$primary
+      text-decoration: underline
+
+  .wods_btn
+    margin-left: auto
+    // width: 10em
+
 
 .results_ctn
   // border: 1px solid v.$fourth
@@ -156,6 +167,7 @@
 
       .ri_date
         color: lighten(v.$fourth,60 )
+
 
 // @media screen and (width < 1360px)
 //   .results_aside
