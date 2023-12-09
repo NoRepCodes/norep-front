@@ -950,7 +950,7 @@ const InputsWOD = ({
           index={index}
           value={wod.time_cap}
         />
-        {wod.wod_type === 3 && (
+        {wod.wod_type === 2 && (
           <InputArray
             label={`${wod.amount_type.toUpperCase()} LIMITE`}
             update={handleReps}
@@ -958,7 +958,7 @@ const InputsWOD = ({
             value={wod.amount_cap}
           />
         )}
-        {wod.wod_type === 3 && (
+        {wod.wod_type === 2 && (
           <h5 onClick={haType}>{wod.amount_type.toUpperCase()}</h5>
         )}
       </div>
