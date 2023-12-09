@@ -13,7 +13,7 @@ export const Footer = () => {
                 <h6>NO REP</h6>
                 <HashLink to="/#NOREP" ><p>Contacto</p></HashLink>
                 <HashLink to="/#NOREP" ><p>Sobre nosotros</p></HashLink>
-                <HashLink to="/#NOREP" ><p>Instagram</p></HashLink>
+                <a href="https://www.instagram.com/team.norep" target="blank" ><p>Instagram</p></a>
             </div>
             <div className="footer_item">
                 <h6>EVENTOS</h6>

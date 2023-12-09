@@ -193,7 +193,7 @@ const ResultInfo = ({ input, event, categ, teams, setInput, setCateg }) => {
       <div className="ri_header">
         <div className="ri_header_top">
           <img src={corner} alt="corner" className="corner" />
-          <img src={eventimg} alt="banner" className="resp_ri_img" />
+          <img src={event?.image_url} alt="banner" className="resp_ri_img" />
           <h1 className="ri_title">{event?.name}</h1>
           <h1>Individuales</h1>
           <h1>2023 - Final</h1>

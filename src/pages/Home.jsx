@@ -105,6 +105,7 @@ export const EventCard = ({ event = offevent }) => {
         </h1>
         <div className="ec_info_mid">
           <h1>{event.name}</h1>
+          {/* <h1>{event.place}</h1> */}
           <h1>{event.categories[0]?.name}</h1>
           <h1>{event.categories[1]?.name}</h1>
         </div>

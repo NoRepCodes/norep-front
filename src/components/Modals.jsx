@@ -996,16 +996,23 @@ export const EditResultsModal = ({ close, event, categ, teams,setTeams }) => {
   };
 
   const click = async () => {
-    // console.log(event.categories[categ - 1].wods[windex].wod_type);
-    // console.log(teams[0].wods[0]);
     setLoad(true);
     let newList = list.map((item) => {
-      return {
-        ...item,
-        time: convTime(item.time),
-        tiebrake: convTime(item.tiebrake),
-        amount: parseInt(item.amount),
-      };
+      if(item.wod_type === 1 || item.wod_type === 2){
+        return {
+          ...item,
+          time: convTime(item.time),
+          tiebrake: convTime(item.tiebrake),
+          amount: parseInt(item.amount),
+        };
+      }else{
+        return {
+          ...item,
+          time: convTime(item.time),
+          tiebrake: parseInt(item.tiebrake),
+          amount: parseInt(item.amount),
+        };
+      }
     });
     const {status,data} = await updateResults(newList,windex)
     setLoad(false)
@@ -1026,17 +1033,24 @@ export const EditResultsModal = ({ close, event, categ, teams,setTeams }) => {
       let infoTeams = aux.map((t, i) => {
         if (t.wods[windex].amount === undefined) {
           let at = selecWod.amount_type;
-          if(wt === 1 || wt === 3){
+          if(wt === 1 ){
             return { ...blankResults, _id: t._id, name: t.name, amount_type: at,tiebrake:'00:00:00',time:convSeconds(selecWod.time_cap),wt }
           }
           else if (wt===2){
             return { ...blankResults, _id: t._id, name: t.name, amount_type: at,tiebrake:'00:00:00',time:'00:00:00',wt };
           }
+          else if (wt===3){
+            return { ...blankResults, _id: t._id, name: t.name, amount_type: at,tiebrake:0,time:convSeconds(selecWod.time_cap),wt }
+          }
         } else {
-          return { ...t.wods[windex], _id: t._id, name: t.name,wt,tiebrake:convSeconds(t.wods[windex].tiebrake),time:convSeconds(t.wods[windex].time)};
+          if(wt===1 || wt===2){
+            return { ...t.wods[windex], _id: t._id, name: t.name,wt,tiebrake:convSeconds(t.wods[windex].tiebrake),time:convSeconds(t.wods[windex].time)};
+          }else if (wt === 3){
+            return { ...t.wods[windex], _id: t._id, name: t.name,wt,tiebrake:t.wods[windex].tiebrake,time:convSeconds(t.wods[windex].time)};
+          }
         }
       });
-      console.log(infoTeams);
+      // console.log(infoTeams);
       setList(infoTeams);
     }
   }, [windex]);
@@ -1112,6 +1126,7 @@ const UsersList = ({ event, categ, windex,list, setList }) => {
     setList(aux);
   }
   const hTiebrake = (value,index)=>{
+    // console.log(value)
     const aux = list.map((t, i) => {
       if (i === index) return { ...t, tiebrake: value };
       else return t;
@@ -1148,7 +1163,8 @@ const RU_Input = ({ user, wod_type, windex, event, categ,hReps,hTime,hTiebrake,i
       <div className="ru_inputs">
         <InputArray label="REPS" value={user.amount} update={hReps} index={index} />
         {wod_type === 2 && <InputTime label="TIEMPO" value={user.time} update={hTime} index={index} />}
-        <InputTime label="TIEBRAKE" value={user.tiebrake} update={hTiebrake} index={index} />
+        {(wod_type === 1 || wod_type === 2) && (<InputTime label="TIEBRAKE" value={user.tiebrake} update={hTiebrake} index={index} />)}
+        {wod_type === 3 && (<InputArray label="TIEBRAKE" value={user.tiebrake} update={hTiebrake} index={index} />)}
       </div>
     </div>
   );
