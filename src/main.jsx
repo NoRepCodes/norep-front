@@ -60,7 +60,8 @@ const App = () => {
     (async () => {
       const { status, data } = await getEventsHome();
       if (status === 200) {
-        setEvents(data[0]);
+      //setEvents(data[0]);
+        setEvents([]);
         setTime(data[1]);
       }
     })();
