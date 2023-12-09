@@ -23,7 +23,7 @@ export const Header = ({ children }) => {
     <div className="page_ctn">
       {openCreate && <CreateEventModal close={toggleModal} setEvents={setEvents} />}
       <div className="header_ctn">
-        <Link className="logo_ctn" to="/admin">
+        <Link className="logo_ctn" to="/">
           <img src={logo} alt="logo" />
         </Link>
         {/* <Link to="resultados">

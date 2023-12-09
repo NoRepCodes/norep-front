@@ -27,7 +27,7 @@ export const Banner = () => {
               return -1;
             else return 1;
           });
-          console.log(aux)
+          // console.log(aux)
           setLatest(aux[0]);
         }
       })();
