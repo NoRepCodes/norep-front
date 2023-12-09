@@ -266,7 +266,9 @@ const Table = ({ input, event, categ, teams }) => {
   }, [teams, categ]);
 
   const toggleRight = () => {
-    console.log(info)
+    // console.log(info[0].wods[0])
+    // console.log(info[1].wods[0])
+    // console.log(info)
     // setRight(!right);
   };
 
