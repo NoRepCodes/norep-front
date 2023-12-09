@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Banner } from "../components/Banner";
 import eventcard from "../images/EC.png";
 // import heroimg from "../images/h1.png";
-import heroimg from "../images/hero.png";
+import heroimg from "../images/hero.jpg";
 import "../sass/home.sass";
 import "../sass/calendar.sass";
 import { getEventsHome } from "../api/events.api";
