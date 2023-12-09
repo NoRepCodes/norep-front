@@ -448,7 +448,7 @@ const InputRM = ({ set, index }) => {
     </div>
   );
 };
-
+//// CREATE EVENT MODAL
 export const CreateEventModal = ({ close, setEvents }) => {
   const [image, setImage] = useState("");
   const [load, setLoad] = useState(false);
@@ -746,6 +746,8 @@ const blankwod = {
   time_cap: '00:00:00',
   wod_type: 1,
 };
+
+//// EDIT WODS MODAL
 export const EditWodsModal = ({ close, event, categ,setEvents,events }) => {
   const [load, setLoad] = useState(false);
   const [wods, setWods] = useState(false);
@@ -787,7 +789,6 @@ export const EditWodsModal = ({ close, event, categ,setEvents,events }) => {
       setEvents(newEvents)
       // console.log(data)
       close();
-      console.log("YAY");
     }
   };
 
@@ -962,7 +963,7 @@ const InputsWOD = ({
             value={wod.amount_cap}
           />
         )}
-        {wod.wod_type === 2 && (
+        {(wod.wod_type === 2 || wod.wod_type === 3) && (
           <h5 onClick={haType}>{wod.amount_type.toUpperCase()}</h5>
         )}
       </div>
@@ -984,6 +985,7 @@ const rTypeName = (num) => {
 const convSeconds = (s)=>moment.utc(s * 1000).format("HH:mm:ss")
 const convTime = (s)=>moment.duration(s, "HH:mm:ss").asSeconds()
 
+//// EDITS RESULTS MODAL
 export const EditResultsModal = ({ close, event, categ, teams,setTeams }) => {
   const [windex, setWindex] = useState(null);
   const [load, setLoad] = useState(false);

@@ -3,7 +3,7 @@ import "../sass/results.sass";
 import "../sass/tables.sass";
 import eventimg from "../images/EC.png";
 import corner from "../images/corner.png";
-import arw from '../images/arw.png'
+import arw from "../images/arw.png";
 import { Link, useParams } from "react-router-dom";
 import { useRef } from "react";
 import { Banner } from "../components/Banner";
@@ -82,7 +82,10 @@ export const Results = () => {
         />
       )}
       {teamModal && (
-        <EditTeamsModal close={toggleTeamModal} {...{ event, categ,set:setTeams }} />
+        <EditTeamsModal
+          close={toggleTeamModal}
+          {...{ event, categ, set: setTeams }}
+        />
       )}
       <div className="results" onClick={click} id="top">
         <div className="btns_ctn">
@@ -263,7 +266,8 @@ const Table = ({ input, event, categ, teams }) => {
   }, [teams, categ]);
 
   const toggleRight = () => {
-    setRight(!right);
+    console.log(info)
+    // setRight(!right);
   };
 
   return (
@@ -303,7 +307,8 @@ const TableHeader = ({ right, toggleRight, event, categ }) => {
   const ref2 = useRef(null);
 
   const wtf = () => {
-    console.log(event.categories[categ - 1]);
+    toggleRight()
+    // console.log(event.categories[categ - 1]);
   };
 
   // useEffect(() => {
@@ -350,7 +355,7 @@ const TableHeader = ({ right, toggleRight, event, categ }) => {
     </div>
   );
 };
-
+const convSeconds = (s)=>moment.utc(s * 1000).format("HH:mm:ss")
 const Arrow = ({ click, right }) => {
   return (
     <div className="btn_abs" onClick={click}>
@@ -373,10 +378,8 @@ const Arrow = ({ click, right }) => {
     </div>
   );
 };
-
+/// TABLE USER
 const TableUser = ({ user, last = false, right, index }) => {
-  // console.log(user)
-  // const { pos, name, wod, wod_pos } = user;
   return (
     <div className="table_user">
       <div className={`tu_ctn ${last && "no_b"}`}>
@@ -388,8 +391,23 @@ const TableUser = ({ user, last = false, right, index }) => {
         </div>
         {user.wods.map((wod, index) => (
           <div className="tu_cell" key={index}>
+            {wod.amount === 0 ?
+            <>
+              <h1 className="pos"> </h1>
+              <h1 > </h1>
+            </>
+             :
+            <>
             <h1 className="pos">{pos(wod?.pos)}</h1>
-            <h1>{wod.amount && `(${wod?.amount} ${wod?.amount_type})`}</h1>
+            <h1>{wod.amount && (wod.wod_type === 1 || wod.wod_type === 3) && `(${wod?.amount} ${wod?.amount_type})`}</h1>
+            {wod.amount && wod.wod_type === 2 &&(
+              <>
+              {wod.time <= wod.time_cap ? <h1>{`(${convSeconds(wod?.time)})`}</h1> :<h1>{`(CAP+${wod.amount_cap - wod.amount})`}</h1>}
+              </>
+            )}
+            </>
+            }
+            {/* <h1>{wod.amount && wod.wod_type === 2 && `(${convSeconds(wod?.time)})`}</h1> */}
           </div>
         ))}
       </div>
@@ -477,25 +495,35 @@ const order = async (data, event, categ) => {
       RM_points(ogWod, wod, teams.length);
     }
   });
-  // console.log(teams);
-  // console.log(wodsData)
+  /// AMOUNT TYPES
   teams.forEach((team) => {
     wodsData.forEach((wod, windex) => {
+      let ogWod = event.categories[categ - 1].wods[windex];
       let fi = wod.findIndex((elm) => elm.name === team.name);
       if (team.percent === undefined) team.percent = 0;
       if (wod[fi].points !== undefined) {
         team.points += wod[fi].points;
         team.percent += wod[fi].percent;
         team.wods[windex].pos = wod[fi].pos;
+        team.wods[windex].amount_type = wod[fi].amount_type;
+        team.wods[windex].wod_type = ogWod.wod_type;
+        if(ogWod.wod_type === 2){
+          team.wods[windex].time_cap = ogWod.time_cap
+          team.wods[windex].amount_cap = ogWod.amount_cap
+        }
+        // if(wod[fi].amount_type === 2){
+
+        // }
+        // team.wods[windex].amount = wod[fi].amount_type;
       }
     });
   });
   teams.forEach((team) => {
-    let perc = parseFloat((team.percent / wl).toFixed(3))
-    if(Number.isNaN(perc)){
-      team.percent = 0
-    }else{
-      team.percent = perc
+    let perc = parseFloat((team.percent / wl).toFixed(3));
+    if (Number.isNaN(perc)) {
+      team.percent = 0;
+    } else {
+      team.percent = perc;
     }
   });
 
@@ -508,7 +536,6 @@ const order = async (data, event, categ) => {
       team.wods.push({});
     }
   });
-  // console.log(teams)
   return teams;
   // return [];
 };
@@ -700,9 +727,9 @@ const TieBreaker = (teams) => {
           (100 -
             (teams[index - 1].tiebrake_total * 100) / team.tiebrake_total) /
           teams.length;
-        if(Number.isNaN(formula)){
-          team.percent = 0
-        }else{
+        if (Number.isNaN(formula)) {
+          team.percent = 0;
+        } else {
           team.percent = parseFloat((team.percent - formula).toFixed(3));
         }
       }
