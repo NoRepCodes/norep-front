@@ -462,11 +462,15 @@ export const CreateEventModal = ({ close, setEvents }) => {
   const [categories, setCategories] = useState([]);
 
   const confirm = async () => {
+    setLoad(true)
     if (image && categories.length > 0) {
       const { status, data } = await createEvent(inputs, categories, image);
+      setLoad(false)
       if (status === 200) {
         setEvents(prev=>[...prev,data])
         close();
+      }else{
+        console.log(data)
       }
     }
   };
