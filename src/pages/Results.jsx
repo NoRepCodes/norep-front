@@ -404,7 +404,7 @@ const TableUser = ({ user, last = false, right, index }) => {
             <h1>{wod.amount && (wod.wod_type === 1 || wod.wod_type === 3) && `(${wod?.amount} ${wod?.amount_type})`}</h1>
             {wod.amount && wod.wod_type === 2 &&(
               <>
-              {wod.time <= wod.time_cap ? <h1>{`(${convSeconds(wod?.time)})`}</h1> :<h1>{`(CAP+${wod.amount_cap - wod.amount})`}</h1>}
+              {wod.time < wod.time_cap ? <h1>{`(${convSeconds(wod?.time)})`}</h1> :<h1>{`(CAP+${wod.amount_cap - wod.amount})`}</h1>}
               </>
             )}
             </>
