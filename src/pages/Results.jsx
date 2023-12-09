@@ -3,6 +3,7 @@ import "../sass/results.sass";
 import "../sass/tables.sass";
 import eventimg from "../images/EC.png";
 import corner from "../images/corner.png";
+import arw from '../images/arw.png'
 import { Link, useParams } from "react-router-dom";
 import { useRef } from "react";
 import { Banner } from "../components/Banner";
@@ -171,7 +172,7 @@ const ResultAside = ({ event, categ, setCateg, input, setInput }) => {
           onChange={onChangeText}
         />
       </div>
-      <img src={eventimg} alt="patrocinante" className="partner" />
+      <img src={arw} alt="patrocinante" className="partner" />
     </div>
   );
 };
