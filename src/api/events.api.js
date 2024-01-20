@@ -59,3 +59,10 @@ export const updateResults = async(teams,wod_index)=>{
         return catchError(err)
     })
 }
+export const toggleUpdating = async(event_id,state)=>{
+    return await axios.post(`${url}toggleUpdating`, { event_id,state }).then(res => {
+        return res
+    }).catch(err => {
+        return catchError(err)
+    })
+}

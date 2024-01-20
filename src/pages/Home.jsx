@@ -13,6 +13,7 @@ import { useContext } from "react";
 import { Context } from "../components/Context";
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
+import { motion } from "framer-motion";
 
 const Home = () => {
   const {events,time} = useContext(Context)
@@ -22,6 +23,11 @@ const Home = () => {
     // let aux = moment.unix(events[0].until).format("DD, MMM.")
     // console.log(time);
   };
+  
+  const variants = {
+    initial:{y:200,opacity:0},
+    open:{y:0,opacity:1},
+  }
 
   return (
     <div className="Home">
@@ -50,10 +56,11 @@ const Home = () => {
         <div className="event_cell cards_cells">
           <EventTimeText text="EN CURSO" />
           {events.map((event) => {
-            let days = moment.unix(event.until).diff(time, "days");
-            if (days <= 7 && days >= 0) {
+            // let days = moment.unix(event.until).diff(time, "days");
+            // if (days <= 7 && days >= 0) {
+            //   return <EventCard key={event._id} event={event} />;
+            // }
               return <EventCard key={event._id} event={event} />;
-            }
           })}
           {/* <EventCard />
           <EventCard /> */}
@@ -61,10 +68,11 @@ const Home = () => {
         <div className="event_cell cards_cells">
           <EventTimeText text="PRÓXIMAS" />
           {events.map((event) => {
-            let days = moment.unix(event.until).diff(time, "days");
-            if (days > 7) {
+            // let days = moment.unix(event.until).diff(time, "days");
+            // if (days > 7) {
+            //   return <EventCard key={event._id} event={event} />;
+            // }
               return <EventCard key={event._id} event={event} />;
-            }
           })}
           {/* <EventCard />
           <EventCard />
@@ -96,6 +104,7 @@ const convertDate = (date) => moment.unix(date).format("DD, MMM");
 
 export const EventCard = ({ event = offevent }) => {
   return (
+    <motion.div initial={{y:200,opacity:0}} animate={{y:0,opacity:1}} transition={{duration:.7}}  >
     <HashLink className="event_card" to={`/resultados/${event._id}#top`} >
       {/* <img src={eventcard} alt="" /> */}
       <img src={event.image_url} alt="portada" />
@@ -114,6 +123,7 @@ export const EventCard = ({ event = offevent }) => {
         </div>
       </div>
     </HashLink>
+    </motion.div>
   );
 };
 

@@ -21,7 +21,7 @@
     z-index: 1000
 
     .header_names
-      min-width: calc( 100% + 110px  )
+      min-width: calc( 100% + 110px )
       // min-width: 100% 
       height: 100%
       display: flex
@@ -105,7 +105,7 @@
   width: auto
   // min-width: 100%
   .tu_ctn
-    min-width: calc( 100% + 110px  )
+    min-width: calc( 100% + 110px )
     // min-width: 100%
     gap: 2em
     position: relative
@@ -114,7 +114,7 @@
     border-bottom: 1px solid #181818
     display: flex
     flex-direction: row
-    z-index: 200
+    // z-index: 200
     padding-right: 1.5em
 
 .tu_points,.header_points
@@ -141,6 +141,42 @@
 
 // .rotate
 //   transform: rotate(180deg)
+
+.updating_text
+  margin: auto
+
+.tie_bg
+  background-color: v.$primary
+  position: relative
+
+.tie
+  // background-color: v.$primary
+  position: absolute
+  // top: 0px
+  width: 100%
+  max-width: 200%
+  height: 100%
+  bottom: -12px
+  z-index: 500
+  box-sizing: border-box
+
+  &:hover
+    &::after
+      position: absolute
+      content: 'Ganador del Tiebrake'
+      background-color: #ffffff
+      border: 1px solid black
+      font-family: 'RobotoMono'
+      bottom: -12px
+      font-size: 12px
+      padding: 5px 8px
+      box-sizing: border-box
+      width: 14em
+      right: 0px
+  svg
+    position: absolute
+    right: 6px
+    bottom: 16px
 
 @media screen and (width < 1000px)
   .table
@@ -195,6 +231,17 @@
       font-weight: bold
       .line
         background-color: #18181866
+
+  .tie
+    &:hover
+      &::after
+        font-size: .5em
+        width: 15em
+    svg
+      display: none
+      
+//////
+
 
 //   .header_pa
 //     padding-left: 0em !important

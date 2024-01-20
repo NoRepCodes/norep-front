@@ -8,13 +8,18 @@ import { Link, useParams } from "react-router-dom";
 import { useRef } from "react";
 import { Banner } from "../components/Banner";
 import { Context } from "../components/Context";
-import { findTeams } from "../api/events.api";
+import { findTeams, toggleUpdating } from "../api/events.api";
 import moment from "moment";
 import {
   EditResultsModal,
   EditTeamsModal,
   EditWodsModal,
 } from "../components/Modals";
+
+import p1 from "../images/p1.png";
+import p2 from "../images/p2.png";
+import p3 from "../images/p3.png";
+import { motion } from "framer-motion";
 
 export const Results = () => {
   let { _id } = useParams();
@@ -42,6 +47,7 @@ export const Results = () => {
     if (events && _id) {
       (async () => {
         let aux = events.find((ev) => ev._id === _id);
+        console.log(aux);
         setEvent(aux);
       })();
     }
@@ -65,7 +71,21 @@ export const Results = () => {
     // console.log(teams)
   };
 
-  if (event === null) return <></>;
+  if (event === null)
+    return (
+      <>
+        <p>no data</p>
+      </>
+    );
+
+  const toggleUpdate = async () => {
+    const { data, status } = await toggleUpdating(event._id, event.updating);
+    console.log(data);
+    console.log(status);
+    if (status === 200) {
+      setEvent((prev) => ({ ...prev, updating: !event.updating }));
+    }
+  };
 
   return (
     <>
@@ -105,12 +125,30 @@ export const Results = () => {
               <div className="results_btn" onClick={toggleResuM}>
                 <h1>Editar Resultados</h1>
               </div>
+              <div className="results_btn" onClick={toggleUpdate}>
+                {event && event.updating ? (
+                  <h1>Mostrar Resultados</h1>
+                ) : (
+                  <h1>Ocultar Resultados</h1>
+                )}
+              </div>
             </>
           )}
         </div>
         <div className="results_ctn">
           <ResultAside {...{ input, setInput, event, categ, setCateg }} />
-          <ResultInfo {...{ input, event, categ, setCateg, teams, setInput }} />
+          <ResultInfo {...{ input, event, categ, setCateg, teams, setInput,admin }} />
+        </div>
+        <div className="partners_resposive">
+          <div className="p_img_ctn">
+            <img src={p1} alt="p1" />
+          </div>
+          <div className="p_img_ctn">
+            <img src={p2} alt="p2" />
+          </div>
+          <div className="p_img_ctn">
+            <img src={p3} alt="p3" />
+          </div>
         </div>
       </div>
       <Banner />
@@ -180,7 +218,7 @@ const ResultAside = ({ event, categ, setCateg, input, setInput }) => {
   );
 };
 const convertDate = (date) => moment.unix(date).format("DD, MMM");
-const ResultInfo = ({ input, event, categ, teams, setInput, setCateg }) => {
+const ResultInfo = ({ input, event, categ, teams, setInput, setCateg,admin }) => {
   const [open, setOpen] = useState(false);
   const toggle = () => {
     setOpen(!open);
@@ -191,6 +229,17 @@ const ResultInfo = ({ input, event, categ, teams, setInput, setCateg }) => {
   return (
     <div className="results_info">
       <div className="ri_header">
+        <div className="partners">
+          <div className="p_img_ctn">
+            <img src={p1} alt="p1" />
+          </div>
+          <div className="p_img_ctn">
+            <img src={p2} alt="p2" />
+          </div>
+          <div className="p_img_ctn">
+            <img src={p3} alt="p3" />
+          </div>
+        </div>
         <div className="ri_header_top">
           <img src={corner} alt="corner" className="corner" />
           <img src={event?.image_url} alt="banner" className="resp_ri_img" />
@@ -248,12 +297,12 @@ const ResultInfo = ({ input, event, categ, teams, setInput, setCateg }) => {
           </div>
         )}
       </div>
-      <Table {...{ input, event, categ, teams }} />
+      <Table {...{ input, event, categ, teams,admin }} />
     </div>
   );
 };
 
-const Table = ({ input, event, categ, teams }) => {
+const Table = ({ input, event, categ, teams,admin }) => {
   const [right, setRight] = useState(false);
   const [info, setInfo] = useState([]);
 
@@ -275,29 +324,37 @@ const Table = ({ input, event, categ, teams }) => {
   return (
     <div className="table">
       <TableHeader {...{ toggleRight, right, event, categ }} />
-      {info.map((team, index) => {
-        if (input.length > 0) {
-          let regex = new RegExp(input, "i");
-          if (regex.test(team.name))
-            return (
-              <TableUser
-                key={index}
-                user={team}
-                {...{ right, index }}
-                last={index === info.length - 1 ? true : false}
-              />
-            );
-        } else {
-          return (
-            <TableUser
-              key={index}
-              user={team}
-              {...{ right, index }}
-              last={index === info.length - 1 ? true : false}
-            />
-          );
-        }
-      })}
+      {event && event.updating && !admin ? (
+        <h1 className="updating_text">La tabla se está actualizando...</h1>
+      ) : (
+        <>
+          {info.map((team, index) => {
+            if (input.length > 0) {
+              let regex = new RegExp(input, "i");
+              if (regex.test(team.name))
+                return (
+                  <TableUser
+                    key={index}
+                    user={team}
+                    {...{ right, index }}
+                    last={index === info.length - 1 ? true : false}
+                    nextUser={info[index + 1] && info[index + 1]}
+                  />
+                );
+            } else {
+              return (
+                <TableUser
+                  key={index}
+                  user={team}
+                  {...{ right, index }}
+                  last={index === info.length - 1 ? true : false}
+                  nextUser={info[index + 1] && info[index + 1]}
+                />
+              );
+            }
+          })}
+        </>
+      )}
     </div>
   );
 };
@@ -309,7 +366,7 @@ const TableHeader = ({ right, toggleRight, event, categ }) => {
   const ref2 = useRef(null);
 
   const wtf = () => {
-    toggleRight()
+    toggleRight();
     // console.log(event.categories[categ - 1]);
   };
 
@@ -357,7 +414,7 @@ const TableHeader = ({ right, toggleRight, event, categ }) => {
     </div>
   );
 };
-const convSeconds = (s)=>moment.utc(s * 1000).format("HH:mm:ss")
+const convSeconds = (s) => moment.utc(s * 1000).format("HH:mm:ss");
 const Arrow = ({ click, right }) => {
   return (
     <div className="btn_abs" onClick={click}>
@@ -381,9 +438,9 @@ const Arrow = ({ click, right }) => {
   );
 };
 /// TABLE USER
-const TableUser = ({ user, last = false, right, index }) => {
+const TableUser = ({ user, last = false, right, index, nextUser = false }) => {
   return (
-    <div className="table_user">
+    <motion.div className="table_user" initial={{opacity:0}} animate={{opacity:1}} transition={{duration:.7}}  >
       <div className={`tu_ctn ${last && "no_b"}`}>
         <div className="tu_pos">
           <h1>{index + 1}</h1>
@@ -392,23 +449,41 @@ const TableUser = ({ user, last = false, right, index }) => {
           <h1>{user.name}</h1>
         </div>
         {user.wods.map((wod, index) => (
-          <div className="tu_cell" key={index}>
-            {wod.amount === 0 ?
-            <>
-              <h1 className="pos"> </h1>
-              <h1 > </h1>
-            </>
-             :
-            <>
-            <h1 className="pos">{pos(wod?.pos)}</h1>
-            <h1>{wod.amount && (wod.wod_type === 1 || wod.wod_type === 3) && `(${wod?.amount} ${wod?.amount_type})`}</h1>
-            {wod.amount && wod.wod_type === 2 &&(
+          <div
+            className={`tu_cell ${
+              checkTie(wod, nextUser.wods, index) ? "tie_bg" : false
+            }`}
+            key={index}
+          >
+            {checkTie(wod, nextUser.wods, index) ? (
+              <div className="tie">
+                <IIcon />
+              </div>
+            ) : null}
+            {wod.amount === 0 ? (
               <>
-              {wod.time <= wod.time_cap ? <h1>{`(${convSeconds(wod?.time)})`}</h1> :<h1>{`(CAP+${wod.amount_cap - wod.amount})`}</h1>}
+                <h1 className="pos"> </h1>
+                <h1> </h1>
+              </>
+            ) : (
+              <>
+                <h1 className="pos">{pos(wod?.pos)}</h1>
+                <h1>
+                  {wod.amount &&
+                    (wod.wod_type === 1 || wod.wod_type === 3) &&
+                    `(${wod?.amount} ${wod?.amount_type})`}
+                </h1>
+                {wod.amount && wod.wod_type === 2 && (
+                  <>
+                    {wod.time < wod.time_cap ? (
+                      <h1>{`(${convSeconds(wod?.time)})`}</h1>
+                    ) : (
+                      <h1>{`(CAP+${wod.amount_cap - wod.amount})`}</h1>
+                    )}
+                  </>
+                )}
               </>
             )}
-            </>
-            }
             {/* <h1>{wod.amount && wod.wod_type === 2 && `(${convSeconds(wod?.time)})`}</h1> */}
           </div>
         ))}
@@ -417,7 +492,7 @@ const TableUser = ({ user, last = false, right, index }) => {
         <h1>{user.points}</h1>
         <h1>{user.percent}%</h1>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -509,9 +584,9 @@ const order = async (data, event, categ) => {
         team.wods[windex].pos = wod[fi].pos;
         team.wods[windex].amount_type = wod[fi].amount_type;
         team.wods[windex].wod_type = ogWod.wod_type;
-        if(ogWod.wod_type === 2){
-          team.wods[windex].time_cap = ogWod.time_cap
-          team.wods[windex].amount_cap = ogWod.amount_cap
+        if (ogWod.wod_type === 2) {
+          team.wods[windex].time_cap = ogWod.time_cap;
+          team.wods[windex].amount_cap = ogWod.amount_cap;
         }
         // if(wod[fi].amount_type === 2){
 
@@ -820,4 +895,35 @@ const pos = (pos) => {
     default:
       break;
   }
+};
+
+const checkTie = (wod, nextWod, index) => {
+  if (nextWod) {
+    if (
+      wod.amount !== 0 &&
+      wod.amount === nextWod[index].amount &&
+      wod.time === nextWod[index].time
+    ) {
+      return true;
+      // return "tie"
+    }
+    // console.log(wod)
+    // console.log(nextWod[index])
+    // console.log(index)
+  } else {
+    return false;
+  }
+};
+
+const IIcon = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+    >
+      <path d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm1 18h-2v-8h2v8zm-1-12.25c.69 0 1.25.56 1.25 1.25s-.56 1.25-1.25 1.25-1.25-.56-1.25-1.25.56-1.25 1.25-1.25z" />
+    </svg>
+  );
 };

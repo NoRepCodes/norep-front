@@ -38,7 +38,6 @@
     margin-left: auto
     // width: 10em
 
-
 .results_ctn
   // border: 1px solid v.$fourth
   height: 100%
@@ -141,6 +140,24 @@
   justify-content: space-between
   width: 100%
 
+  .partners
+    display: flex
+    justify-content: flex-end
+    position: absolute
+    height: 60px
+    // width: 500px
+    // background-color: red
+    bottom: fs(1)
+    right: fs(1)
+
+    .p_img_ctn
+      width: 120px
+      height: 50px
+
+      img
+        height: 100%
+        width: 100%
+
   .ri_header_top
     display: flex
     flex-direction: column
@@ -160,6 +177,7 @@
       display: none
 
   .ri_header_bot
+    // background-color: #123123
     display: flex
     .rhb_left
       display: flex
@@ -169,7 +187,8 @@
       .ri_date
         color: lighten(v.$fourth,60 )
 
-
+.partners_resposive
+  display: none
 // @media screen and (width < 1360px)
 //   .results_aside
 //     width: 250px !important
@@ -211,11 +230,11 @@
         border-bottom: 0px
 
         .corner
-          width: fs(6)
-          height: fs(6)
+          width: fs(5)
+          height: fs(5)
           right: .9em
           top: .9em
-
+          z-index: -1
         h1
           font-size: fs(1)
         .ri_title
@@ -273,3 +292,19 @@
           margin-top: 0px
         &:hover
           background-color: darken(v.$primary,20 )
+
+  .partners_resposive
+    display: flex
+    flex-direction: row
+    justify-content: center
+    margin-top: 2em
+
+  .partners
+    display: none !important
+    height: 30px !important
+    bottom: fs(1) !important
+    right: fs(1) !important
+
+    .p_img_ctn
+      width: 86px !important
+      height: 30px !important

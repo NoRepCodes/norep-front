@@ -4,6 +4,7 @@ import { getEventsPlusTeams } from "../api/events.api";
 import { Banner } from "../components/Banner";
 import "../sass/events.sass";
 import { EventCard } from "./Home";
+import {motion} from 'framer-motion'
 
 export const Events = () => {
   const [events, setEvents] = useState([]);
@@ -43,7 +44,7 @@ export const Events = () => {
             <input type="date" placeholder="Elige la fecha" />
           </div> */}
         </div>
-        <div className="cards_ctn">
+        <motion.div className="cards_ctn" initial={{y:200,opacity:0}} animate={{y:0,opacity:1}} transition={{duration:.7}} >
           {events.map((event, index) => {
             if (inputName.length > 0) {
               let regex = new RegExp(inputName, "i");
@@ -58,7 +59,7 @@ export const Events = () => {
               return <EventCard event={event} key={index} />;
             }
           })}
-        </div>
+        </motion.div>
       </div>
 
       <Banner />
