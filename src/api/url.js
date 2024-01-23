@@ -1,6 +1,6 @@
-// export const url = "https://norep-back.vercel.app/" 
+export const url = "https://norep-back.vercel.app/" 
 // export const url = "http://192.168.1.111:4000/" 
-export const url = "https://norep-git-006-noreps-projects.vercel.app/" 
+// export const url = "http://norep-git-testing-noreps-projects.vercel.app/" 
 
 
 /// Funcion general para el catch error que se usa en TODAS las peticiones 
