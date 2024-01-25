@@ -126,10 +126,10 @@ export const Results = () => {
                 <h1>Editar Resultados</h1>
               </div>
               <div className="results_btn" onClick={toggleUpdate}>
-                {event && !event.updating ? (
-                  <h1>Mostrar Resultados</h1>
+                {event && event.updating ? (
+                  <h1>Mostrando Resultados</h1>
                 ) : (
-                  <h1>Ocultar Resultados</h1>
+                  <h1>Ocultando Resultados</h1>
                 )}
               </div>
             </>
