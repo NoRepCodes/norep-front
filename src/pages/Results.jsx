@@ -126,7 +126,7 @@ export const Results = () => {
                 <h1>Editar Resultados</h1>
               </div>
               <div className="results_btn" onClick={toggleUpdate}>
-                {event && event.updating ? (
+                {event && !event.updating ? (
                   <h1>Mostrar Resultados</h1>
                 ) : (
                   <h1>Ocultar Resultados</h1>
@@ -322,7 +322,7 @@ const Table = ({ input, event, categ, teams,admin }) => {
   };
 
   return (
-    <div className="table">
+    <div className="table" >
       <TableHeader {...{ toggleRight, right, event, categ }} />
       {event && event.updating && !admin ? (
         <h1 className="updating_text">La tabla se está actualizando...</h1>

@@ -53,7 +53,7 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
-  const [admin, setAdmin] = useState(true)
+  const [admin, setAdmin] = useState(false)
   const [events, setEvents] = useState([]);
   const [time, setTime] = useState(0);
   useEffect(() => {
