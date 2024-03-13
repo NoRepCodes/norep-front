@@ -1,8 +1,14 @@
 import moment from "moment";
 import { duration } from "moment/moment";
 import React, { useEffect } from "react";
+import { useRef } from "react";
 import { useState } from "react";
-import { createEvent, plusTeams, updateResults, updateWods } from "../api/events.api";
+import {
+  createEvent,
+  // plusTeams,
+  updateResults,
+  updateWods,
+} from "../api/events.api";
 import "../sass/table.sass";
 
 let idd = 0;
@@ -55,185 +61,133 @@ const ArrayInput = ({ label, ocArr, value, index }) => {
   );
 };
 
-const Modal = ({ children, title, close }) => {
+export const Modal = ({ children, title, close }) => {
   return (
     <div className="blackscreen">
       <div className="modal">
         <ModalHeader title={title} close={close} />
-        <div className="modal_ctn">{children}</div>
+        <div className="modal_ctn">
+          <ModalHeader {...{title,close}}/>
+          {children}
+        </div>
       </div>
     </div>
   );
 };
 
-// export const CreateEventModal = ({ close, update }) => {
-//   const [inputs, setInputs] = useState({
-//     name: "",
-//     since: "",
-//     until: "",
-//     place: "",
-//     categories: [],
-//   });
-//   const onChange = (e) => {
-//     const att = e.target.getAttribute("name");
-//     let value = e.target.value;
-//     setInputs((prev) => ({ ...prev, [att]: value }));
+// export const WodsModal = ({ close, update }) => {
+//   const [inputs, setInputs] = useState([]);
+
+//   const plusWod = (wod_type) => {
+//     let info = {
+//       name: "",
+//       time_cap: "",
+//       amount_cap: "",
+//       amount_type: "",
+//       wod_type,
+//     };
+//     if (wod_type === 1) {
+//       info = { ...info, amount_cap: null, amount_type: "Reps" };
+//     } else if (wod_type === 2) {
+//       info = { ...info, amount_type: "Reps" };
+//     } else if (wod_type === 3) {
+//       info = { ...info, amount_cap: null, amount_type: "Reps" };
+//     }
+
+//     setInputs([...inputs, info]);
 //   };
 
-//   const plusCategory = () => {
-//     setInputs({ ...inputs, categories: [...inputs.categories, ""] });
-//   };
-
-//   const ocArr = (value, index) => {
-//     let aux = [...inputs.categories];
-//     aux[index] = value;
-//     setInputs({ ...inputs, categories: aux });
+//   const set = (value, att, index) => {
+//     let aux = [...inputs];
+//     aux[index][att] = value;
+//     setInputs(aux);
 //   };
 
 //   const confirm = () => {
-//     if(inputs.categories.length !== 0){
-//       update(inputs);
-//     }
+//     update(inputs);
+//     // console.log(inputs);
 //   };
 
+//   const cAMRAP = () => plusWod(1);
+//   const cFORTIME = () => plusWod(2);
+//   const cRM = () => plusWod(3);
+
 //   return (
-//     <Modal title="Crear Evento" close={close}>
-//       <LabelInput label="Nombre" name="name" {...{ onChange }} />
-//       <LabelInput label="Inicio" name="since" type="date" {...{ onChange }} />
-//       <LabelInput label="Cierre" name="until" type="date" {...{ onChange }} />
-//       <LabelInput label="Ubicacion" name="place" {...{ onChange }} />
-//       {inputs.categories.map((item, index) => (
-//         <ArrayInput
-//           label={`Categoria ${index + 1}`}
-//           ocArr={ocArr}
-//           key={index}
-//           value={item}
-//           index={index}
-//         />
-//       ))}
-//       <div className="plus_category" onClick={plusCategory}>
-//         <p>Añadir categoria</p>
+//     <Modal title="Añadir Wods" close={close}>
+//       {inputs.map((item, index) => {
+//         if (item.wod_type === 1) {
+//           return <InputAMRAP set={set} item={item} key={index} index={index} />;
+//         } else if (item.wod_type === 2) {
+//           return (
+//             <InputFORTIME set={set} item={item} key={index} index={index} />
+//           );
+//         } else if (item.wod_type === 3) {
+//           return <InputRM set={set} item={item} key={index} index={index} />;
+//         }
+//       })}
+//       {/* <InputRM set={set} /> */}
+//       <div className="wod_type_btns">
+//         <p onClick={cAMRAP}>AMRAP</p>
+//         <p onClick={cFORTIME}>FORTIME</p>
+//         <p onClick={cRM}>RM</p>
 //       </div>
-//       <div className="btn" onClick={confirm}>
-//         <p>Confirmar</p>
-//       </div>
+//       {inputs.length > 0 && (
+//         <div className="btn" onClick={confirm}>
+//           <p>Confirmar</p>
+//         </div>
+//       )}
 //     </Modal>
 //   );
 // };
 
-export const WodsModal = ({ close, update }) => {
-  const [inputs, setInputs] = useState([]);
+// export const TeamsModal = ({ close, update }) => {
+//   const [inputs, setInputs] = useState([]);
 
-  const plusWod = (wod_type) => {
-    let info = {
-      name: "",
-      time_cap: "",
-      amount_cap: "",
-      amount_type: "",
-      wod_type,
-    };
-    if (wod_type === 1) {
-      info = { ...info, amount_cap: null, amount_type: "Reps" };
-    } else if (wod_type === 2) {
-      info = { ...info, amount_type: "Reps" };
-    } else if (wod_type === 3) {
-      info = { ...info, amount_cap: null, amount_type: "Reps" };
-    }
+//   const plusWod = () => {
+//     setInputs([
+//       ...inputs,
+//       {
+//         points: 0,
+//         percent: 0,
+//         name: "",
+//         box: "",
+//         wods: [],
+//       },
+//     ]);
+//   };
 
-    setInputs([...inputs, info]);
-  };
+//   const setInfo = (value, att, index) => {
+//     let aux = [...inputs];
+//     aux[index][att] = value;
+//     setInputs(aux);
+//   };
 
-  const set = (value, att, index) => {
-    let aux = [...inputs];
-    aux[index][att] = value;
-    setInputs(aux);
-  };
-
-  const confirm = () => {
-    update(inputs);
-    // console.log(inputs);
-  };
-
-  const cAMRAP = () => plusWod(1);
-  const cFORTIME = () => plusWod(2);
-  const cRM = () => plusWod(3);
-
-  return (
-    <Modal title="Añadir Wods" close={close}>
-      {inputs.map((item, index) => {
-        if (item.wod_type === 1) {
-          return <InputAMRAP set={set} item={item} key={index} index={index} />;
-        } else if (item.wod_type === 2) {
-          return (
-            <InputFORTIME set={set} item={item} key={index} index={index} />
-          );
-        } else if (item.wod_type === 3) {
-          return <InputRM set={set} item={item} key={index} index={index} />;
-        }
-      })}
-      {/* <InputRM set={set} /> */}
-      <div className="wod_type_btns">
-        <p onClick={cAMRAP}>AMRAP</p>
-        <p onClick={cFORTIME}>FORTIME</p>
-        <p onClick={cRM}>RM</p>
-      </div>
-      {inputs.length > 0 && (
-        <div className="btn" onClick={confirm}>
-          <p>Confirmar</p>
-        </div>
-      )}
-    </Modal>
-  );
-};
-
-export const TeamsModal = ({ close, update }) => {
-  const [inputs, setInputs] = useState([]);
-
-  const plusWod = () => {
-    setInputs([
-      ...inputs,
-      {
-        points: 0,
-        percent: 0,
-        name: "",
-        box: "",
-        wods: [],
-      },
-    ]);
-  };
-
-  const setInfo = (value, att, index) => {
-    let aux = [...inputs];
-    aux[index][att] = value;
-    setInputs(aux);
-  };
-
-  const confirm = () => {
-    // console.log(inputs)
-    update(inputs);
-  };
-  return (
-    <Modal close={close} title="Equipos">
-      {inputs.map((item, index) => (
-        <TeamInput
-          set={setInfo}
-          key={index}
-          valueN={item}
-          valueB={item}
-          index={index}
-        />
-      ))}
-      <div className="plus_category" onClick={plusWod}>
-        <p>Añadir</p>
-      </div>
-      {inputs.length > 0 && (
-        <div className="btn" onClick={confirm}>
-          <p>Confirmar</p>
-        </div>
-      )}
-    </Modal>
-  );
-};
+//   const confirm = () => {
+//     // console.log(inputs)
+//     update(inputs);
+//   };
+//   return (
+//     <Modal close={close} title="Equipos">
+//       {inputs.map((item, index) => (
+//         <TeamInput
+//           set={setInfo}
+//           key={index}
+//           valueN={item}
+//           valueB={item}
+//           index={index}
+//         />
+//       ))}
+//       <div className="plus_category" onClick={plusWod}>
+//         <p>Añadir</p>
+//       </div>
+//       {inputs.length > 0 && (
+//         <div className="btn" onClick={confirm}>
+//           <p>Confirmar</p>
+//         </div>
+//       )}
+//     </Modal>
+//   );
+// };
 
 const TeamInput = ({ set, value, index }) => {
   const text = (e) => {
@@ -449,114 +403,114 @@ const InputRM = ({ set, index }) => {
   );
 };
 //// CREATE EVENT MODAL
-export const CreateEventModal = ({ close, setEvents }) => {
-  const [image, setImage] = useState("");
-  const [load, setLoad] = useState(false);
-  const [inputs, setInputs] = useState({
-    name: "",
-    place: "",
-    until: "",
-    since: "",
-  });
+// export const CreateEventModal = ({ close, setEvents }) => {
+//   const [image, setImage] = useState("");
+//   const [load, setLoad] = useState(false);
+//   const [inputs, setInputs] = useState({
+//     name: "",
+//     place: "",
+//     until: "",
+//     since: "",
+//   });
 
-  const [categories, setCategories] = useState([]);
+//   const [categories, setCategories] = useState([]);
 
-  const confirm = async () => {
-    setLoad(true)
-    if (image && categories.length > 0) {
-      const { status, data } = await createEvent(inputs, categories, image);
-      setLoad(false)
-      if (status === 200) {
-        setEvents(prev=>[...prev,data])
-        close();
-      }else{
-        console.log(data)
-      }
-    }
-  };
+//   const confirm = async () => {
+//     setLoad(true);
+//     if (image && categories.length > 0) {
+//       const { status, data } = await createEvent(inputs, categories, image);
+//       setLoad(false);
+//       if (status === 200) {
+//         setEvents((prev) => [...prev, data]);
+//         close();
+//       } else {
+//         console.log(data);
+//       }
+//     }
+//   };
 
-  const plusCateg = () => {
-    setCategories([...categories, []]);
-  };
-  const updateCateg = (value, index) => {
-    let aux = [...categories];
-    aux[index] = value;
-    setCategories(aux);
-  };
+//   const plusCateg = () => {
+//     setCategories([...categories, []]);
+//   };
+//   const updateCateg = (value, index) => {
+//     let aux = [...categories];
+//     aux[index] = value;
+//     setCategories(aux);
+//   };
 
-  const handleFile = async (e) => {
-    if (e.target.files) {
-      const base64 = await convertBase64(e.target.files[0]);
-      setImage(base64);
-    }
-  };
-  return (
-    <div className="blackscreen">
-      <div className="modal_ctn">
-        <div className="modal_top">
-          <h6>CREAR EVENTO</h6>
-          <div className="cross_ctn" onClick={close}>
-            <CrossIcon />
-          </div>
-        </div>
-        <div className="img_ctn">
-          <label htmlFor="img">IMAGEN</label>
-          <input
-            type="file"
-            id="img"
-            name="img"
-            accept="image/*"
-            onChange={handleFile}
-          />
-        </div>
-        <div className="cem_form">
-          <InputLabel
-            name="name"
-            label="NOMBRE"
-            set={setInputs}
-            value={inputs.name}
-          />
-          <InputLabel
-            name="place"
-            label="UBICACION"
-            set={setInputs}
-            value={inputs.place}
-          />
-          <InputDate
-            name="since"
-            label="FECHA INICIO"
-            set={setInputs}
-            value={inputs.since}
-          />
-          <InputDate
-            name="until"
-            label="FECHA CIERRE"
-            set={setInputs}
-            value={inputs.until}
-          />
-          {categories.map((categ, index) => (
-            <InputArray
-              name={`categ ${index + 1}`}
-              label={`Categoría ${index + 1}`}
-              update={updateCateg}
-              value={categ}
-              index={index}
-              key={index}
-            />
-          ))}
-        </div>
-        <div className="bottom_ctn">
-          <div className="btn_plus_categ" onClick={plusCateg}>
-            <h6>Añadir categorias</h6>
-          </div>
-          <button className="btn_confirm" onClick={confirm} disabled={load}>
-            {load ? <h6>Creando Evento...</h6> : <h6>Crear Evento</h6>}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
+//   const handleFile = async (e) => {
+//     if (e.target.files) {
+//       const base64 = await convertBase64(e.target.files[0]);
+//       setImage(base64);
+//     }
+//   };
+//   return (
+//     <div className="blackscreen">
+//       <div className="modal_ctn">
+//         <div className="modal_top">
+//           <h6>CREAR EVENTO</h6>
+//           <div className="cross_ctn" onClick={close}>
+//             <CrossIcon />
+//           </div>
+//         </div>
+//         <div className="img_ctn">
+//           <label htmlFor="img">IMAGEN</label>
+//           <input
+//             type="file"
+//             id="img"
+//             name="img"
+//             accept="image/*"
+//             onChange={handleFile}
+//           />
+//         </div>
+//         <div className="cem_form">
+//           <InputLabel
+//             name="name"
+//             label="NOMBRE"
+//             set={setInputs}
+//             value={inputs.name}
+//           />
+//           <InputLabel
+//             name="place"
+//             label="UBICACION"
+//             set={setInputs}
+//             value={inputs.place}
+//           />
+//           <InputDate
+//             name="since"
+//             label="FECHA INICIO"
+//             set={setInputs}
+//             value={inputs.since}
+//           />
+//           <InputDate
+//             name="until"
+//             label="FECHA CIERRE"
+//             set={setInputs}
+//             value={inputs.until}
+//           />
+//           {categories.map((categ, index) => (
+//             <InputArray
+//               name={`categ ${index + 1}`}
+//               label={`Categoría ${index + 1}`}
+//               update={updateCateg}
+//               value={categ}
+//               index={index}
+//               key={index}
+//             />
+//           ))}
+//         </div>
+//         <div className="bottom_ctn">
+//           <div className="btn_plus_categ" onClick={plusCateg}>
+//             <h6>Añadir categorias</h6>
+//           </div>
+//           <button className="btn_confirm" onClick={confirm} disabled={load}>
+//             {load ? <h6>Creando Evento...</h6> : <h6>Crear Evento</h6>}
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
 const convertBase64 = (file) => {
   return new Promise((resolve, reject) => {
@@ -587,7 +541,7 @@ const CrossIcon = () => {
   );
 };
 
-const InputLabel = ({ name, label, value, set }) => {
+export const InputLabel = ({ name, label, value, set }) => {
   const onChangeText = (e) => {
     const att = e.target.getAttribute("name");
     const value = e.target.value;
@@ -606,45 +560,54 @@ const InputLabel = ({ name, label, value, set }) => {
     </div>
   );
 };
-const InputDate = ({ name, label, value, set }) => {
+
+export const InputTime = ({ name, label, value, update, index }) => {
+  const refh = useRef(null)
+  const refm = useRef(null)
+  const refs = useRef(null)
   const onChangeText = (e) => {
-    const att = e.target.getAttribute("name");
-    const value = e.target.value;
-    set((prev) => ({ ...prev, [att]: value }));
+    if(e.target.value.match(/^[0-9]*$/)){
+      let val = e.target.value
+      let h = refh.current.value
+      let m = refm.current.value
+      let s = refs.current.value
+      if(e.target === refh.current){
+        update(`${val}:${m}:${s}`,index)
+      }
+      else if(e.target === refm.current){
+        update(`${h}:${val}:${s}`,index)
+      }
+      else if(e.target === refs.current){
+        update(`${h}:${m}:${val}`,index)
+      }
+      // update(value,index)
+      // console.log(refm.current.value)
+      // console.log(refs.current.value)
+    }
   };
   return (
     <div className="input_label">
       <label htmlFor={name}>{label}</label>
-      <input
-        type="date"
-        id={name}
-        name={name}
-        onChange={onChangeText}
-        value={value}
-      />
-    </div>
-  );
-};
-const InputTime = ({ name, label, value, update, index }) => {
-  const onChangeText = (e) => {
-    update(e.target.value, index);
-  };
-  return (
-    <div className="input_label">
-      <label htmlFor={name}>{label}</label>
-      <input
+      {/* <input
         step={1}
         type="time"
         id={name}
         name={name}
         onChange={onChangeText}
         value={value}
-      />
+      /> */}
+      <div className="input_time">
+        <input type="text" placeholder="hh" onChange={onChangeText} ref={refh} maxLength={2} value={value.split(':')[0]} />
+        <h1>:</h1>
+        <input type="text" placeholder="mm" onChange={onChangeText} ref={refm} maxLength={2} value={value.split(':')[1]} />
+        <h1>:</h1>
+        <input type="text" placeholder="ss" onChange={onChangeText} ref={refs} maxLength={2} value={value.split(':')[2]} />
+      </div>
     </div>
   );
 };
 
-const InputArray = ({ name, label, value, update, index }) => {
+export const InputArray = ({ name, label, value, update, index }) => {
   const onChangeText = (e) => {
     const value = e.target.value;
     update(value, index);
@@ -743,180 +706,145 @@ const blankwod = {
   amount_cap: 0,
   amount_type: "Reps",
   name: "",
-  time_cap: '00:00:00',
+  time_cap: "00:00:00",
   wod_type: 1,
 };
 
 //// EDIT WODS MODAL
-export const EditWodsModal = ({ close, event, categ,setEvents,events }) => {
-  const [load, setLoad] = useState(false);
-  const [wods, setWods] = useState(false);
-  useEffect(() => {
-    let aux = event.categories[categ - 1].wods.map((w, i) => {
-      return {
-        ...w,
-        time_cap: moment.utc(w.time_cap * 1000).format("HH:mm:ss"),
-      };
-    });
-    // console.log(aux)
-    setWods(aux);
-  }, []);
+// export const EditWodsModal = ({ close, event, categ, setEvents, events }) => {
+//   const [load, setLoad] = useState(false);
+//   const [wods, setWods] = useState(false);
+//   useEffect(() => {
+//     let aux = event.categories[categ - 1].wods.map((w, i) => {
+//       return {
+//         ...w,
+//         time_cap: moment.utc(w.time_cap * 1000).format("HH:mm:ss"),
+//       };
+//     });
+//     // console.log(aux)
+//     setWods(aux);
+//   }, []);
 
-  if (!wods) return <div className="blackscreen"></div>;
+//   if (!wods) return <div className="blackscreen"></div>;
 
-  const click = async () => {
-    setLoad(true);
-    let newWods = wods.map((item) => {
-      return {
-        ...item,
-        time_cap: moment.duration(item.time_cap, "HH:mm:ss").asSeconds(),
-      };
-    });
-    const { status, data } = await updateWods(
-      event._id,
-      event.categories[categ - 1]._id,
-      newWods
-    );
-    setLoad(false);
-    if (status === 200) {
-      let newEvents = events.map((ev,i)=>{
-        if(ev._id === event._id){
-          return data
-        }else{
-          return ev
-        }
-      })
-      setEvents(newEvents)
-      // console.log(data)
-      close();
-    }
-  };
+//   const click = async () => {
+//     setLoad(true);
+//     let newWods = wods.map((item) => {
+//       return {
+//         ...item,
+//         time_cap: convTime(item.time_cap),
+//       };
+//     });
+//     const { status, data } = await updateWods(
+//       event._id,
+//       event.categories[categ - 1]._id,
+//       newWods
+//     );
+//     setLoad(false);
+//     if (status === 200) {
+//       let newEvents = events.map((ev, i) => {
+//         if (ev._id === event._id) {
+//           return data;
+//         } else {
+//           return ev;
+//         }
+//       });
+//       setEvents(newEvents);
+//       // console.log(data)
+//       close();
+//     }
+//   };
 
-  const pushNewWod = () => {
-    setWods([...wods, { ...blankwod }]);
-  };
-  const removeLastWod = () => {
-    let aux = [...wods];
-    setWods(aux.slice(0, -1));
-  };
+//   const pushNewWod = () => {
+//     setWods([...wods, { ...blankwod }]);
+//   };
+//   const removeLastWod = () => {
+//     let aux = [...wods];
+//     setWods(aux.slice(0, -1));
+//   };
 
-  const handleName = (value, index) => {
-    const aux = wods.map((w, i) => {
-      if (i === index) return { ...w, name: value };
-      else return w;
-    });
-    setWods(aux);
-  };
-  const handleTime = (value, index) => {
-    const aux = wods.map((w, i) => {
-      if (i === index) return { ...w, time_cap: value };
-      else return w;
-    });
-    setWods(aux);
-  };
-  const handleReps = (value, index) => {
-    const aux = wods.map((w, i) => {
-      if (i === index) return { ...w, amount_cap: value };
-      else return w;
-    });
-    setWods(aux);
-  };
-  const handleType = async (value, index) => {
-    let aux = wods.map((w, i) => {
-      if (i === index)
-        return { ...blankwod, wod_type: rType(value), name: w.name };
-      else return w;
-    });
-    setWods(aux);
-  };
-  const handleAmountType = (value, index) => {
-    let aux = [...wods];
-    aux[index].amount_type = value === "Reps" ? "Lbs" : "Reps";
-    setWods(aux);
-  };
+//   const handleName = (value, index) => {
+//     const aux = wods.map((w, i) => {
+//       if (i === index) return { ...w, name: value };
+//       else return w;
+//     });
+//     setWods(aux);
+//   };
+//   const handleTime = (value, index) => {
+//     const aux = wods.map((w, i) => {
+//       if (i === index) return { ...w, time_cap: value };
+//       else return w;
+//     });
+//     setWods(aux);
+//   };
+//   const handleReps = (value, index) => {
+//     const aux = wods.map((w, i) => {
+//       if (i === index) return { ...w, amount_cap: value };
+//       else return w;
+//     });
+//     setWods(aux);
+//   };
+//   const handleType = async (value, index) => {
+//     let aux = wods.map((w, i) => {
+//       if (i === index)
+//         return { ...blankwod, wod_type: rType(value), name: w.name };
+//       else return w;
+//     });
+//     setWods(aux);
+//   };
+//   const handleAmountType = (value, index) => {
+//     let aux = [...wods];
+//     aux[index].amount_type = value === "Reps" ? "Lbs" : "Reps";
+//     setWods(aux);
+//   };
 
-  return (
-    <div className="blackscreen">
-      <div className="modal_ctn">
-        <div className="modal_top">
-          <h6>EDITAR WODS</h6>
-          <div className="cross_ctn" onClick={close}>
-            <CrossIcon />
-          </div>
-        </div>
-        <div className="modal_form">
-          {wods?.map((item, index) => (
-            <InputsWOD
-              key={index}
-              wod={item}
-              {...{
-                index,
-                handleName,
-                handleTime,
-                handleType,
-                handleReps,
-                handleAmountType,
-              }}
-            />
-          ))}
-          {/* {wods?.map((item,index)=>{
-            if(item.wod_type === 1) return <InputsWOD_AMRAP key={index} wod={item} {...{handleName,handleTime,handleType}} />
-            else if(item.wod_type === 2) return <InputsWOD_FORTIME key={index} wod={item} {...{handleName,handleTime,handleType,handleReps}} />
-            else if(item.wod_type === 3) return <InputsWOD_RM key={index} wod={item} {...{handleName,handleTime,handleType}} />
-          })} */}
-        </div>
-        <div className="mt_auto"></div>
-        <div className="bottom_ctn">
-          <div className="btn_plus_categ" onClick={pushNewWod}>
-            <h6>Añadir WOD</h6>
-          </div>
-          <div className="btn_plus_categ" onClick={removeLastWod}>
-            <h6>Eliminar Ultimo WOD</h6>
-          </div>
-          <button className="btn_confirm" onClick={click} disabled={load}>
-            {load ? <h6>Editando Wods...</h6> : <h6>Editar WODS</h6>}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
+//   return (
+//     <div className="blackscreen">
+//       <div className="modal_ctn">
+//         <div className="modal_top">
+//           <h6>EDITAR WODS</h6>
+//           <div className="cross_ctn" onClick={close}>
+//             <CrossIcon />
+//           </div>
+//         </div>
+//         <div className="modal_form">
+//           {wods?.map((item, index) => (
+//             <InputsWOD
+//               key={index}
+//               wod={item}
+//               {...{
+//                 index,
+//                 handleName,
+//                 handleTime,
+//                 handleType,
+//                 handleReps,
+//                 handleAmountType,
+//               }}
+//             />
+//           ))}
+//           {/* {wods?.map((item,index)=>{
+//             if(item.wod_type === 1) return <InputsWOD_AMRAP key={index} wod={item} {...{handleName,handleTime,handleType}} />
+//             else if(item.wod_type === 2) return <InputsWOD_FORTIME key={index} wod={item} {...{handleName,handleTime,handleType,handleReps}} />
+//             else if(item.wod_type === 3) return <InputsWOD_RM key={index} wod={item} {...{handleName,handleTime,handleType}} />
+//           })} */}
+//         </div>
+//         <div className="mt_auto"></div>
+//         <div className="bottom_ctn">
+//           <div className="btn_plus_categ" onClick={pushNewWod}>
+//             <h6>Añadir WOD</h6>
+//           </div>
+//           <div className="btn_plus_categ" onClick={removeLastWod}>
+//             <h6>Eliminar Ultimo WOD</h6>
+//           </div>
+//           <button className="btn_confirm" onClick={click} disabled={load}>
+//             {load ? <h6>Editando Wods...</h6> : <h6>Editar WODS</h6>}
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 const wtf2 = ["a", "b", "c", "d", "e"];
-// const InputsWOD_AMRAP = ({handleName,handleTime,handleType}) => {
-//   return (
-//     <div className="inputs_wod_ctn">
-//       <h6 className="title">WOD 1: AMRAP</h6>
-//       <div className="inputs_wod_form">
-//         <InputLabel label="NOMBRE" />
-//         <InputTime label="TIEMPO LIMITE" />
-//       </div>
-//     </div>
-//   );
-// };
-// const InputsWOD_FORTIME = ({handleName,handleTime,handleType,handleReps}) => {
-//   return (
-//     <div className="inputs_wod_ctn">
-//       <h6 className="title">WOD 2: FORTIME</h6>
-//       <div className="inputs_wod_form">
-//         <InputLabel label="NOMBRE" />
-//         <InputTime label="TIEMPO LIMITE" />
-//         <InputLabel label="REPS LIMITE" />
-//       </div>
-//     </div>
-//   );
-// };
-// const InputsWOD_RM = ({handleName,handleTime,handleType}) => {
-//   return (
-//     <div className="inputs_wod_ctn">
-//       <h6 className="title">WOD 3: RM</h6>
-//       <div className="inputs_wod_form">
-//         <InputLabel label="NOMBRE" />
-//         <InputTime label="TIEMPO LIMITE" />
-//       </div>
-//     </div>
-//   );
-// };
-
 const InputsWOD = ({
   wod,
   index,
@@ -966,6 +894,9 @@ const InputsWOD = ({
         {(wod.wod_type === 2 || wod.wod_type === 3) && (
           <h5 onClick={haType}>{wod.amount_type.toUpperCase()}</h5>
         )}
+        {(wod.wod_type === 4 ) && (
+          <h5 >PUNTOS</h5>
+        )}
       </div>
     </div>
   );
@@ -974,19 +905,21 @@ const InputsWOD = ({
 const rType = (num) => {
   if (num === 1) return 2;
   else if (num === 2) return 3;
-  else if (num === 3) return 1;
+  else if (num === 3) return 4;
+  else if (num === 4) return 1;
 };
 const rTypeName = (num) => {
   if (num === 1) return "AMRAP";
   else if (num === 2) return "FORTIME";
   else if (num === 3) return "RM";
+  else if (num === 4) return "CIRCUITO";
 };
 
-const convSeconds = (s)=>moment.utc(s * 1000).format("HH:mm:ss")
-const convTime = (s)=>moment.duration(s, "HH:mm:ss").asSeconds()
+const convSeconds = (s) => moment.utc(s * 1000).format("HH:mm:ss");
+const convTime = (s) => moment.duration(splitTime(s), "HH:mm:ss").asSeconds();
 
 //// EDITS RESULTS MODAL
-export const EditResultsModal = ({ close, event, categ, teams,setTeams }) => {
+export const EditResultsModal = ({ close, event, categ, teams, setTeams }) => {
   const [windex, setWindex] = useState(null);
   const [load, setLoad] = useState(false);
   const [list, setList] = useState([]);
@@ -998,14 +931,14 @@ export const EditResultsModal = ({ close, event, categ, teams,setTeams }) => {
   const click = async () => {
     setLoad(true);
     let newList = list.map((item) => {
-      if(item.wod_type === 1 || item.wod_type === 2){
+      if (item.wod_type === 1 || item.wod_type === 2) {
         return {
           ...item,
           time: convTime(item.time),
           tiebrake: convTime(item.tiebrake),
           amount: parseInt(item.amount),
         };
-      }else{
+      } else {
         return {
           ...item,
           time: convTime(item.time),
@@ -1014,39 +947,75 @@ export const EditResultsModal = ({ close, event, categ, teams,setTeams }) => {
         };
       }
     });
-    const {status,data} = await updateResults(newList,windex)
-    setLoad(false)
-    if(status === 200){
-      setTeams(data)
-      close()
+    const { status, data } = await updateResults(newList, windex);
+    setLoad(false);
+    if (status === 200) {
+      setTeams(data);
+      close();
     }
     // console.log(newList)
   };
 
   useEffect(() => {
-    if(windex !== null){
+    if (windex !== null) {
       let aux = teams.filter(
         (t) => t.category_id === event.categories[categ - 1]._id
       );
-      let selecWod = event.categories[categ - 1].wods[windex]
-      let wt = selecWod.wod_type
+      let selecWod = event.categories[categ - 1].wods[windex];
+      let wt = selecWod.wod_type;
       let infoTeams = aux.map((t, i) => {
         if (t.wods[windex].amount === undefined) {
           let at = selecWod.amount_type;
-          if(wt === 1 ){
-            return { ...blankResults, _id: t._id, name: t.name, amount_type: at,tiebrake:'00:00:00',time:convSeconds(selecWod.time_cap),wt }
-          }
-          else if (wt===2){
-            return { ...blankResults, _id: t._id, name: t.name, amount_type: at,tiebrake:'00:00:00',time:'00:00:00',wt };
-          }
-          else if (wt===3){
-            return { ...blankResults, _id: t._id, name: t.name, amount_type: at,tiebrake:0,time:convSeconds(selecWod.time_cap),wt }
+          if (wt === 1) {
+            return {
+              ...blankResults,
+              _id: t._id,
+              name: t.name,
+              amount_type: at,
+              tiebrake: "00:00:00",
+              time: convSeconds(selecWod.time_cap),
+              wt,
+            };
+          } else if (wt === 2) {
+            return {
+              ...blankResults,
+              _id: t._id,
+              name: t.name,
+              amount_type: at,
+              tiebrake: "00:00:00",
+              time: "00:00:00",
+              wt,
+            };
+          } else if (wt === 3) {
+            return {
+              ...blankResults,
+              _id: t._id,
+              name: t.name,
+              amount_type: at,
+              tiebrake: 0,
+              time: convSeconds(selecWod.time_cap),
+              wt,
+            };
           }
         } else {
-          if(wt===1 || wt===2){
-            return { ...t.wods[windex], _id: t._id, name: t.name,wt,tiebrake:convSeconds(t.wods[windex].tiebrake),time:convSeconds(t.wods[windex].time)};
-          }else if (wt === 3){
-            return { ...t.wods[windex], _id: t._id, name: t.name,wt,tiebrake:t.wods[windex].tiebrake,time:convSeconds(t.wods[windex].time)};
+          if (wt === 1 || wt === 2) {
+            return {
+              ...t.wods[windex],
+              _id: t._id,
+              name: t.name,
+              wt,
+              tiebrake: convSeconds(t.wods[windex].tiebrake),
+              time: convSeconds(t.wods[windex].time),
+            };
+          } else if (wt === 3) {
+            return {
+              ...t.wods[windex],
+              _id: t._id,
+              name: t.name,
+              wt,
+              tiebrake: t.wods[windex].tiebrake,
+              time: convSeconds(t.wods[windex].time),
+            };
           }
         }
       });
@@ -1070,7 +1039,7 @@ export const EditResultsModal = ({ close, event, categ, teams,setTeams }) => {
             chooseWod={chooseWod}
           />
         ) : (
-          <UsersList {...{ event, categ, teams, windex,list, setList }} />
+          <UsersList {...{ event, categ, teams, windex, list, setList }} />
         )}
         <div className="mt_auto"></div>
         <div className="bottom_ctn">
@@ -1114,129 +1083,174 @@ const blankResults = {
 };
 //moment.duration(item.time_cap, "HH:mm:ss").asSeconds()
 //moment.utc(w.time_cap * 1000).format("HH:mm:ss")
-const UsersList = ({ event, categ, windex,list, setList }) => {
-  
-  
-
-  const hReps = (value,index)=>{
+const UsersList = ({ event, categ, windex, list, setList }) => {
+  const hReps = (value, index) => {
     const aux = list.map((t, i) => {
       if (i === index) return { ...t, amount: value };
       else return t;
     });
     setList(aux);
-  }
-  const hTiebrake = (value,index)=>{
+  };
+  const hTiebrake = (value, index) => {
     // console.log(value)
     const aux = list.map((t, i) => {
       if (i === index) return { ...t, tiebrake: value };
       else return t;
     });
     setList(aux);
-  }
-  const hTime = (value,index)=>{
+  };
+  const hTime = (value, index) => {
     const aux = list.map((t, i) => {
       if (i === index) return { ...t, time: value };
       else return t;
     });
     setList(aux);
-  }
+  };
 
   return (
     <div className="users_list">
-      <h6 >{event.categories[categ - 1].wods[windex].name}</h6>
+      <h6>{event.categories[categ - 1].wods[windex].name}</h6>
       {list.map((user, i) => (
         <RU_Input
           key={user._id}
           user={user}
           wod_type={user.wt}
-          {...{ event, categ, windex,hReps,hTime,hTiebrake,index:i }}
+          {...{ event, categ, windex, hReps, hTime, hTiebrake, index: i }}
         />
       ))}
     </div>
   );
 };
 
-const RU_Input = ({ user, wod_type, windex, event, categ,hReps,hTime,hTiebrake,index }) => {
+const RU_Input = ({
+  user,
+  wod_type,
+  windex,
+  event,
+  categ,
+  hReps,
+  hTime,
+  hTiebrake,
+  index,
+}) => {
   return (
     <div className="ru_ctn">
       <h5>{user.name}</h5>
       <div className="ru_inputs">
-        <InputArray label="REPS" value={user.amount} update={hReps} index={index} />
-        {wod_type === 2 && <InputTime label="TIEMPO" value={user.time} update={hTime} index={index} />}
-        {(wod_type === 1 || wod_type === 2) && (<InputTime label="TIEBRAKE" value={user.tiebrake} update={hTiebrake} index={index} />)}
-        {wod_type === 3 && (<InputArray label="TIEBRAKE" value={user.tiebrake} update={hTiebrake} index={index} />)}
+        <InputArray
+          label="REPS"
+          value={user.amount}
+          update={hReps}
+          index={index}
+        />
+        {wod_type === 2 && (
+          <InputTime
+            label="TIEMPO"
+            value={user.time}
+            update={hTime}
+            index={index}
+          />
+        )}
+        {(wod_type === 1 || wod_type === 2) && (
+          <InputTime
+            label="TIEBRAKE"
+            value={user.tiebrake}
+            update={hTiebrake}
+            index={index}
+          />
+        )}
+        {wod_type === 3 && (
+          <InputArray
+            label="TIEBRAKE"
+            value={user.tiebrake}
+            update={hTiebrake}
+            index={index}
+          />
+        )}
       </div>
     </div>
   );
 };
 
-export const EditTeamsModal = ({ close, event, categ,set }) => {
-  const [load, setLoad] = useState(false);
-  const [teams, setTeams] = useState([]);
+// export const EditTeamsModal = ({ close, event, categ, set }) => {
+//   const [load, setLoad] = useState(false);
+//   const [teams, setTeams] = useState([]);
 
-  const pushTeam = () => {
-    setTeams([...teams, { name: "", box: "" }]);
-  };
+//   const pushTeam = () => {
+//     setTeams([...teams, { name: "", box: "" }]);
+//   };
 
-  const updateName = (value, index) => {
-    const aux = teams.map((t, i) => {
-      if (i === index) return { ...t, name: value };
-      else return t;
-    });
-    setTeams(aux);
-  };
-  const updateBox = (value, index) => {
-    const aux = teams.map((t, i) => {
-      if (i === index) return { ...t, box: value };
-      else return t;
-    });
-    setTeams(aux);
-  };
+//   const updateName = (value, index) => {
+//     const aux = teams.map((t, i) => {
+//       if (i === index) return { ...t, name: value };
+//       else return t;
+//     });
+//     setTeams(aux);
+//   };
+//   const updateBox = (value, index) => {
+//     const aux = teams.map((t, i) => {
+//       if (i === index) return { ...t, box: value };
+//       else return t;
+//     });
+//     setTeams(aux);
+//   };
 
-  const click = async () => {
-    // console.log(set)
-    // set([])
-    setLoad(true)
-    const {status,data} = await plusTeams(event._id,event.categories[categ-1]._id,teams)
-    setLoad(false)
-    if(status === 200){
-      set(prev=>[...prev,...data])
-      close()
-    }
-  };
+//   const click = async () => {
+//     // console.log(set)
+//     // set([])
+//     setLoad(true);
+//     const { status, data } = await plusTeams(
+//       event._id,
+//       event.categories[categ - 1]._id,
+//       teams
+//     );
+//     setLoad(false);
+//     if (status === 200) {
+//       set((prev) => [...prev, ...data]);
+//       close();
+//     }
+//   };
 
-
-  return (
-    <div className="blackscreen">
-      <div className="modal_ctn">
-        <div className="modal_top">
-          <h6>AÑADIR EQUIPOS</h6>
-          <div className="cross_ctn" onClick={close}>
-            <CrossIcon />
-          </div>
-        </div>
-        <div className="plus_teams_ctn">
-          {teams.map((t, i) => (
-            <div className="plus_team" key={i}>
-              <InputArray index={i} update={updateName} label="NOMBRE" />
-              <InputArray index={i} update={updateBox} label="BOX" />
-            </div>
-          ))}
-        </div>
-        <div className="mt_auto"></div>
-        <div className="bottom_ctn">
-          <div className="btn_plus_categ" onClick={pushTeam}>
-            <h6>Agregar Equipo</h6>
-          </div>
-          <button className="btn_confirm" onClick={click} disabled={load}>
-            {load ? <h6>Añadiendo Equipos...</h6> : <h6>Añadir Equipos</h6>}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
+//   return (
+//     <div className="blackscreen">
+//       <div className="modal_ctn">
+//         <div className="modal_top">
+//           <h6>AÑADIR EQUIPOS</h6>
+//           <div className="cross_ctn" onClick={close}>
+//             <CrossIcon />
+//           </div>
+//         </div>
+//         <div className="plus_teams_ctn">
+//           {teams.map((t, i) => (
+//             <div className="plus_team" key={i}>
+//               <InputArray index={i} update={updateName} label="NOMBRE" />
+//               <InputArray index={i} update={updateBox} label="BOX" />
+//             </div>
+//           ))}
+//         </div>
+//         <div className="mt_auto"></div>
+//         <div className="bottom_ctn">
+//           <div className="btn_plus_categ" onClick={pushTeam}>
+//             <h6>Agregar Equipo</h6>
+//           </div>
+//           <button className="btn_confirm" onClick={click} disabled={load}>
+//             {load ? <h6>Añadiendo Equipos...</h6> : <h6>Añadir Equipos</h6>}
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
 const PlusTeamsList = ({ teams }) => {
   return <div className="plus_teams_"></div>;
 };
+
+
+const splitTime = (time)=>{
+  let val = time.split(":")
+    val.forEach((num,index) => {
+      if(num === ''||num==='0') val[index] = '00'
+    });
+    return `${val[0]}:${val[1]}:${val[2]}` 
+}

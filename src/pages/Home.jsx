@@ -16,22 +16,22 @@ import { HashLink } from "react-router-hash-link";
 import { motion } from "framer-motion";
 
 const Home = () => {
-  const {events,time} = useContext(Context)
+  const { events, time } = useContext(Context);
 
   const click = () => {
     // console.log(moment().locale("es"));
     // let aux = moment.unix(events[0].until).format("DD, MMM.")
     // console.log(time);
   };
-  
+
   const variants = {
-    initial:{y:200,opacity:0},
-    open:{y:0,opacity:1},
-  }
+    initial: { y: 200, opacity: 0 },
+    open: { y: 0, opacity: 1 },
+  };
 
   return (
     <div className="Home">
-      <div className="hero_info_ctn" id="NOREP" >
+      <div className="hero_info_ctn" id="NOREP">
         <h6>
           #<span>TEAM</span> NO REP
         </h6>
@@ -60,7 +60,7 @@ const Home = () => {
             // if (days <= 7 && days >= 0) {
             //   return <EventCard key={event._id} event={event} />;
             // }
-              return <EventCard key={event._id} event={event} />;
+            return <EventCard key={event._id} event={event} />;
           })}
           {/* <EventCard />
           <EventCard /> */}
@@ -72,7 +72,7 @@ const Home = () => {
             // if (days > 7) {
             //   return <EventCard key={event._id} event={event} />;
             // }
-              return <EventCard key={event._id} event={event} />;
+            return <EventCard key={event._id} event={event} />;
           })}
           {/* <EventCard />
           <EventCard />
@@ -103,26 +103,42 @@ const offevent = {
 const convertDate = (date) => moment.unix(date).format("DD, MMM");
 
 export const EventCard = ({ event = offevent }) => {
+  const {admin} = useContext(Context);
+  const EventCardInfo = () => {
+    return (
+      <>
+        <img src={event.secure_url} alt="portada" />
+        <div className="ec_info">
+          <h1 className="ec_date">
+            {convertDate(event.since)} - {convertDate(event.until)}
+          </h1>
+          <div className="ec_info_mid">
+            <h1>{event.name}</h1>
+            <h1>{event.categories[0]?.name}</h1>
+            <h1>{event.categories[1]?.name}</h1>
+          </div>
+          <div>
+            <h1 className="ec_mi">Mas informacion</h1>
+          </div>
+        </div>
+      </>
+    );
+  };
   return (
-    <motion.div initial={{y:200,opacity:0}} animate={{y:0,opacity:1}} transition={{duration:.7}}  >
-    <HashLink className="event_card" to={`/resultados/${event._id}#top`} >
-      {/* <img src={eventcard} alt="" /> */}
-      <img src={event.image_url} alt="portada" />
-      <div className="ec_info">
-        <h1 className="ec_date">
-          {convertDate(event.since)} - {convertDate(event.until)}
-        </h1>
-        <div className="ec_info_mid">
-          <h1>{event.name}</h1>
-          {/* <h1>{event.place}</h1> */}
-          <h1>{event.categories[0]?.name}</h1>
-          <h1>{event.categories[1]?.name}</h1>
+    <motion.div
+      initial={{ y: 200, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.7 }}
+    >
+      {event.accesible || admin ? (
+        <HashLink className="event_card" to={`/resultados/${event._id}#top`}>
+          <EventCardInfo />
+        </HashLink>
+      ) : (
+        <div className="event_card">
+          <EventCardInfo />
         </div>
-        <div>
-          <h1 className="ec_mi">Mas informacion</h1>
-        </div>
-      </div>
-    </HashLink>
+      )}
     </motion.div>
   );
 };
@@ -160,7 +176,7 @@ const Calendar = ({ events, time }) => {
   const click = () => {};
 
   return (
-    <div className="calendar" id="Calendar" >
+    <div className="calendar" id="Calendar">
       <h6 className="title" onClick={click}>
         CALENDARIO
       </h6>
@@ -196,7 +212,7 @@ const CalendarRow = ({ day, children }) => {
 const convertDateIM = (date) => moment.unix(date).format("DD");
 const CalendarCard = ({ event }) => {
   return (
-    <HashLink className="calendar_card" to={`/resultados/${event?._id}#top`} >
+    <HashLink className="calendar_card" to={`/resultados/${event?._id}#top`}>
       <div className="cc_top">
         <h1 className="cc_title">{event.name}</h1>
         <h1 className="cc_categ">{event.categories[0]?.name}</h1>
@@ -204,7 +220,9 @@ const CalendarCard = ({ event }) => {
       </div>
       <div className="cc_bot">
         <h1>Ver Tabla</h1>
-        <p className="cc_date2" >{convertDateIM(event.since)} - {convertDateIM(event.until)}</p>
+        <p className="cc_date2">
+          {convertDateIM(event.since)} - {convertDateIM(event.until)}
+        </p>
       </div>
     </HashLink>
   );

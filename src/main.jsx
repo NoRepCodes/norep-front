@@ -4,12 +4,13 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { getEventsHome } from "./api/events.api";
 import { Context } from "./components/Context";
 import { Header } from "./components/Header";
+import LoadingPage from "./components/LoadingPage";
 import "./index.css";
 import { AdminLogin } from "./pages/AdminLogin";
 import { Events } from "./pages/Events";
 import Home from "./pages/Home";
 import { Results } from "./pages/Results";
-import Table from "./pages/Table";
+// import Table from "./pages/TableOld";
 
 const ErrorElement = () => {
   return (
@@ -23,10 +24,6 @@ const ErrorElement = () => {
 };
 
 const router = createBrowserRouter([
-  {
-    path: "/table",
-    element: <Table />,
-  },
   {
     path: "/",
     element: <Header />,
@@ -53,7 +50,8 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
-  const [admin, setAdmin] = useState(false)
+  const [first, setFirst] = useState(false)
+  const [admin, setAdmin] = useState(true)
   const [events, setEvents] = useState([]);
   const [time, setTime] = useState(0);
   useEffect(() => {
@@ -62,9 +60,16 @@ const App = () => {
       if (status === 200) {
         setEvents(data[0]);
         setTime(data[1]);
+        // console.log(data)
       }
+      setFirst(true)
     })();
   }, []);
+
+  // if(true){
+  if(!first && time !== 0){
+    return <LoadingPage />
+  }
 
   return (
     <Context.Provider value={{ events, time,admin, setAdmin,setEvents }}>
@@ -76,3 +81,41 @@ const App = () => {
 };
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+
+
+// TO DO
+
+/**
+ * close session button - PERFECT
+ * move buttons to hamburguer icon - PERFECT
+ * show "loading" when updating - PERFECT
+ * rotate images (carousel) - PERFECT
+ * remove temporal partners on mobile - DONE
+ * user box info display - PERFECT
+ * fix categories modal - PERFECT
+ * Remove time and add select wods - NOT SELECT BUT BETTER INPUT
+ * fix time-issue - Done
+ * 
+ * Add old events option ✔
+ * option to delete category at create and delete event ✔
+ * crud/ temporal partners (carousel imgs) ✔
+ * only allow admins to acces inaccesible events ✔
+ * btn to alternate between lbs and kgs ✔
+ * merge update with create event modal ✔
+ * 
+ * Loading page ✔
+ * 
+ * CIRCUIT NEW TABLE LOGIC
+ * AJUST MODALS ~
+ * {
+ *    Edit Event ✔
+ *    Edit Wods ✔
+ *    Edit Teams ✔
+ *    Edit Results 
+ * }
+ * 
+ * DOMAIN ~
+ * official partners links and svg ~ Need links
+ * fix bottom banner jump
+ * admins users logic /CRUD
+ */

@@ -26,10 +26,21 @@ export const findTeams = async (event_id) => {
 }
 
 
-export const createEvent = async (inputs, categ, base64) => {
+export const createEvent = async (inputs, categ, img, partners) => {
     // console.log(formData)
-    let categories = categ.map((c, i) => ({ name: c, wods: [] }))
-    return await axios.post(`${url}createEvent`, { ...inputs, categories, base64 }).then(res => {
+    let categories = []
+    categories = categ.map((c, i) => ({ name: c, wods: [] }))
+    return await axios.post(`${url}createEvent`, { ...inputs, categories, base64: img[0], partners }).then(res => {
+        return res
+    }).catch(err => {
+        return catchError(err)
+    })
+}
+export const updateEvent = async (inputs, categ, image, partners, toDelete, _id, categToDelete) => {
+    // console.log(formData)
+    let categories = []
+    categories = categ.map((c, i) => ({ name: c, wods: [] }))
+    return await axios.post(`${url}updateEvent`, { ...inputs, categories, image, partners, toDelete, _id, categToDelete }).then(res => {
         return res
     }).catch(err => {
         return catchError(err)
@@ -44,23 +55,31 @@ export const updateWods = async (event_id, category_id, wods) => {
     })
 }
 
-export const plusTeams = async (event_id, category_id, teams)=>{
-    return await axios.post(`${url}addTeams`, { event_id, category_id, teams }).then(res => {
+// export const plusTeams = async (event_id, category_id, teams)=>{
+//     return await axios.post(`${url}addTeams`, { event_id, category_id, teams }).then(res => {
+//         return res
+//     }).catch(err => {
+//         return catchError(err)
+//     })
+// }
+
+export const editTeams = async (event_id, category_id, teams,toDelete) => {
+    return await axios.post(`${url}editTeams`, { event_id, category_id, teams,toDelete }).then(res => {
         return res
     }).catch(err => {
         return catchError(err)
     })
 }
 
-export const updateResults = async(teams,wod_index)=>{
-    return await axios.post(`${url}addWods`, { teams,wod_index }).then(res => {
+export const updateResults = async (teams, wod_index) => {
+    return await axios.post(`${url}addWods`, { teams, wod_index }).then(res => {
         return res
     }).catch(err => {
         return catchError(err)
     })
 }
-export const toggleUpdating = async(event_id,state)=>{
-    return await axios.post(`${url}toggleUpdating`, { event_id,state }).then(res => {
+export const toggleUpdating = async (event_id, state) => {
+    return await axios.post(`${url}toggleUpdating`, { event_id, state }).then(res => {
         return res
     }).catch(err => {
         return catchError(err)

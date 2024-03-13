@@ -3,23 +3,42 @@ import "../sass/results.sass";
 import "../sass/tables.sass";
 import eventimg from "../images/EC.png";
 import corner from "../images/corner.png";
-import arw from "../images/arw.png";
+import pf1 from "../images/arw.png";
+import pf2 from "../images/pf2.png";
+import pf3 from "../images/pf3.png";
 import { Link, useParams } from "react-router-dom";
 import { useRef } from "react";
 import { Banner } from "../components/Banner";
 import { Context } from "../components/Context";
 import { findTeams, toggleUpdating } from "../api/events.api";
 import moment from "moment";
-import {
-  EditResultsModal,
-  EditTeamsModal,
-  EditWodsModal,
-} from "../components/Modals";
+import // EditResultsModal,
+// EditTeamsModal,
+"../components/Modals";
 
 import p1 from "../images/p1.png";
 import p2 from "../images/p2.png";
 import p3 from "../images/p3.png";
-import { motion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useAnimate,
+  useMotionValue,
+  useSpring,
+} from "framer-motion";
+import { order, pos } from "../helpers/TableLogic";
+import { Table } from "./Table";
+import { HamburguerMenu } from "../components/Header";
+import { UpdateEventModal } from "../components/modals/UpdateEventModal";
+import { ArwIcon, StrongIcon } from "../components/PartnersSvg";
+import { EditWodsModal } from "../components/modals/EditWodsModal";
+import { EditTeamsModal } from "../components/modals/EditTeamsModal";
+import { EditResultsModal } from "../components/modals/EditResultsModal";
+// import UpdateEventM from "../components/modals/UpdateEventM";
+
+const ww = window.innerWidth;
+const wh = window.innerHeight;
+const fs = (num) => num * (ww / 100) + num * (wh / 100);
 
 export const Results = () => {
   let { _id } = useParams();
@@ -28,6 +47,8 @@ export const Results = () => {
   const [categ, setCateg] = useState(1);
   const [teams, setTeams] = useState(null);
   const [input, setInput] = useState("");
+
+  const [kg, setKg] = useState(false);
 
   const [wodsModal, setWodsModal] = useState(false);
   const toggleWodsM = () => {
@@ -42,49 +63,71 @@ export const Results = () => {
   const toggleTeamModal = () => {
     setTeamModal(!teamModal);
   };
+  const [updateEventModal, setUpdateEventModal] = useState(false);
+  const toggleUpdateEventModal = () => {
+    setUpdateEventModal(!updateEventModal);
+  };
 
   useEffect(() => {
     if (events && _id) {
       (async () => {
         let aux = events.find((ev) => ev._id === _id);
-        console.log(aux);
-        setEvent(aux);
+        if (aux && (aux.accesible || admin)) {
+          setEvent(aux);
+        }
       })();
     }
-  }, [events]);
+  }, [event, events]);
 
   useEffect(() => {
     if (event) {
       (async () => {
-        const { status, data } = await findTeams(event._id);
-        if (status === 200) {
-          setTeams(data);
+        if (!teams) {
+          const { status, data } = await findTeams(event._id);
+          if (status === 200) {
+            setTeams(data);
+          }
         }
       })();
     }
   }, [event]);
 
+  const resetTeams = async () => {
+    const { status, data } = await findTeams(event._id);
+    if (status === 200) {
+      setTeams(data);
+    }
+  };
+
   const click = () => {
-    // console.log(event)
-    // console.log(categ)
-    // console.log(state);
-    // console.log(teams)
+    // setKg(!kg)
   };
 
   if (event === null)
     return (
-      <>
-        <p>no data</p>
-      </>
+      <div className="error_page">
+        <h6>404</h6>
+        <p>Página no encontrada :(</p>
+      </div>
     );
 
   const toggleUpdate = async () => {
-    const { data, status } = await toggleUpdating(event._id, event.updating);
-    console.log(data);
-    console.log(status);
-    if (status === 200) {
-      setEvent((prev) => ({ ...prev, updating: !event.updating }));
-    }
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        //toggleUpdating()
+        setEvent((prev) => ({ ...prev, updating: !event.updating }));
+        resolve(true);
+      }, 2000);
+    });
+  };
+
+  const hamFunctions = {
+    toggleWodsM,
+    toggleTeamModal,
+    toggleResuM,
+    toggleUpdateEventModal,
+    toggleUpdate,
+    updating: event ? event.updating : null,
   };
 
   return (
@@ -104,7 +147,14 @@ export const Results = () => {
       {teamModal && (
         <EditTeamsModal
           close={toggleTeamModal}
+          teamsValue={teams}
           {...{ event, categ, set: setTeams }}
+        />
+      )}
+      {updateEventModal && (
+        <UpdateEventModal
+          close={toggleUpdateEventModal}
+          {...{ event, categ, setEvents,resetTeams }}
         />
       )}
       <div className="results" onClick={click} id="top">
@@ -116,38 +166,24 @@ export const Results = () => {
           </Link>
           {admin && (
             <>
-              <div className="wods_btn" onClick={toggleWodsM}>
-                <h1>Editar Wods</h1>
-              </div>
-              <div className="teams_btn" onClick={toggleTeamModal}>
-                <h1>Añadir Equipos</h1>
-              </div>
-              <div className="results_btn" onClick={toggleResuM}>
-                <h1>Editar Resultados</h1>
-              </div>
-              <div className="results_btn" onClick={toggleUpdate}>
-                {event && event.updating ? (
-                  <h1>Mostrando Resultados</h1>
-                ) : (
-                  <h1>Ocultando Resultados</h1>
-                )}
-              </div>
+              <HamburguerBtns {...hamFunctions} />
             </>
           )}
         </div>
         <div className="results_ctn">
-          <ResultAside {...{ input, setInput, event, categ, setCateg }} />
-          <ResultInfo {...{ input, event, categ, setCateg, teams, setInput,admin }} />
+          <ResultAside
+            {...{ input, setInput, event, categ, setCateg, kg, setKg }}
+          />
+          <ResultInfo
+            {...{ input, event, categ, setCateg, teams, setInput, admin, kg }}
+          />
         </div>
         <div className="partners_resposive">
           <div className="p_img_ctn">
-            <img src={p1} alt="p1" />
+            <StrongIcon />
           </div>
           <div className="p_img_ctn">
-            <img src={p2} alt="p2" />
-          </div>
-          <div className="p_img_ctn">
-            <img src={p3} alt="p3" />
+            <ArwIcon />
           </div>
         </div>
       </div>
@@ -156,8 +192,34 @@ export const Results = () => {
   );
 };
 
-const ResultAside = ({ event, categ, setCateg, input, setInput }) => {
+const ResultAside = ({
+  event,
+  categ,
+  setCateg,
+  input,
+  setInput,
+  kg,
+  setKg,
+}) => {
   const [open, setOpen] = useState(false);
+  // const ml = useMotionValue(0);
+  const [cope, animate] = useAnimate();
+  useEffect(() => {
+    const si = setInterval(() => {
+      const pamount = event.partners.length * fs(12) * -1;
+      let ml = parseInt(
+        window.getComputedStyle(cope.current).marginLeft.replace("px", "")
+      );
+      let mlCuantity = ml === 0 ? 1 : Math.round(pamount / (ml * -1)) * -1;
+      const amount = mlCuantity * fs(12) * -1;
+      if (amount <= pamount) animate(cope.current, { marginLeft: 0 });
+      else animate(cope.current, { marginLeft: amount });
+    }, 1000);
+    // }, 10000);
+
+    return () => clearInterval(si);
+  }, [event]);
+
   const toggle = () => {
     setOpen(!open);
   };
@@ -168,7 +230,7 @@ const ResultAside = ({ event, categ, setCateg, input, setInput }) => {
   return (
     <div className="results_aside">
       <div className="ra_event">
-        <img src={event?.image_url} alt="portada" />
+        <img src={event?.secure_url} alt="portada" />
         {/* <img src={eventimg} alt="" /> */}
         <div className="categ_ctn">
           <h6>CATEGORIAS</h6>
@@ -204,6 +266,15 @@ const ResultAside = ({ event, categ, setCateg, input, setInput }) => {
             </div>
           )}
         </div>
+        <div
+          className={!kg ? "lb_btn" : "kg_btn"}
+          onClick={() => {
+            setKg(!kg);
+          }}
+        >
+          <h6>{!kg ? "Lbs" : "Kgs"}</h6>
+          {!kg ? <SwitchLeftIcon /> : <SwitchRightIcon />}
+        </div>
       </div>
       <div className="user_input">
         <input
@@ -213,12 +284,49 @@ const ResultAside = ({ event, categ, setCateg, input, setInput }) => {
           onChange={onChangeText}
         />
       </div>
-      <img src={arw} alt="patrocinante" className="partner" />
+      <div className="partners_carousel">
+        <motion.div
+          ref={cope}
+          className="pc_absolute"
+          style={{
+            width:
+              event?.partners.length === 0
+                ? fs(12)
+                : fs(12) * event.partners.length,
+          }}
+        >
+          {event?.partners.length > 0 ? (
+            <>
+              {event?.partners.map((p, index) => (
+                <img
+                  src={p.secure_url}
+                  alt={`patrocinante ` + index + 1}
+                  key={index}
+                />
+              ))}
+            </>
+          ) : (
+            <img src={pf1} alt="patrocinanteA" />
+          )}
+
+          {/* <img src={pf1} alt="patrocinanteA" />
+          <img src={pf2} alt="patrocinanteB" />
+          <img src={pf3} alt="patrocinanteC" /> */}
+        </motion.div>
+      </div>
     </div>
   );
 };
-const convertDate = (date) => moment.unix(date).format("DD, MMM");
-const ResultInfo = ({ input, event, categ, teams, setInput, setCateg,admin }) => {
+const ResultInfo = ({
+  input,
+  event,
+  categ,
+  teams,
+  setInput,
+  setCateg,
+  admin,
+  kg,
+}) => {
   const [open, setOpen] = useState(false);
   const toggle = () => {
     setOpen(!open);
@@ -231,18 +339,15 @@ const ResultInfo = ({ input, event, categ, teams, setInput, setCateg,admin }) =>
       <div className="ri_header">
         <div className="partners">
           <div className="p_img_ctn">
-            <img src={p1} alt="p1" />
+            <StrongIcon />
           </div>
           <div className="p_img_ctn">
-            <img src={p2} alt="p2" />
-          </div>
-          <div className="p_img_ctn">
-            <img src={p3} alt="p3" />
+            <ArwIcon />
           </div>
         </div>
         <div className="ri_header_top">
           <img src={corner} alt="corner" className="corner" />
-          <img src={event?.image_url} alt="banner" className="resp_ri_img" />
+          <img src={event?.secure_url} alt="banner" className="resp_ri_img" />
           <h1 className="ri_title">{event?.name}</h1>
           <h1>Individuales</h1>
           <h1>2023 - Final</h1>
@@ -297,633 +402,123 @@ const ResultInfo = ({ input, event, categ, teams, setInput, setCateg,admin }) =>
           </div>
         )}
       </div>
-      <Table {...{ input, event, categ, teams,admin }} />
+      <Table {...{ input, event, categ, teams, admin, kg }} />
     </div>
   );
 };
 
-const Table = ({ input, event, categ, teams,admin }) => {
-  const [right, setRight] = useState(false);
-  const [info, setInfo] = useState([]);
+const convertDate = (date) => moment.unix(date).format("DD, MMM");
 
-  useEffect(() => {
-    if (teams) {
-      (async () => {
-        setInfo(await order(teams, event, categ));
-      })();
-    }
-  }, [teams, categ]);
-
-  const toggleRight = () => {
-    // console.log(info[0].wods[0])
-    // console.log(info[1].wods[0])
-    // console.log(info)
-    // setRight(!right);
+const HamburguerBtns = ({
+  toggleWodsM,
+  toggleTeamModal,
+  toggleResuM,
+  toggleUpdate,
+  toggleUpdateEventModal,
+  updating,
+}) => {
+  const [open, setOpen] = useState(false);
+  const [upd, setUpd] = useState(false);
+  const toggleOpen = () => setOpen(!open);
+  const toggleTab = async () => {
+    setUpd(true);
+    await toggleUpdate();
+    setUpd(false);
+    // setTimeout(() => {
+    //   // toggleUpdate();
+    //   setUpd(false)
+    // }, 5000);
   };
-
-  return (
-    <div className="table" >
-      <TableHeader {...{ toggleRight, right, event, categ }} />
-      {event && event.updating && !admin ? (
-        <h1 className="updating_text">La tabla se está actualizando...</h1>
-      ) : (
-        <>
-          {info.map((team, index) => {
-            if (input.length > 0) {
-              let regex = new RegExp(input, "i");
-              if (regex.test(team.name))
-                return (
-                  <TableUser
-                    key={index}
-                    user={team}
-                    {...{ right, index }}
-                    last={index === info.length - 1 ? true : false}
-                    nextUser={info[index + 1] && info[index + 1]}
-                  />
-                );
-            } else {
-              return (
-                <TableUser
-                  key={index}
-                  user={team}
-                  {...{ right, index }}
-                  last={index === info.length - 1 ? true : false}
-                  nextUser={info[index + 1] && info[index + 1]}
-                />
-              );
-            }
-          })}
-        </>
-      )}
-    </div>
-  );
-};
-const wods = ["Los perdidos", "Zumaque 1A", "Zumaque 1B", "Vitico Davalillo"];
-const TableHeader = ({ right, toggleRight, event, categ }) => {
-  const [wodsWidth, setWodsWidth] = useState(0);
-  const [paWidth, setPaWidth] = useState(0);
-  const ref1 = useRef(null);
-  const ref2 = useRef(null);
-
-  const wtf = () => {
-    toggleRight();
-    // console.log(event.categories[categ - 1]);
+  const hbaAnimate = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0 },
+    transition: { duration: 0.3 },
+    // onMouseLeave:()=>{setOpen(false)}
   };
-
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     setWodsWidth(ref1.current.offsetWidth);
-  //     // console.log(ref1.current.offsetWidth);
-  //   };
-  //   setPaWidth(ref2.current.offsetWidth);
-  //   handleResize();
-  //   window.addEventListener("resize", handleResize);
-
-  //   return () => {
-  //     window.removeEventListener("resize", handleResize);
-  //   };
-  // }, []);
-
   return (
-    <div className="table_header" onClick={wtf}>
-      <div className="header_names" ref={ref1}>
-        {/* <div
-          className="header_pa"
-          style={{ right: right ? "220px" : "auto" }}
-          ref={ref2}
-        > */}
-        <div className="th_cell th_pos">
-          <h1>Posicion</h1>
-        </div>
-        <div className="th_cell th_name">
-          <h1>Nombre</h1>
-        </div>
-        {event?.categories[categ - 1].wods.map((item, index) => (
-          <div className="th_cell" key={index}>
-            <h1>{item.name}</h1>
-          </div>
-        ))}
-      </div>
-      {/* </div> */}
-      <div className="header_points">
-        {/* {paWidth > wodsWidth && <Arrow click={toggleRight} right={right} />} */}
-        <h1>Puntos</h1>
-        <div className="line"></div>
-        <h1>Total</h1>
-      </div>
+    <div className="hamburguerBtns">
+      {/* {open?
+      <div>a</div>
+      :<div>b</div>
+      } */}
+      <HamburguerMenu onClick={toggleOpen} openMenu={open} />
+      <AnimatePresence>
+        {open && (
+          <motion.div className="hb_absolute_ctn" {...hbaAnimate}>
+            <div className="hba_item" onClick={toggleUpdateEventModal}>
+              <h1>Editar Evento</h1>
+            </div>
+            <div className="hba_item" onClick={toggleWodsM}>
+              <h1>Editar Wods</h1>
+            </div>
+            <div className="hba_item" onClick={toggleTeamModal}>
+              <h1>Editar Equipos</h1>
+            </div>
+            <div className="hba_item" onClick={toggleResuM}>
+              <h1>Editar Resultados</h1>
+            </div>
+            <div className="hba_item" onClick={toggleTab}>
+              {upd ? (
+                <h1>Actualizando...</h1>
+              ) : (
+                <>
+                  {updating ? <h1>Mostrando Res.</h1> : <h1>Ocultando Res.</h1>}
+                  {updating ? <EyeIcon /> : <EyeCloseIcon />}
+                </>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
-const convSeconds = (s) => moment.utc(s * 1000).format("HH:mm:ss");
-const Arrow = ({ click, right }) => {
-  return (
-    <div className="btn_abs" onClick={click}>
-      <svg
-        className={right ? "rotate" : "_"}
-        clipRule="evenodd"
-        width="18"
-        height="18"
-        fillRule="evenodd"
-        strokeLinejoin="round"
-        strokeMiterlimit="2"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="m14.523 18.787s4.501-4.505 6.255-6.26c.146-.146.219-.338.219-.53s-.073-.383-.219-.53c-1.753-1.754-6.255-6.258-6.255-6.258-.144-.145-.334-.217-.524-.217-.193 0-.385.074-.532.221-.293.292-.295.766-.004 1.056l4.978 4.978h-14.692c-.414 0-.75.336-.75.75s.336.75.75.75h14.692l-4.979 4.979c-.289.289-.286.762.006 1.054.148.148.341.222.533.222.19 0 .378-.072.522-.215z"
-          fillRule="nonzero"
-        />
-      </svg>
-    </div>
-  );
-};
-/// TABLE USER
-const TableUser = ({ user, last = false, right, index, nextUser = false }) => {
-  return (
-    <motion.div className="table_user" initial={{opacity:0}} animate={{opacity:1}} transition={{duration:.7}}  >
-      <div className={`tu_ctn ${last && "no_b"}`}>
-        <div className="tu_pos">
-          <h1>{index + 1}</h1>
-        </div>
-        <div className="tu_name">
-          <h1>{user.name}</h1>
-        </div>
-        {user.wods.map((wod, index) => (
-          <div
-            className={`tu_cell ${
-              checkTie(wod, nextUser.wods, index) ? "tie_bg" : false
-            }`}
-            key={index}
-          >
-            {checkTie(wod, nextUser.wods, index) ? (
-              <div className="tie">
-                <IIcon />
-              </div>
-            ) : null}
-            {wod.amount === 0 ? (
-              <>
-                <h1 className="pos"> </h1>
-                <h1> </h1>
-              </>
-            ) : (
-              <>
-                <h1 className="pos">{pos(wod?.pos)}</h1>
-                <h1>
-                  {wod.amount &&
-                    (wod.wod_type === 1 || wod.wod_type === 3) &&
-                    `(${wod?.amount} ${wod?.amount_type})`}
-                </h1>
-                {wod.amount && wod.wod_type === 2 && (
-                  <>
-                    {wod.time < wod.time_cap ? (
-                      <h1>{`(${convSeconds(wod?.time)})`}</h1>
-                    ) : (
-                      <h1>{`(CAP+${wod.amount_cap - wod.amount})`}</h1>
-                    )}
-                  </>
-                )}
-              </>
-            )}
-            {/* <h1>{wod.amount && wod.wod_type === 2 && `(${convSeconds(wod?.time)})`}</h1> */}
-          </div>
-        ))}
-      </div>
-      <div className={`tu_points ${last && "no_b"}`}>
-        <h1>{user.points}</h1>
-        <h1>{user.percent}%</h1>
-      </div>
-    </motion.div>
-  );
-};
 
-const testUser = {
-  _id: "656c1e2670a59f6cf7bd7dc7",
-  name: "Los leones de Merida",
-  category_id: "656ed88ad08bf109f6d0c033",
-  event_id: "656ed88ad08bf109f6d0c032",
-  __v: 0,
-  points: 120,
-  percent: 99.99,
-  wods: [
-    {
-      pos: 1,
-      time: 600,
-      tiebrake: 150,
-      amount: 210,
-      amount_type: "Reps",
-      _id: "656fae0b22a8599de817e8a5",
-    },
-    {
-      pos: 1,
-      time: 600,
-      tiebrake: 150,
-      amount: 230,
-      amount_type: "Reps",
-      _id: "656fad94e0b0820380b618df",
-    },
-    {},
-    {},
-  ],
-};
-
-const order = async (data, event, categ) => {
-  let teams = [];
-  data.forEach((item) => {
-    if (item.category_id === event.categories[categ - 1]?._id) {
-      teams.push(item);
-    }
-  });
-
-  teams.forEach((team) => {
-    team.points = 0;
-    team.percent = 0;
-    team.tiebrake_total = 0;
-  });
-
-  let wl = event.categories[categ - 1].wods.length;
-  let ppw = Math.floor(100 / teams.length);
-  let wodsData = [];
-
-  ////// PUSH DATA TO WODS DATA (Re arrange)
-  for (let i = 0; i < wl; i++) {
-    wodsData.push([]);
-    teams.forEach((team) => {
-      wodsData[i].push({
-        name: team.name,
-        amount: team.wods[i]?.amount ? team.wods[i].amount : 0,
-        time: team.wods[i]?.time ? team.wods[i].time : null,
-        amount_type: team.wods[i]?.amount_type
-          ? team.wods[i].amount_type
-          : null,
-        tiebrake: team.wods[i]?.tiebrake ? team.wods[i].tiebrake : 0,
-        percent: team.wods[i]?.percent ? team.wods[i].percent : 0,
-      });
-    });
-  }
-
-  ////// APPLY POINTS AND PERCENT
-  wodsData.forEach((wod, windex) => {
-    let ogWod = event.categories[categ - 1].wods[windex];
-    if (ogWod.wod_type === 1) {
-      AMRAP_points(ogWod, wod, teams.length);
-    } else if (ogWod.wod_type === 2) {
-      FORTIME_points(ogWod, wod, teams.length);
-    } else if (ogWod.wod_type === 3) {
-      RM_points(ogWod, wod, teams.length);
-    }
-  });
-  /// AMOUNT TYPES
-  teams.forEach((team) => {
-    wodsData.forEach((wod, windex) => {
-      let ogWod = event.categories[categ - 1].wods[windex];
-      let fi = wod.findIndex((elm) => elm.name === team.name);
-      if (team.percent === undefined) team.percent = 0;
-      if (wod[fi].points !== undefined) {
-        team.points += wod[fi].points;
-        team.percent += wod[fi].percent;
-        team.wods[windex].pos = wod[fi].pos;
-        team.wods[windex].amount_type = wod[fi].amount_type;
-        team.wods[windex].wod_type = ogWod.wod_type;
-        if (ogWod.wod_type === 2) {
-          team.wods[windex].time_cap = ogWod.time_cap;
-          team.wods[windex].amount_cap = ogWod.amount_cap;
-        }
-        // if(wod[fi].amount_type === 2){
-
-        // }
-        // team.wods[windex].amount = wod[fi].amount_type;
-      }
-    });
-  });
-  teams.forEach((team) => {
-    let perc = parseFloat((team.percent / wl).toFixed(3));
-    if (Number.isNaN(perc)) {
-      team.percent = 0;
-    } else {
-      team.percent = perc;
-    }
-  });
-
-  if (teams[0]?.percent !== 0) {
-    TieBreaker(teams);
-  }
-  teams.forEach((team) => {
-    let last = wodsData.length - team.wods.length;
-    for (let i = 0; i < last; i++) {
-      team.wods.push({});
-    }
-  });
-  return teams;
-  // return [];
-};
-
-const AMRAP_points = async (ogWod, wod, tl) => {
-  let ppw = Math.floor(100 / tl);
-  wod.sort((a, b) => {
-    if (a.amount < b.amount) return 1;
-    else if (a.amount > b.amount) return -1;
-    else if (a.amount === b.amount) {
-      if (a.time > b.time) return 1;
-      else if (a.time < b.time) return -1;
-      else if (a.time === b.time) {
-        if (a.tiebrake > b.tiebrake) return 1;
-        else if (a.tiebrake < b.tiebrake) return -1;
-        else if (a.tiebrake === b.tiebrake) return 0;
-      }
-    }
-  });
-
-  // console.log(wod)
-  wod.forEach((team, index) => {
-    if (team.amount !== 0) {
-      if (index === 0) {
-        team.percent = 100;
-        team.points = 100;
-        team.pos = 1;
-      } else {
-        if (
-          team.amount === wod[index - 1].amount &&
-          team.time === wod[index - 1].time &&
-          team.tiebrake === wod[index - 1].tiebrake
-        ) {
-          team.points = wod[index - 1].points;
-          team.percent = wod[index - 1].percent;
-          team.pos = wod[index - 1].pos;
-        } else if (team.amount === wod[index - 1].amount) {
-          team.points = ppw * (tl - index);
-          team.percent = ppw * (tl - index);
-          team.pos = index + 1;
-          // team.percent = wod[index - 1].percent - 10 / tl;
-        } else {
-          // team.percent = (team.amount * 100) / wod[0].amount;
-          team.percent = ppw * (tl - index);
-          team.points = ppw * (tl - index);
-          team.pos = index + 1;
-        }
-      }
-    }
-  });
-
-  // console.log(wod);
-};
-const FORTIME_points = (ogWod, wod, tl) => {
-  let ppw = Math.floor(100 / tl);
-  wod.sort((a, b) => {
-    if (a.amount < b.amount) return 1;
-    else if (a.amount > b.amount) return -1;
-    else if (a.amount === b.amount) {
-      if (a.time > b.time) return 1;
-      else if (a.time < b.time) return -1;
-      else if (a.time === b.time) {
-        if (a.tiebrake > b.tiebrake) return 1;
-        else if (a.tiebrake < b.tiebrake) return -1;
-        else if (a.tiebrake === b.tiebrake) return 0;
-      }
-    }
-  });
-
-  // console.log(wod)
-
-  wod.forEach((team, index) => {
-    // console.log(wod)
-    if (team.amount !== 0) {
-      // team.percent = (team.amount * 100) / ogWod.amount_cap
-      // console.log(team.percent + team.name)
-      if (index === 0) {
-        team.percent = 100;
-        team.points = 100;
-        team.pos = 1;
-      } else {
-        if (
-          team.amount === wod[index - 1].amount &&
-          team.time === wod[index - 1].time &&
-          team.tiebrake === wod[index - 1].tiebrake
-        ) {
-          team.points = wod[index - 1].points;
-          team.percent = wod[index - 1].percent;
-          team.pos = wod[index - 1].pos;
-        } else if (team.amount === wod[index - 1].amount) {
-          team.points = ppw * (tl - index);
-          // team.percent = wod[index - 1].percent - 10 / tl;
-          team.percent = ppw * (tl - index);
-          team.pos = index + 1;
-        } else {
-          team.percent = ppw * (tl - index);
-          team.points = ppw * (tl - index);
-          team.pos = index + 1;
-        }
-      }
-
-      if (team.amount < ogWod.amount_cap) {
-        team.amount_type = "Caps +";
-        team.amount = ogWod.amount_cap - team.amount;
-      }
-    }
-    // console.log(team.percent + team.name);
-    // console.log(team)
-  });
-
-  // console.log(wod);
-};
-const RM_points = (ogWod, wod, tl) => {
-  let ppw = Math.floor(100 / tl);
-  wod.sort((a, b) => {
-    if (a.amount < b.amount) return 1;
-    else if (a.amount > b.amount) return -1;
-    else if (a.amount === b.amount) {
-      if (a.time > b.time) return 1;
-      else if (a.time < b.time) return -1;
-      else if (a.time === b.time) {
-        if (a.tiebrake > b.tiebrake) return 1;
-        else if (a.tiebrake < b.tiebrake) return -1;
-        else if (a.tiebrake === b.tiebrake) return 0;
-      }
-    }
-  });
-
-  wod.forEach((team, index) => {
-    if (team.amount !== 0) {
-      if (index === 0) {
-        team.percent = 100;
-        team.points = 100;
-        team.pos = 1;
-      } else {
-        if (
-          team.amount === wod[index - 1].amount &&
-          team.time === wod[index - 1].time &&
-          team.tiebrake === wod[index - 1].tiebrake
-        ) {
-          team.points = wod[index - 1].points;
-          team.percent = wod[index - 1].percent;
-          team.pos = wod[index - 1].pos;
-        } else if (team.amount === wod[index - 1].amount) {
-          team.points = ppw * (tl - index);
-          team.percent = ppw * (tl - index);
-          team.pos = index + 1;
-          // team.percent = wod[index - 1].percent - 10 / tl;
-        } else {
-          team.percent = ppw * (tl - index);
-          team.points = ppw * (tl - index);
-          team.pos = index + 1;
-          // console.log(team)
-        }
-      }
-    }
-    // console.log(team.percent +" "+ team.name)
-  });
-};
-
-const TieBreaker = (teams) => {
-  //// TO DO Recorrer equipos y evaluar a todos aquellos que tengan la misma cantidad y sumar los tiebrakes, quien tenga menor tiebrake, tiene mejor rendimiento
-
-  // Añadir el total de tiebrake a todos los equipos
-  teams.forEach((team) => {
-    team.tiebrake_total = 0;
-    team.wods.forEach((wod) => {
-      if (wod.tiebrake !== undefined) {
-        team.tiebrake_total += wod.tiebrake;
-      }
-    });
-  });
-
-  // Ordenar por prioridad de puntos, en caso de empate, tiebrake
-  teams.sort((a, b) => {
-    if (a.points < b.points) return 1;
-    else if (a.points > b.points) return -1;
-    else if (a.points === b.points) {
-      if (a.tiebrake_total > b.tiebrake_total) return 1;
-      else if (a.tiebrake_total < b.tiebrake_total) return -1;
-    }
-  });
-
-  //Reducir porcentaje en base a la diferencia de tiebrake con el equipo anterior
-  teams.forEach((team, index) => {
-    if (index !== 0) {
-      if (team.points === teams[index - 1].points) {
-        let formula =
-          (100 -
-            (teams[index - 1].tiebrake_total * 100) / team.tiebrake_total) /
-          teams.length;
-        if (Number.isNaN(formula)) {
-          team.percent = 0;
-        } else {
-          team.percent = parseFloat((team.percent - formula).toFixed(3));
-        }
-      }
-    }
-  });
-  teams.sort((a, b) => {
-    if (a.percent < b.percent) return 1;
-    else if (a.percent > b.percent) return -1;
-  });
-  // console.log(teams)
-};
-
-const pos = (pos) => {
-  switch (pos) {
-    case 1:
-      return "1ro";
-    case 2:
-      return "2do";
-    case 3:
-      return "3ro";
-    case 4:
-      return "4to";
-    case 5:
-      return "5to";
-    case 6:
-      return "6to";
-    case 7:
-      return "7mo";
-    case 8:
-      return "8vo";
-    case 9:
-      return "9no";
-    case 10:
-      return "10mo";
-    case 11:
-      return "11mo";
-    case 12:
-      return "12mo";
-    case 13:
-      return "13ro";
-    case 14:
-      return "14to";
-    case 15:
-      return "15to";
-    case 16:
-      return "16to";
-    case 17:
-      return "17ro";
-    case 18:
-      return "18to";
-    case 19:
-      return "19to";
-    case 20:
-      return "20vo";
-    case 21:
-      return "21ro";
-    case 22:
-      return "22do";
-    case 23:
-      return "23ro";
-    case 24:
-      return "24to";
-    case 25:
-      return "25to";
-    case 26:
-      return "26to";
-    case 27:
-      return "27mo";
-    case 28:
-      return "28vo";
-    case 29:
-      return "29no";
-    case 30:
-      return "30mo";
-    case 31:
-      return "31ro";
-    case 32:
-      return "32do";
-    case 33:
-      return "33ro";
-    case 34:
-      return "34to";
-    case 35:
-      return "35to";
-
-    default:
-      break;
-  }
-};
-
-const checkTie = (wod, nextWod, index) => {
-  if (nextWod) {
-    if (
-      wod.amount !== 0 &&
-      wod.amount === nextWod[index].amount &&
-      wod.time === nextWod[index].time
-    ) {
-      return true;
-      // return "tie"
-    }
-    // console.log(wod)
-    // console.log(nextWod[index])
-    // console.log(index)
-  } else {
-    return false;
-  }
-};
-
-const IIcon = () => {
+const EyeIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="14"
-      height="14"
+      width="24"
+      height="24"
       viewBox="0 0 24 24"
     >
-      <path d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm1 18h-2v-8h2v8zm-1-12.25c.69 0 1.25.56 1.25 1.25s-.56 1.25-1.25 1.25-1.25-.56-1.25-1.25.56-1.25 1.25-1.25z" />
+      <path d="M15 12c0 1.654-1.346 3-3 3s-3-1.346-3-3 1.346-3 3-3 3 1.346 3 3zm9-.449s-4.252 8.449-11.985 8.449c-7.18 0-12.015-8.449-12.015-8.449s4.446-7.551 12.015-7.551c7.694 0 11.985 7.551 11.985 7.551zm-7 .449c0-2.757-2.243-5-5-5s-5 2.243-5 5 2.243 5 5 5 5-2.243 5-5z" />
+    </svg>
+  );
+};
+const EyeCloseIcon = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+    >
+      <path d="M11.885 14.988l3.104-3.098.011.11c0 1.654-1.346 3-3 3l-.115-.012zm8.048-8.032l-3.274 3.268c.212.554.341 1.149.341 1.776 0 2.757-2.243 5-5 5-.631 0-1.229-.13-1.785-.344l-2.377 2.372c1.276.588 2.671.972 4.177.972 7.733 0 11.985-8.449 11.985-8.449s-1.415-2.478-4.067-4.595zm1.431-3.536l-18.619 18.58-1.382-1.422 3.455-3.447c-3.022-2.45-4.818-5.58-4.818-5.58s4.446-7.551 12.015-7.551c1.825 0 3.456.426 4.886 1.075l3.081-3.075 1.382 1.42zm-13.751 10.922l1.519-1.515c-.077-.264-.132-.538-.132-.827 0-1.654 1.346-3 3-3 .291 0 .567.055.833.134l1.518-1.515c-.704-.382-1.496-.619-2.351-.619-2.757 0-5 2.243-5 5 0 .852.235 1.641.613 2.342z" />
+    </svg>
+  );
+};
+
+const SwitchLeftIcon = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fillRule="evenodd"
+      clipRule="evenodd"
+    >
+      <path d="M6 18h12c3.311 0 6-2.689 6-6s-2.689-6-6-6h-12.039c-3.293.021-5.961 2.701-5.961 6 0 3.311 2.688 6 6 6zm12-10c-2.208 0-4 1.792-4 4s1.792 4 4 4 4-1.792 4-4-1.792-4-4-4z" />
+    </svg>
+  );
+};
+const SwitchRightIcon = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fillRule="evenodd"
+      clipRule="evenodd"
+    >
+      <path d="M18 18h-12c-3.311 0-6-2.689-6-6s2.689-6 6-6h12.039c3.293.021 5.961 2.701 5.961 6 0 3.311-2.688 6-6 6zm-12-10c2.208 0 4 1.792 4 4s-1.792 4-4 4-4-1.792-4-4 1.792-4 4-4z" />
     </svg>
   );
 };
