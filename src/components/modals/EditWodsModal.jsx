@@ -56,6 +56,7 @@ export const EditWodsModal = ({ close, event, categ, setEvents, events }) => {
           return ev;
         }
       });
+      console.log(newEvents)
       setEvents(newEvents);
       // console.log(data)
       close();

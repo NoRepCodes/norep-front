@@ -7,7 +7,7 @@ import {
   InputDate,
   InputLabel,
 } from "./ModalTools";
-import "../../sass/modals/CreateEventModal.sass";
+import "../../sass/modals/createEventModal.sass";
 import { createEvent } from "../../api/events.api";
 
 const convertBase64 = (file) => {

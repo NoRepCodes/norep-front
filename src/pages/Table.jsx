@@ -3,12 +3,12 @@ import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import { checkTie, order, pos } from "../helpers/TableLogic";
 
-const lbToKg = (lb)=> (lb * 0.453592).toFixed(2)
+const lbToKg = (lb) => (lb * 0.453592).toFixed(2);
 // const kgToLb = (kg)=> (kg * 2.20462).toFixed(2)
 
 const convSeconds = (s) => moment.utc(s * 1000).format("HH:mm:ss");
 
-export const Table = ({ input, event, categ, teams, admin,kg=true }) => {
+export const Table = ({ input, event, categ, teams, admin, kg = true }) => {
   const [right, setRight] = useState(false);
   const [info, setInfo] = useState([]);
 
@@ -18,9 +18,10 @@ export const Table = ({ input, event, categ, teams, admin,kg=true }) => {
         setInfo(await order(teams, event, categ));
       })();
     }
-  }, [teams, categ]);
+  }, [teams, categ, event]);
 
   const toggleRight = () => {
+    console.log(teams);
     // console.log(info[0].wods[0])
     // console.log(info[1].wods[0])
     // console.log(info)
@@ -42,7 +43,7 @@ export const Table = ({ input, event, categ, teams, admin,kg=true }) => {
                   <TableUser
                     key={index}
                     user={team}
-                    {...{ right, index,kg }}
+                    {...{ right, index, kg }}
                     last={index === info.length - 1 ? true : false}
                     nextUser={info[index + 1] && info[index + 1]}
                   />
@@ -52,8 +53,8 @@ export const Table = ({ input, event, categ, teams, admin,kg=true }) => {
                 <TableUser
                   key={index}
                   user={team}
-                  {...{ right, index,kg }}
-                  eventWods={event.categories[categ-1].wods}
+                  {...{ right, index, kg }}
+                  eventWods={event.categories[categ - 1].wods}
                   last={index === info.length - 1 ? true : false}
                   nextUser={info[index + 1] && info[index + 1]}
                 />
@@ -111,19 +112,20 @@ export const TableUser = ({
   index,
   nextUser = false,
   eventWods,
-  kg
+  kg,
 }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   const toggleOpen = () => {
     setOpen(!open);
     // console.log(user)
+    console.log(eventWods[index].amount_type);
   };
 
   const clickOutside = (event) => {
     if (ref.current && !ref.current.contains(event.target)) {
-      setOpen(false)
-  }
+      setOpen(false);
+    }
   };
 
   useEffect(() => {
@@ -134,7 +136,7 @@ export const TableUser = ({
   }, []);
 
   return (
-    <div className="table_user_ctn" ref={ref} >
+    <div className="table_user_ctn" ref={ref}>
       <motion.div
         className="table_user"
         initial={{ opacity: 0 }}
@@ -161,7 +163,7 @@ export const TableUser = ({
                   <IIcon />
                 </div>
               ) : null}
-              {wod.amount === 0 ? (
+              {wod === null || !wod.amount || wod.amount === 0 ? (
                 <>
                   <h1 className="pos"> </h1>
                   <h1> </h1>
@@ -170,11 +172,16 @@ export const TableUser = ({
                 <>
                   <h1 className="pos">{pos(wod?.pos)}</h1>
                   <h1>
-                    {wod.amount && wod.wod_type === 1 ? `(${wod?.amount} ${wod?.amount_type})`:null}
-                    {wod.amount && wod.wod_type === 3 ? 
-                    <>
-                    {!kg ?`(${(wod?.amount).toFixed(2)} ${wod?.amount_type})` : `(${lbToKg(wod?.amount)} Kgs)`}
-                    </>:null}
+                    {wod.amount && wod.wod_type === 1
+                      ? `(${wod?.amount} ${wod?.amount_type})`
+                      : null}
+                    {wod.amount && wod.wod_type === 3 ? (
+                      <>
+                        {!kg
+                          ? `(${(wod?.amount).toFixed(2)} ${wod?.amount_type})`
+                          : `(${lbToKg(wod?.amount)} Kgs)`}
+                      </>
+                    ) : null}
                   </h1>
                   {wod.amount && wod.wod_type === 2 && (
                     <>
@@ -183,6 +190,14 @@ export const TableUser = ({
                       ) : (
                         <h1>{`(CAP+${wod.amount_cap - wod.amount})`}</h1>
                       )}
+                    </>
+                  )}
+                  {wod.amount && wod.wod_type === 4 && (
+                    <>
+                      <h1>
+                        ({wod?.amount - wod?.penalty}{" "}
+                        {eventWods[index]?.amount_type})
+                      </h1>
                     </>
                   )}
                 </>
@@ -204,16 +219,19 @@ export const TableUser = ({
         {open && (
           <motion.div
             className="wods_display"
-            initial={{ height: 0,paddingTop:0 }}
-            animate={{ height: 'calc(5vw + 5vh)',paddingTop:'calc(1.1vw + 1.1vh)' }}
-            exit={{ height: 0,paddingTop:0 }}
+            initial={{ height: 0, paddingTop: 0 }}
+            animate={{
+              height: "calc(5vw + 5vh)",
+              paddingTop: "calc(1.1vw + 1.1vh)",
+            }}
+            exit={{ height: 0, paddingTop: 0 }}
             transition={{ duration: 0.5 }}
           >
             {user.wods.map((wod, index) => {
               return (
                 <div key={index} className="wods_display_item">
                   <h1>{eventWods[index].name}</h1>
-                  <WodInfo {...{ wod,kg}} />
+                  <WodInfo {...{ wod, kg }} evntwod={eventWods[index]} />
                 </div>
               );
             })}
@@ -237,15 +255,26 @@ const IIcon = () => {
   );
 };
 /// WODS GUIDE 1=AMRAP 2=FORTIME 3=RM 4=CIRCUIT
-const WodInfo = ({ wod,kg }) => {
+const WodInfo = ({ wod, kg, evntwod }) => {
   return (
     <>
       {/* <h1>{wodName(wod.wod_type)}</h1> */}
-      <h1 className="amounts">
-        {wodAmount(wod.amount,wod.wod_type,kg)} {wodAmountType(wod.wod_type,kg)}
-      </h1>
-      {wod.wod_type === 2 && <h1 className="amounts">Tiempo: {wodTime(wod.time)} min</h1>}
-      {wod.tiebrake !== 0 && <h1 className="amounts">Tiebrake: {wodTime(wod.tiebrake)} min</h1>}
+      {wod.amount !== 0 && (
+        <h1 className="amounts">
+          {wodAmount(wod.amount, wod.wod_type, kg)} {evntwod.amount_type}
+        </h1>
+      )}
+      {(wod.wod_type === 4 && wod.penalty !== 0) && (
+        <h1 className="amounts">
+          Penalty: {wod.penalty}
+        </h1>
+      )}
+      {(wod.wod_type === 2 || wod.wod_type === 4) && (
+        <h1 className="amounts">Tiempo: {wodTime(wod.time)} min</h1>
+      )}
+      {wod.tiebrake !== 0 && (
+        <h1 className="amounts">Tiebrake: {wodTime(wod.tiebrake)} min</h1>
+      )}
     </>
   );
 };
@@ -255,20 +284,20 @@ const wodName = (wod_type) => {
   else if (wod_type === 2) return "FORTIME";
   else if (wod_type === 3) return "RM";
 };
-const wodAmount = (amount,wod_type,kg)=>{
-  if (wod_type === 1 || wod_type === 2) return amount;
-  if (wod_type === 3 && kg) return lbToKg(amount) ;
+const wodAmount = (amount, wod_type, kg) => {
+  // console.log(wod_type)
+  if (wod_type === 1 || wod_type === 2 || wod_type === 4) return amount;
+  if (wod_type === 3 && kg) return lbToKg(amount);
   else if (wod_type === 3 && !kg) return amount;
-  
-}
-const wodAmountType = (wod_type,kg) => {
-  if (wod_type === 1 || wod_type === 2) return "Reps";
+};
+const wodAmountType = (wod_type, kg) => {
+  if (wod_type === 1 || wod_type === 2 || wod_type === 4) return "Reps";
   if (wod_type === 3 && kg) return "Kgs";
   else if (wod_type === 3 && !kg) return "Lbs";
 };
-const wodTime = (wod_time)=>{
-    // const minute = Math.floor(wod_time/60) 
-    // const seconds = wod_time%60 !== 0 ? `:${wod_time%60}` :''
-    // return minute+seconds
-    return moment.utc(wod_time * 1000).format("mm:ss")
-}
+const wodTime = (wod_time) => {
+  // const minute = Math.floor(wod_time/60)
+  // const seconds = wod_time%60 !== 0 ? `:${wod_time%60}` :''
+  // return minute+seconds
+  return moment.utc(wod_time * 1000).format("mm:ss");
+};

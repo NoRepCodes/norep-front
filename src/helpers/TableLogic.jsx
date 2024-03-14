@@ -38,7 +38,7 @@ export const order = async (data, event, categ) => {
     let ogWod = event.categories[categ - 1].wods[windex];
     if (ogWod.wod_type === 1) {
       AMRAP_points(ogWod, wod, teams.length);
-    } else if (ogWod.wod_type === 2) {
+    } else if (ogWod.wod_type === 2 || ogWod.wod_type === 4) {
       FORTIME_points(ogWod, wod, teams.length);
     } else if (ogWod.wod_type === 3) {
       RM_points(ogWod, wod, teams.length);
@@ -78,6 +78,7 @@ export const order = async (data, event, categ) => {
 
   if (teams[0]?.percent !== 0) {
     TieBreaker(teams);
+    // console.log('or here?')
   }
   teams.forEach((team) => {
     let last = wodsData.length - team.wods.length;
@@ -127,7 +128,7 @@ export const TieBreaker = (teams) => {
   teams.forEach((team) => {
     team.tiebrake_total = 0;
     team.wods.forEach((wod) => {
-      if (wod.tiebrake !== undefined) {
+      if ( wod !== null && wod.tiebrake !== undefined ) {
         team.tiebrake_total += wod.tiebrake;
       }
     });
@@ -247,6 +248,7 @@ export const pos = (pos) => {
 export const checkTie = (wod, nextWod, index) => {
   if (nextWod) {
     if (
+      wod !== null &&
       wod.amount !== 0 &&
       wod.amount === nextWod[index].amount &&
       wod.time === nextWod[index].time &&

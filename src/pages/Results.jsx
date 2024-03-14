@@ -40,6 +40,16 @@ const ww = window.innerWidth;
 const wh = window.innerHeight;
 const fs = (num) => num * (ww / 100) + num * (wh / 100);
 
+const isObjEmpty = (obj) => {
+  return Object.keys(obj).length === 0;
+};
+const blankResults = {
+  amount: 0,
+  tiebrake: 0,
+  time: 0,
+  penalty: 0,
+};
+
 export const Results = () => {
   let { _id } = useParams();
   const { events, setEvents, admin } = useContext(Context);
@@ -73,20 +83,19 @@ export const Results = () => {
       (async () => {
         let aux = events.find((ev) => ev._id === _id);
         if (aux && (aux.accesible || admin)) {
+          console.log(aux)
           setEvent(aux);
         }
       })();
     }
-  }, [event, events]);
+  }, [events]);
+  // }, [event,events]);
 
   useEffect(() => {
     if (event) {
       (async () => {
         if (!teams) {
-          const { status, data } = await findTeams(event._id);
-          if (status === 200) {
-            setTeams(data);
-          }
+          await resetTeams();
         }
       })();
     }
@@ -95,12 +104,29 @@ export const Results = () => {
   const resetTeams = async () => {
     const { status, data } = await findTeams(event._id);
     if (status === 200) {
-      setTeams(data);
+      let wl = event.categories[categ - 1].wods.length;
+      let aux = [...data];
+      aux.forEach((team, i1) => {
+        for (let i = 0; i < wl; i++) {
+          // console.log(team.wods[i])
+          if (team.wods[i] === undefined) aux[i1].wods[i] = { ...blankResults };
+        }
+      });
+      // console.log(aux);
+      setTeams(aux);
     }
   };
 
   const click = () => {
-    // setKg(!kg)
+    // console.log(event)
+    // resetTeams()
+    // let aux = [...teams];
+    // aux.forEach((team, i1) => {
+    //   team.wods.forEach((w, i2) => {
+    //     if (isObjEmpty(w)) aux[i1].wods[i2] = { ...blankResults };
+    //   });
+    // });
+    // console.log(aux);
   };
 
   if (event === null)
@@ -112,12 +138,20 @@ export const Results = () => {
     );
 
   const toggleUpdate = async () => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        //toggleUpdating()
+    // console.log(event);
+    // setEvent({...event,updating:!event.updating});
+    return new Promise(async (resolve, reject) => {
+      const { status, data } = await toggleUpdating(event._id,!event.updating);
+      if (status === 200) {
         setEvent((prev) => ({ ...prev, updating: !event.updating }));
         resolve(true);
-      }, 2000);
+      }else{
+        reject(false)
+      }
+      // setTimeout(() => {
+      //   setEvent((prev) => ({ ...prev, updating: !event.updating }));
+      //   resolve(true);
+      // }, 2000);
     });
   };
 
@@ -154,7 +188,7 @@ export const Results = () => {
       {updateEventModal && (
         <UpdateEventModal
           close={toggleUpdateEventModal}
-          {...{ event, categ, setEvents,resetTeams }}
+          {...{ event, categ, setEvents, resetTeams }}
         />
       )}
       <div className="results" onClick={click} id="top">
@@ -458,7 +492,7 @@ const HamburguerBtns = ({
             <div className="hba_item" onClick={toggleResuM}>
               <h1>Editar Resultados</h1>
             </div>
-            <div className="hba_item" onClick={toggleTab}>
+            <button className="hba_item" onClick={toggleTab} disabled={upd} >
               {upd ? (
                 <h1>Actualizando...</h1>
               ) : (
@@ -467,7 +501,7 @@ const HamburguerBtns = ({
                   {updating ? <EyeIcon /> : <EyeCloseIcon />}
                 </>
               )}
-            </div>
+            </button>
           </motion.div>
         )}
       </AnimatePresence>

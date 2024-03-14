@@ -86,36 +86,41 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 // TO DO
 
 /**
- * close session button - PERFECT
- * move buttons to hamburguer icon - PERFECT
- * show "loading" when updating - PERFECT
- * rotate images (carousel) - PERFECT
- * remove temporal partners on mobile - DONE
- * user box info display - PERFECT
- * fix categories modal - PERFECT
- * Remove time and add select wods - NOT SELECT BUT BETTER INPUT
- * fix time-issue - Done
+ * close session button - ✅
+ * move buttons to hamburguer icon - ✅
+ * show "loading" when updating - ✅
+ * rotate images (carousel) - ✅
+ * remove temporal partners on mobile - ✅
+ * user box info display - ✅
+ * fix categories modal - ✅
+ * Remove time and add select wods - NOT SELECT BUT BETTER INPUT ✅
+ * fix time-issue - ✅
  * 
- * Add old events option ✔
- * option to delete category at create and delete event ✔
- * crud/ temporal partners (carousel imgs) ✔
- * only allow admins to acces inaccesible events ✔
- * btn to alternate between lbs and kgs ✔
- * merge update with create event modal ✔
+ * Add old events option  ✅
+ * option to delete category at create and delete event  ✅
+ * crud/ temporal partners (carousel imgs)  ✅
+ * only allow admins to acces inaccesible events  ✅
+ * btn to alternate between lbs and kgs  ✅
+ * merge update with create event modal  ✅
  * 
- * Loading page ✔
+ * Loading page  ✅
  * 
- * CIRCUIT NEW TABLE LOGIC
- * AJUST MODALS ~
+ * CIRCUIT NEW TABLE LOGIC ✅
+ * AJUST MODALS ✅
  * {
- *    Edit Event ✔
- *    Edit Wods ✔
- *    Edit Teams ✔
- *    Edit Results 
+ *    Edit Event  ✅
+ *    Edit Wods  ✅
+ *    Edit Teams  ✅
+ *    Edit Results  ✅
  * }
  * 
- * DOMAIN ~
+ * DOMAIN ✅
  * official partners links and svg ~ Need links
- * fix bottom banner jump
- * admins users logic /CRUD
+ * fix bottom banner jump ❌
+ * admins users logic /CRUD ✅
+ * 
+ * - - - - LAST ONE
+ * LOGIN ADMIN
+ * TEST ENVIROMENT
+ * do testing, duh
  */

@@ -18,6 +18,7 @@ export const EditResultsModal = ({ close, event, categ, teams, setTeams }) => {
   const [list, setList] = useState([]);
 
   const chooseWod = (index) => {
+    // console.log(teams)
     setWindex(index);
   };
 
@@ -43,8 +44,18 @@ export const EditResultsModal = ({ close, event, categ, teams, setTeams }) => {
     const { status, data } = await updateResults(newList, windex);
     setLoad(false);
     if (status === 200) {
-      setTeams(data);
+      let wl = event.categories[categ - 1].wods.length;
+      let aux = [...data];
+      aux.forEach((team, i1) => {
+        for (let i = 0; i < wl; i++) {
+          // console.log(team.wods[i])
+          if (team.wods[i] === undefined) aux[i1].wods[i] = { ...blankResults };
+        }
+      });
+      setTeams(aux);
       close();
+      // console.log(aux);
+      // setTeams(data);
     }
     // console.log(newList)
   };
@@ -54,20 +65,31 @@ export const EditResultsModal = ({ close, event, categ, teams, setTeams }) => {
       let aux = teams.filter(
         (t) => t.category_id === event.categories[categ - 1]._id
       );
+      aux = aux.filter(
+        (t) =>
+          windex === 0 ||
+          (t.wods[windex - 1].amount !== 0 &&
+            t.wods[windex - 1].amount !== undefined)
+      );
       let selecWod = event.categories[categ - 1].wods[windex];
       let wt = selecWod.wod_type;
       let infoTeams = aux.map((t, i) => {
-        if (t.wods[windex].amount === undefined) {
-          // let at = selecWod.amount_type;
+        if (
+          t.wods[windex].amount === undefined ||
+          t.wods[windex].amount === 0
+        ) {
           return {
             ...blankResults,
-              _id: t._id,
-              name: t.name,
-              amount_type: selecWod.amount_type,
-              tiebrake: wt === 3 ? 0 : "00:00:00",
-              time: wt === 2 || wt === 4 ? '00:00:00':convSeconds(selecWod.time_cap) ,
-              wt,
-          }
+            _id: t._id,
+            name: t.name,
+            amount_type: selecWod.amount_type,
+            tiebrake: wt === 3 ? 0 : "00:00:00",
+            time:
+              wt === 2 || wt === 4
+                ? "00:00:00"
+                : convSeconds(selecWod.time_cap),
+            wt,
+          };
         } else {
           return {
             ...t.wods[windex],
@@ -82,16 +104,22 @@ export const EditResultsModal = ({ close, event, categ, teams, setTeams }) => {
           };
         }
       });
-      // console.log(infoTeams);
+      console.log(infoTeams);
       setList(infoTeams);
     }
   }, [windex]);
 
   useEffect(() => {
-    return () => {};
+    // console.log(teams)
   }, []);
 
   const goBack = () => {
+    console.log(teams);
+    // let aux = 0
+    // teams.forEach(t => {
+    //   if(t.wods.length > aux) aux = t.wods.length
+    // });
+    // console.log(aux)
     setWindex(null);
   };
 
@@ -108,15 +136,19 @@ export const EditResultsModal = ({ close, event, categ, teams, setTeams }) => {
           <SelectWod
             wods={event.categories[categ - 1].wods}
             chooseWod={chooseWod}
+            teams={teams}
           />
         ) : (
           <UsersList {...{ event, categ, teams, windex, list, setList }} />
         )}
         <div className="mt_auto"></div>
         <div className="bottom_ctn">
-          <div className="btn_plus_categ" onClick={goBack}>
-            <h6>Regresar</h6>
-          </div>
+          {windex !== null && (
+            // {windex !== null && (
+            <div className="btn_plus_categ" onClick={goBack}>
+              <h6>Regresar</h6>
+            </div>
+          )}
           <button className="btn_confirm" onClick={click} disabled={load}>
             {load ? (
               <h6>Editando Resultados...</h6>
@@ -244,7 +276,7 @@ const RU_Input = ({
   );
 };
 
-const SelectWod = ({ wods, chooseWod }) => {
+const SelectWod = ({ wods, chooseWod, teams }) => {
   return (
     <div className="select_wod">
       <h6>Selecciona un WOD</h6>
@@ -265,6 +297,7 @@ const SelectWod = ({ wods, chooseWod }) => {
   );
 };
 
+const fillInputs = () => {};
 
 /**
  * 
