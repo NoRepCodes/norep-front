@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { loginAdmin } from "../api/events.api";
 import { Context } from "../components/Context";
 import "../sass/admin.sass";
 
@@ -12,6 +13,7 @@ const idk = {
 export const AdminLogin = () => {
   const { setAdmin } = useContext(Context);
   const navigate = useNavigate();
+  const [load, setLoad] = useState(false)
   const [inputs, setInputs] = useState({
     username: "",
     pass: "",
@@ -23,9 +25,13 @@ export const AdminLogin = () => {
     setInputs({ ...inputs, [att]: value });
   };
 
-  const confirm = () => {
-    if (inputs.username === idk.a && inputs.pass === idk.b) {
-      setAdmin(true);
+  const confirm = async () => {
+    setLoad(true)
+    const {status,data} = await loginAdmin(inputs.username,inputs.pass)
+    setLoad(false)
+    if (status === 200) {
+      localStorage.setItem('adm', JSON.stringify(data));
+      setAdmin(data);
       navigate("/");
     }
   };
@@ -48,9 +54,9 @@ export const AdminLogin = () => {
           onChange={onChangeText}
           name="pass"
         />
-        <div className="btn" onClick={confirm}>
-          <p>Ingresar</p>
-        </div>
+        <button className="btn" onClick={confirm} disabled={load} >
+          {load ? 'Cargando...' : 'Ingresar'}
+        </button>
       </div>
     </div>
   );

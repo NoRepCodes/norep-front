@@ -50,8 +50,8 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
-  const [first, setFirst] = useState(false)
-  const [admin, setAdmin] = useState(true)
+  const [first, setFirst] = useState(false);
+  const [admin, setAdmin] = useState(false);
   const [events, setEvents] = useState([]);
   const [time, setTime] = useState(0);
   useEffect(() => {
@@ -62,17 +62,22 @@ const App = () => {
         setTime(data[1]);
         // console.log(data)
       }
-      setFirst(true)
+      const adm = JSON.parse(localStorage.getItem("adm"));
+      if (adm) {
+        setAdmin(adm);
+      }
+
+      setFirst(true);
     })();
   }, []);
 
   // if(true){
-  if(!first && time !== 0){
-    return <LoadingPage />
+  if (!first && time !== 0) {
+    return <LoadingPage />;
   }
 
   return (
-    <Context.Provider value={{ events, time,admin, setAdmin,setEvents }}>
+    <Context.Provider value={{ events, time, admin, setAdmin, setEvents }}>
       <React.StrictMode>
         <RouterProvider router={router} />
       </React.StrictMode>
@@ -81,7 +86,6 @@ const App = () => {
 };
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-
 
 // TO DO
 
@@ -95,16 +99,16 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App />);
  * fix categories modal - ✅
  * Remove time and add select wods - NOT SELECT BUT BETTER INPUT ✅
  * fix time-issue - ✅
- * 
+ *
  * Add old events option  ✅
  * option to delete category at create and delete event  ✅
  * crud/ temporal partners (carousel imgs)  ✅
  * only allow admins to acces inaccesible events  ✅
  * btn to alternate between lbs and kgs  ✅
  * merge update with create event modal  ✅
- * 
+ *
  * Loading page  ✅
- * 
+ *
  * CIRCUIT NEW TABLE LOGIC ✅
  * AJUST MODALS ✅
  * {
@@ -113,14 +117,15 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App />);
  *    Edit Teams  ✅
  *    Edit Results  ✅
  * }
- * 
+ *
  * DOMAIN ✅
  * official partners links and svg ~ Need links
  * fix bottom banner jump ❌
  * admins users logic /CRUD ✅
- * 
+ *
  * - - - - LAST ONE
- * LOGIN ADMIN
+ * Icon in tab ✅
+ * LOGIN ADMIN ✅
  * TEST ENVIROMENT
  * do testing, duh
  */

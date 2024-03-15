@@ -85,3 +85,10 @@ export const toggleUpdating = async (event_id, state) => {
         return catchError(err)
     })
 }
+export const loginAdmin = async (username,password) => {
+    return await axios.post(`${url}loginAdmin`, { username, password }).then(res => {
+        return res
+    }).catch(err => {
+        return catchError(err)
+    })
+}

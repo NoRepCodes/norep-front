@@ -18,7 +18,10 @@ export const Header = ({ children }) => {
 
   const [openCreate, setOpenCreate] = useState(false);
   const toggleModal = () => setOpenCreate(!openCreate);
-  const closeSession = () => setAdmin(false);
+  const closeSession = () => {
+    localStorage.removeItem('adm')
+    setAdmin(false)
+  };
   // console.log(href);
 
   return (
