@@ -43,7 +43,7 @@ export const CreateEventModal = ({ close, setEvents }) => {
   const [image, setImage] = useState(null);
   const [partners, setPartners] = useState(null);
   const [load, setLoad] = useState(false);
-  const [inputs, setInputs] = useState(testValues);
+  const [inputs, setInputs] = useState(resetValues);
   const [categories, setCategories] = useState([]);
 
   const validation = ()=>{
