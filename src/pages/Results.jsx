@@ -83,7 +83,6 @@ export const Results = () => {
       (async () => {
         let aux = events.find((ev) => ev._id === _id);
         if (aux && (aux.accesible || admin)) {
-          console.log(aux)
           setEvent(aux);
         }
       })();
@@ -118,15 +117,6 @@ export const Results = () => {
   };
 
   const click = () => {
-    // console.log(event)
-    // resetTeams()
-    // let aux = [...teams];
-    // aux.forEach((team, i1) => {
-    //   team.wods.forEach((w, i2) => {
-    //     if (isObjEmpty(w)) aux[i1].wods[i2] = { ...blankResults };
-    //   });
-    // });
-    // console.log(aux);
   };
 
   if (event === null)
@@ -188,7 +178,7 @@ export const Results = () => {
       {updateEventModal && (
         <UpdateEventModal
           close={toggleUpdateEventModal}
-          {...{ event, categ, setEvents, resetTeams }}
+          {...{ event, categ, setEvents, resetTeams,events }}
         />
       )}
       <div className="results" onClick={click} id="top">
