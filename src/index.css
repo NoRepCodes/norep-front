@@ -180,3 +180,7 @@ body {
 .error_page p{
   font-weight: bold;
 }
+
+button h6{
+  font-size: 1.15em;
+}

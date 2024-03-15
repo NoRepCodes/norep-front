@@ -26,8 +26,9 @@ export const findTeams = async (event_id) => {
 }
 
 
-export const createEvent = async (inputs, categ, img, partners) => {
+export const createEvent = async (inputs, categ, img, partn) => {
     // console.log(formData)
+    let partners = partn === null ? [] : partn
     let categories = []
     categories = categ.map((c, i) => ({ name: c, wods: [] }))
     return await axios.post(`${url}createEvent`, { ...inputs, categories, base64: img[0], partners }).then(res => {
@@ -47,6 +48,13 @@ export const updateEvent = async (inputs, categ, image, partners, toDelete, _id,
     })
 }
 
+export const deleteEvent = async (event) => {
+    return await axios.post(`${url}deleteEvent`, {event }).then(res => {
+        return res
+    }).catch(err => {
+        return catchError(err)
+    })
+}
 export const updateWods = async (event_id, category_id, wods) => {
     return await axios.post(`${url}updateWods`, { event_id, category_id, wods }).then(res => {
         return res

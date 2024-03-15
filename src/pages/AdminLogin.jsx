@@ -5,10 +5,6 @@ import { loginAdmin } from "../api/events.api";
 import { Context } from "../components/Context";
 import "../sass/admin.sass";
 
-const idk = {
-  a: "admin2023",
-  b: "07122023",
-};
 
 export const AdminLogin = () => {
   const { setAdmin } = useContext(Context);
@@ -26,6 +22,7 @@ export const AdminLogin = () => {
   };
 
   const confirm = async () => {
+    
     setLoad(true)
     const {status,data} = await loginAdmin(inputs.username,inputs.pass)
     setLoad(false)
@@ -33,6 +30,8 @@ export const AdminLogin = () => {
       localStorage.setItem('adm', JSON.stringify(data));
       setAdmin(data);
       navigate("/");
+    }else{
+      alert(data.msg)
     }
   };
 

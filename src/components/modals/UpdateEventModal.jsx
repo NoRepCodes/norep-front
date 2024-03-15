@@ -8,8 +8,9 @@ import {
   InputLabel,
 } from "./ModalTools";
 import "../../sass/modals/createEventModal.sass";
-import { createEvent, updateEvent } from "../../api/events.api";
+import { createEvent, deleteEvent, updateEvent } from "../../api/events.api";
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
 const resetValues = {
   name: "",
@@ -27,11 +28,19 @@ const testValues = {
   accesible: true,
 };
 
-export const UpdateEventModal = ({ event, categ, close,setEvents,resetTeams }) => {
+export const UpdateEventModal = ({
+  event,
+  categ,
+  close,
+  setEvents,
+  resetTeams,
+  events,
+}) => {
   // const [oldPartners, setOldPartners] = useState([event.partners])
   const [image, setImage] = useState([event.secure_url]);
   const [partners, setPartners] = useState(partnersImages(event));
   const [load, setLoad] = useState(false);
+  const [load2, setLoad2] = useState(false);
   const [inputs, setInputs] = useState({
     name: event.name,
     place: event.place,
@@ -40,7 +49,9 @@ export const UpdateEventModal = ({ event, categ, close,setEvents,resetTeams }) =
     accesible: event.accesible,
   });
   const [categories, setCategories] = useState(categoriesName(event));
-  const [categToDelete, setCategToDelete] = useState([])
+  const [categToDelete, setCategToDelete] = useState([]);
+
+  const navigate = useNavigate();
 
   const validation = () => {
     let bool = true;
@@ -77,7 +88,7 @@ export const UpdateEventModal = ({ event, categ, close,setEvents,resetTeams }) =
           newPartners.push(event.partners[indexof]);
         } else newPartners.push(p);
       });
-      
+
       const { status, data } = await updateEvent(
         inputs,
         categories,
@@ -89,7 +100,7 @@ export const UpdateEventModal = ({ event, categ, close,setEvents,resetTeams }) =
       );
       setLoad(false);
       if (status === 200) {
-        setEvents(prev=>(
+        setEvents((prev) =>
           prev.map((ev, i) => {
             if (ev._id === event._id) {
               return data;
@@ -97,13 +108,13 @@ export const UpdateEventModal = ({ event, categ, close,setEvents,resetTeams }) =
               return ev;
             }
           })
-        ));
-        if(categToDelete.length > 0) await resetTeams()
+        );
+        if (categToDelete.length > 0) await resetTeams();
         // setEvents((prev) => [...prev, data]);
         // console.log(data)
         close();
       } else {
-        // console.log(data);
+        alert(data.msg);
       }
     } else setLoad(false);
   };
@@ -114,11 +125,11 @@ export const UpdateEventModal = ({ event, categ, close,setEvents,resetTeams }) =
   const minusCateg = (index) => {
     let aux = [...categories];
     // Find if there is a category to get his ID and delete teams after
-    let exist = event.categories.findIndex(elm => elm.name === aux[index])
-    if(exist >= 0 ? true : false){
-      let aux2= [...categToDelete]
-      aux2.push(event.categories[exist]._id)
-      setCategToDelete(aux2)
+    let exist = event.categories.findIndex((elm) => elm.name === aux[index]);
+    if (exist >= 0 ? true : false) {
+      let aux2 = [...categToDelete];
+      aux2.push(event.categories[exist]._id);
+      setCategToDelete(aux2);
     }
 
     aux.splice(index, 1);
@@ -129,9 +140,21 @@ export const UpdateEventModal = ({ event, categ, close,setEvents,resetTeams }) =
     aux[index] = value;
     setCategories(aux);
   };
-  const deleteEvent = ()=>{
-    // TO DO
-  }
+  const deleteEventClick = async () => {
+    setLoad2(true);
+    const { status, data } = await deleteEvent(event);
+    setLoad2(false);
+    if (status === 200) {
+      let aux = [...events];
+      let indexof = aux.findIndex((ev) => ev._id === event._id);
+      aux.splice(indexof, 1);
+      setEvents(aux);
+      navigate("/");
+      close();
+    } else {
+      alert(data.msg);
+    }
+  };
 
   return (
     <Modal title="EDITAR EVENTO" close={close}>
@@ -201,17 +224,21 @@ export const UpdateEventModal = ({ event, categ, close,setEvents,resetTeams }) =
           )}
         </div>
       </div>
-      <BottomBtns {...{ confirm, load,deleteEvent}} />
+      <BottomBtns {...{ confirm, load, deleteEventClick, load2 }} />
     </Modal>
   );
 };
 
-const BottomBtns = ({ confirm, load,deleteEvent }) => {
+const BottomBtns = ({ confirm, load, deleteEventClick, load2 }) => {
   return (
     <div className="bottom_ctn">
-      <div className="btn_plus_categ" onClick={deleteEvent}>
-        <h6>Eliminar Evento</h6>
-      </div>
+      <button
+        className="btn_plus_categ"
+        onClick={deleteEventClick}
+        disabled={load2}
+      >
+        {load2 ? <h6>Eliminando Evento...</h6> : <h6>Eliminar Evento</h6>}
+      </button>
       <button className="btn_confirm" onClick={confirm} disabled={load}>
         {load ? <h6>Actualizando Evento...</h6> : <h6>Actualizar Evento</h6>}
       </button>
@@ -311,7 +338,6 @@ const CEMCheckbox = ({ inputs, setInputs }) => {
   );
 };
 
-
 const checkCloudinary = (link) => /res\.cloudinary/gm.test(link);
 
 const convertBase64 = (file) => {
@@ -341,8 +367,6 @@ const partnersImages = (event) => {
   });
   return arr;
 };
-
-
 
 const CheckOpen = () => (
   <svg

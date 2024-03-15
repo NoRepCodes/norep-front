@@ -56,11 +56,11 @@ const Home = () => {
         <div className="event_cell cards_cells">
           <EventTimeText text="EN CURSO" />
           {events.map((event) => {
-            // let days = moment.unix(event.until).diff(time, "days");
-            // if (days <= 7 && days >= 0) {
-            //   return <EventCard key={event._id} event={event} />;
-            // }
-            return <EventCard key={event._id} event={event} />;
+            let days = moment.unix(event.until).diff(time, "days");
+            if (days <= 7 && days >= 0) {
+              return <EventCard key={event._id} event={event} />;
+            }
+            // return <EventCard key={event._id} event={event} />;
           })}
           {/* <EventCard />
           <EventCard /> */}
@@ -68,11 +68,11 @@ const Home = () => {
         <div className="event_cell cards_cells">
           <EventTimeText text="PRÓXIMAS" />
           {events.map((event) => {
-            // let days = moment.unix(event.until).diff(time, "days");
-            // if (days > 7) {
-            //   return <EventCard key={event._id} event={event} />;
-            // }
-            return <EventCard key={event._id} event={event} />;
+            let days = moment.unix(event.until).diff(time, "days");
+            if (days > 7) {
+              return <EventCard key={event._id} event={event} />;
+            }
+            // return <EventCard key={event._id} event={event} />;
           })}
           {/* <EventCard />
           <EventCard />

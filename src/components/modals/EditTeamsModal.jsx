@@ -45,6 +45,8 @@ export const EditTeamsModal = ({ close, event, categ, teamsValue, set }) => {
       });
       set([...aux, ...data]);
       close();
+    }else {
+      alert(data.msg)
     }
   };
 

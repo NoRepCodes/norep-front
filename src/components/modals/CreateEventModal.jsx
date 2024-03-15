@@ -66,7 +66,7 @@ export const CreateEventModal = ({ close, setEvents }) => {
         setEvents((prev) => [...prev, data]);
         close();
       } else {
-        console.log(data);
+        alert(data.msg)
       }
     }else setLoad(false)
   };

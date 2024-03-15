@@ -56,6 +56,8 @@ export const EditResultsModal = ({ close, event, categ, teams, setTeams }) => {
       close();
       // console.log(aux);
       // setTeams(data);
+    } else {
+      alert(data.msg)
     }
     // console.log(newList)
   };
