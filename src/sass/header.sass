@@ -140,10 +140,15 @@
         // font-size: 14px
         color: v.$fourth
 
-.btn_create
+.header_btns
   display: flex
   flex-direction: row
   margin-left: auto
+
+.btn_create,.btn_closeS
+  display: flex
+  flex-direction: row
+  // margin-left: auto
   margin-right: 2em
   width: 140px
   align-items: center
@@ -155,6 +160,13 @@
 
   path
     fill: v.$primary
+
+.btn_closeS
+  width: 160px
+  border: 1px solid v.$third
+  path
+    fill: v.$third
+
 
 .hamb_dropdown
   display: none

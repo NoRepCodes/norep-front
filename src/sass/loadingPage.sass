@@ -1,0 +1,37 @@
+@use 'var' as v
+.loadingPage
+  width: 100%
+  height: 100vh
+  display: flex
+  flex-direction: column
+  justify-content: space-between
+  overflow: hidden
+
+  .head
+    background-color: v.$fourth
+    height: 100px
+    border-bottom: 1px solid #fff
+    width: 100%
+    display: flex
+    flex-direction: row
+    align-items: center
+    box-sizing: border-box
+
+  h6
+    color: v.$fourth
+    margin: auto
+    font-size: 2.5em
+
+  .foot
+    height: 42px
+    width: 100%
+    background-color: v.$primary
+
+@media screen and (width < 1000px)
+  .loadingPage
+    .head
+      height: 72px
+    h6
+      font-size: 1.5em
+    .foot
+      height: 24px
