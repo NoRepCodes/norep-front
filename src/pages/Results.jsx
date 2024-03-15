@@ -373,8 +373,8 @@ const ResultInfo = ({
           <img src={corner} alt="corner" className="corner" />
           <img src={event?.secure_url} alt="banner" className="resp_ri_img" />
           <h1 className="ri_title">{event?.name}</h1>
-          <h1>Individuales</h1>
-          <h1>2023 - Final</h1>
+          <h1>TEEN</h1>
+          <h1>NOVATO</h1>
         </div>
         <div className="ri_header_bot">
           <div className="rhb_left">
@@ -533,6 +533,7 @@ const SwitchLeftIcon = () => {
     >
       <path d="M6 18h12c3.311 0 6-2.689 6-6s-2.689-6-6-6h-12.039c-3.293.021-5.961 2.701-5.961 6 0 3.311 2.688 6 6 6zm12-10c-2.208 0-4 1.792-4 4s1.792 4 4 4 4-1.792 4-4-1.792-4-4-4z" />
     </svg>
+
   );
 };
 const SwitchRightIcon = () => {
