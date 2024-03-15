@@ -7,7 +7,7 @@ import {
   InputDate,
   InputLabel,
 } from "./ModalTools";
-import "../../sass/modals/CreateEventModal.sass";
+import "../../sass/modals/createEventModal.sass";
 import { createEvent, updateEvent } from "../../api/events.api";
 import moment from "moment";
 
