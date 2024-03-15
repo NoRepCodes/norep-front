@@ -126,6 +126,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App />);
  * - - - - LAST ONE
  * Icon in tab ✅
  * LOGIN ADMIN ✅
- * TEST ENVIROMENT
+ * TEST ENVIROMENT ✅
  * do testing, duh
  */
