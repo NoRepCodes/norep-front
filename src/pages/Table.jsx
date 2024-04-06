@@ -261,7 +261,7 @@ const WodInfo = ({ wod, kg, evntwod }) => {
       {/* <h1>{wodName(wod.wod_type)}</h1> */}
       {wod.amount !== 0 && (
         <h1 className="amounts">
-          {wodAmount(wod.amount, wod.wod_type, kg)} {evntwod.amount_type}
+          {wodAmount(wod.amount, wod.wod_type, kg,evntwod.amount_type)}
         </h1>
       )}
       {(wod.wod_type === 4 && wod.penalty !== 0) && (
@@ -284,11 +284,11 @@ const wodName = (wod_type) => {
   else if (wod_type === 2) return "FORTIME";
   else if (wod_type === 3) return "RM";
 };
-const wodAmount = (amount, wod_type, kg) => {
+const wodAmount = (amount, wod_type, kg,amount_type) => {
   // console.log(wod_type)
-  if (wod_type === 1 || wod_type === 2 || wod_type === 4) return amount;
-  if (wod_type === 3 && kg) return lbToKg(amount);
-  else if (wod_type === 3 && !kg) return amount;
+  if (wod_type === 1 || wod_type === 2 || wod_type === 4) return amount + " " +amount_type;
+  if (wod_type === 3 && kg) return lbToKg(amount) + " Kgs";
+  else if (wod_type === 3 && !kg) return amount + " Lbs" ;
 };
 const wodAmountType = (wod_type, kg) => {
   if (wod_type === 1 || wod_type === 2 || wod_type === 4) return "Reps";
@@ -301,3 +301,4 @@ const wodTime = (wod_time) => {
   // return minute+seconds
   return moment.utc(wod_time * 1000).format("mm:ss");
 };
+
