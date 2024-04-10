@@ -202,3 +202,53 @@
     width: 45px
     padding: 0px
     text-align: center
+
+.categories_select
+  position: relative
+  width: 50%
+  background-color: v.$third
+  h6
+    color: v.$fourth
+
+.categories_select_btn
+  box-sizing: border-box
+  padding: 0px 1em
+  height: 3em
+  border: 1px solid v.$fourth
+  width: 100%
+  margin-top: 1em
+  display: flex
+  flex-direction: row
+  align-items: center
+  justify-content: space-between
+  cursor: pointer
+
+  &:hover
+    background-color: v.$dark
+    h6
+      color: v.$third
+    path
+      fill: v.$third
+
+.abs_categories_select
+  display: flex
+  position: absolute
+  top: calc( 1em + 3em )
+  width: 100%
+  background-color: v.$third
+  flex-direction: column
+  box-sizing: border-box
+
+  h6
+    padding: 0px 1em
+    box-sizing: border-box
+    border: 1px solid #191919
+    width: 100%
+    height: 3em
+    font-size: 1em
+    line-height: 3em
+    border-top: 0px
+
+    &:hover
+      background-color: v.$fourth
+      color: v.$third

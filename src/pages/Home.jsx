@@ -62,8 +62,6 @@ const Home = () => {
             }
             // return <EventCard key={event._id} event={event} />;
           })}
-          {/* <EventCard />
-          <EventCard /> */}
         </div>
         <div className="event_cell cards_cells">
           <EventTimeText text="PRÓXIMAS" />
@@ -74,9 +72,6 @@ const Home = () => {
             }
             // return <EventCard key={event._id} event={event} />;
           })}
-          {/* <EventCard />
-          <EventCard />
-          <EventCard /> */}
         </div>
       </div>
       <Calendar {...{ events, time }} />

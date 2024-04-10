@@ -93,14 +93,17 @@ export const Results = () => {
   useEffect(() => {
     if (event) {
       (async () => {
+        // await resetTeams();
         if (!teams) {
           await resetTeams();
         }
       })();
     }
-  }, [event]);
+  }, [event, categ]);
 
   const resetTeams = async () => {
+    // console.log('is working?')
+    // console.log(event.categories[categ - 1])
     const { status, data } = await findTeams(event._id);
     if (status === 200) {
       let wl = event.categories[categ - 1].wods.length;
@@ -117,6 +120,8 @@ export const Results = () => {
   };
 
   const click = () => {
+    // console.log(teams[0].category_id)
+    // console.log(event.categories[categ - 1])
   };
 
   if (event === null)
@@ -131,12 +136,12 @@ export const Results = () => {
     // console.log(event);
     // setEvent({...event,updating:!event.updating});
     return new Promise(async (resolve, reject) => {
-      const { status, data } = await toggleUpdating(event._id,!event.updating);
+      const { status, data } = await toggleUpdating(event._id, !event.updating);
       if (status === 200) {
         setEvent((prev) => ({ ...prev, updating: !event.updating }));
         resolve(true);
-      }else{
-        reject(false)
+      } else {
+        reject(false);
       }
       // setTimeout(() => {
       //   setEvent((prev) => ({ ...prev, updating: !event.updating }));
@@ -172,13 +177,13 @@ export const Results = () => {
         <EditTeamsModal
           close={toggleTeamModal}
           teamsValue={teams}
-          {...{ event, categ, set: setTeams }}
+          {...{ event, categ, set: setTeams,setCateg }}
         />
       )}
       {updateEventModal && (
         <UpdateEventModal
           close={toggleUpdateEventModal}
-          {...{ event, categ, setEvents, resetTeams,events }}
+          {...{ event, categ, setEvents, resetTeams, events }}
         />
       )}
       <div className="results" onClick={click} id="top">
@@ -229,27 +234,26 @@ const ResultAside = ({
   // const ml = useMotionValue(0);
   const [cope, animate] = useAnimate();
   useEffect(() => {
+    const ml_fs = fs(12);
+    const pamount = event.partners.length * ml_fs - ml_fs;
     const si = setInterval(() => {
-      const pamount = event.partners.length * fs(12) * -1;
-      let ml = parseInt(
-        window.getComputedStyle(cope.current).marginLeft.replace("px", "")
-      );
-      let mlCuantity = ml === 0 ? 1 : Math.round(pamount / (ml * -1)) * -1;
-      const amount = mlCuantity * fs(12) * -1;
-      if (amount <= pamount) animate(cope.current, { marginLeft: 0 });
-      else animate(cope.current, { marginLeft: amount });
-    }, 1000);
-    // }, 10000);
-
+      const aux_ml =
+        parseInt(
+          window.getComputedStyle(cope.current).marginLeft.replace("px", "")
+        ) * -1;
+      const item_ml = aux_ml === 0 ? 0 : Math.round(aux_ml / ml_fs) * ml_fs;
+      const amount = item_ml + fs(12);
+      if (Math.round(item_ml) >= Math.round(pamount))
+        animate(cope.current, { marginLeft: 0 });
+      else animate(cope.current, { marginLeft: -amount });
+      // }, 3000);
+    }, 10000);
     return () => clearInterval(si);
   }, [event]);
 
-  const toggle = () => {
-    setOpen(!open);
-  };
-  const onChangeText = (e) => {
-    setInput(e.target.value);
-  };
+  const toggle = () => setOpen(!open);
+
+  const onChangeText = (e) => setInput(e.target.value);
 
   return (
     <div className="results_aside">
@@ -482,7 +486,7 @@ const HamburguerBtns = ({
             <div className="hba_item" onClick={toggleResuM}>
               <h1>Editar Resultados</h1>
             </div>
-            <button className="hba_item" onClick={toggleTab} disabled={upd} >
+            <button className="hba_item" onClick={toggleTab} disabled={upd}>
               {upd ? (
                 <h1>Actualizando...</h1>
               ) : (

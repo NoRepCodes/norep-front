@@ -25,6 +25,7 @@ export const EditResultsModal = ({ close, event, categ, teams, setTeams }) => {
   const click = async () => {
     setLoad(true);
     let newList = list.map((item) => {
+      console.log(item)
       if (item.wod_type === 1 || item.wod_type === 2) {
         return {
           ...item,
@@ -36,11 +37,13 @@ export const EditResultsModal = ({ close, event, categ, teams, setTeams }) => {
         return {
           ...item,
           time: convTime(item.time),
-          tiebrake: parseInt(item.tiebrake),
+          tiebrake: convTime(item.tiebrake),
           amount: parseInt(item.amount),
         };
       }
     });
+    
+    // console.log(newList)
     const { status, data } = await updateResults(newList, windex);
     setLoad(false);
     if (status === 200) {

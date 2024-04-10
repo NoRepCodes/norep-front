@@ -247,6 +247,7 @@ export const pos = (pos) => {
 
 export const checkTie = (wod, nextWod, index) => {
   if (nextWod) {
+
     if (
       wod !== null &&
       wod.amount !== 0 &&

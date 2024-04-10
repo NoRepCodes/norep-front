@@ -2,13 +2,23 @@ import { useState } from "react";
 import { editTeams } from "../../api/events.api";
 import { CrossIcon } from "./ModalTools";
 
-export const EditTeamsModal = ({ close, event, categ, teamsValue, set }) => {
+export const EditTeamsModal = ({
+  close,
+  event,
+  categ,
+  setCateg,
+  teamsValue,
+  set,
+}) => {
   const [load, setLoad] = useState(false);
   const [teams, setTeams] = useState(teamsValue ? teamsValue : []);
   const [toDelete, setToDelete] = useState([]);
 
   const pushTeam = () => {
-    setTeams([...teams, { name: "", box: "" }]);
+    setTeams([
+      ...teams,
+      { name: "", box: "", category_id: event.categories[categ - 1]._id },
+    ]);
   };
 
   const updateName = (value, index) => {
@@ -29,7 +39,7 @@ export const EditTeamsModal = ({ close, event, categ, teamsValue, set }) => {
   const click = async () => {
     const filtredTeams = [];
     teams.forEach((t, index) => {
-      if (!t._id) filtredTeams.push(t)
+      if (!t._id) filtredTeams.push(t);
     });
     setLoad(true);
     const { status, data } = await editTeams(
@@ -45,8 +55,8 @@ export const EditTeamsModal = ({ close, event, categ, teamsValue, set }) => {
       });
       set([...aux, ...data]);
       close();
-    }else {
-      alert(data.msg)
+    } else {
+      alert(data.msg);
     }
   };
 
@@ -69,33 +79,38 @@ export const EditTeamsModal = ({ close, event, categ, teamsValue, set }) => {
             <CrossIcon />
           </div>
         </div>
+        <CategoriesSelect {...{setCateg,categ,event}} />
         <div className="plus_teams_ctn">
-          {teams.map((t, i) => (
-            <div className="plus_team" key={i}>
-              <InputTeam
-                value={t.name}
-                name="name"
-                index={i}
-                update={updateName}
-                label="NOMBRE"
-              />
-              <InputTeam
-                value={t.box}
-                name="box"
-                index={i}
-                update={updateBox}
-                label="BOX"
-              />
-              <div
-                className="plus_team_cross"
-                onClick={() => {
-                  removeTeam(i);
-                }}
-              >
-                <CrossIcon />
-              </div>
-            </div>
-          ))}
+          {teams.map((t, i) => {
+            if (t.category_id === event.categories[categ - 1]._id) {
+              return (
+                <div className="plus_team" key={i}>
+                  <InputTeam
+                    value={t.name}
+                    name="name"
+                    index={i}
+                    update={updateName}
+                    label="NOMBRE"
+                  />
+                  <InputTeam
+                    value={t.box}
+                    name="box"
+                    index={i}
+                    update={updateBox}
+                    label="BOX"
+                  />
+                  <div
+                    className="plus_team_cross"
+                    onClick={() => {
+                      removeTeam(i);
+                    }}
+                  >
+                    <CrossIcon />
+                  </div>
+                </div>
+              );
+            }
+          })}
         </div>
         <div className="mt_auto"></div>
         <div className="bottom_ctn">
@@ -126,6 +141,58 @@ const InputTeam = ({ name, label, value, update, index }) => {
         onChange={onChangeText}
         value={value}
       />
+    </div>
+  );
+};
+
+// const categ_aux = [
+//   {
+//     name: "Avanzado",
+//     _id: "66148881b87420f0008e39db",
+//   },
+//   {
+//     name: "Rx",
+//     _id: "66148881b87420f0008e39dc",
+//   },
+//   {
+//     name: "Escalado",
+//     _id: "66148881b87420f0008e39dd",
+//   },
+// ];
+const CategoriesSelect = ({setCateg,categ,event}) => {
+  // const event = { categories: categ_aux };
+  const [open, setOpen] = useState(false);
+  const toggle = () => setOpen(!open);
+  return (
+    <div className="categories_select">
+      <div className="categories_select_btn" onClick={toggle}>
+        {event && <h6>{event.categories[categ - 1].name}</h6>}
+        {/* {event && <h6>{event.categories[0].name}</h6>} */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+        >
+          <path d="M12 21l-12-18h24z" />
+        </svg>
+      </div>
+      {open && (
+        <div className="abs_categories_select">
+          {event &&
+            event.categories.map((c, index) => (
+              <h6
+                key={index}
+                onClick={() => {
+                  setCateg(index + 1);
+                  toggle();
+                }}
+              >
+                {c.name}
+              </h6>
+            ))}
+        </div>
+      )}
     </div>
   );
 };
