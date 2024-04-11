@@ -12,7 +12,7 @@ export const Table = ({ input, event, cindex, teams, admin, kg = true }) => {
   useEffect(() => {
     if (data === null && event !== null && teams !== null) {
       (async () => {
-        setData(await order2Improve(event, teams));
+        setData(await order(event, teams));
       })();
     }
   }, [event, teams]);
