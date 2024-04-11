@@ -9,10 +9,10 @@ const convertDate = (date) => moment.unix(date).format("DD, MMM");
 const ResultInfo = ({
     input,
     event,
-    categ,
+    cindex,
     teams,
     setInput,
-    setCateg,
+    setCindex,
     admin,
     kg,
   }) => {
@@ -61,7 +61,7 @@ const ResultInfo = ({
         <div style={{ position: "relative" }}>
           <div className="resp_categories_ctn" onClick={toggle}>
             {event ? (
-              <p>{event.categories[categ - 1].name}</p>
+              <p>{event.categories[cindex].name}</p>
             ) : (
               <p>Selecciona una categoria</p>
             )}
@@ -81,7 +81,7 @@ const ResultInfo = ({
                   <p
                     key={index}
                     onClick={() => {
-                      setCateg(index + 1);
+                      setCindex(index);
                       toggle();
                     }}
                   >
@@ -91,7 +91,7 @@ const ResultInfo = ({
             </div>
           )}
         </div>
-        <Table {...{ input, event, categ, teams, admin, kg }} />
+        <Table {...{ input, event, cindex, teams, admin, kg }} />
       </div>
     );
   };

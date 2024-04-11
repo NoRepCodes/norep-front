@@ -9,8 +9,8 @@ const fs = (num) => num * (ww / 100) + num * (wh / 100);
 
 const ResultAside = ({
     event,
-    categ,
-    setCateg,
+    cindex,
+    setCindex,
     input,
     setInput,
     kg,
@@ -50,7 +50,7 @@ const ResultAside = ({
             <h6>CATEGORIAS</h6>
             <div className="categ_dropdown" onClick={toggle}>
               {event ? (
-                <p>{event.categories[categ].name}</p>
+                <p>{event.categories[cindex].name}</p>
               ) : (
                 <p>Selecciona una categoria</p>
               )}
@@ -70,7 +70,7 @@ const ResultAside = ({
                     <p
                       key={index}
                       onClick={() => {
-                        setCateg(index);
+                        setCindex(index);
                         toggle();
                       }}
                     >
@@ -122,10 +122,7 @@ const ResultAside = ({
             ) : (
               <img src={pf1} alt="patrocinanteA" />
             )}
-  
-            {/* <img src={pf1} alt="patrocinanteA" />
-            <img src={pf2} alt="patrocinanteB" />
-            <img src={pf3} alt="patrocinanteC" /> */}
+
           </motion.div>
         </div>
       </div>

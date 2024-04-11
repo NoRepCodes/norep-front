@@ -1,184 +1,178 @@
-export const order = async (data, event, categ) => {
-  let teams = [];
-  data.forEach((item) => {
-    if (item.category_id === event.categories[categ - 1]?._id) {
-      teams.push(item);
-    }
-  });
 
+let evAux = {
+  categories: [
+    {
+      _id: "",
+      name: "",
+      wods: [
+        {
+          name: "",
+          time_cap: 0,
+          amount_cap: 0,
+          amount_type: "",
+          wod_type: 0,
+          _results: [],
+        },
+      ],
+    },
+  ],
+};
+
+let teamAux = [
+  {
+    _id: "",
+    name: "",
+    category_id: "",
+    event_id: "",
+    box: "",
+    wods: [
+      {
+        amount: 0,
+        amount_type: "",
+        time: 0,
+        tiebrake: 0,
+        penalty: 0,
+      },
+    ],
+  },
+];
+
+export const order = async (eventx = evAux, data = teamAux) => {
+  // iterate values to avoid reflecting the real variables
+  let event = { ...eventx };
+  let teams = [...data];
+  /// Insert ghost values on teams
   teams.forEach((team) => {
-    team.points = 0;
-    team.percent = 0;
-    team.tiebrake_total = 0;
+    team._points = 0;
+    team._percent = 0;
+    team._tiebrake_total = 0;
   });
 
-  let wl = event.categories[categ - 1].wods.length;
-  let ppw = Math.floor(100 / teams.length);
-  let wodsData = [];
+  // For each category and for each wod, distribute wods teams
+  // and sort, apply _points + _amount_type
+  event.categories.forEach((c) => {
+    c.wods.forEach((w, windex) => {
+      // reset results
+      w._results = [];
+      // Push team wods result into category wod
+      teams.forEach((t) => {
+        if (t.category_id === c._id) {
+          w._results.push(t.wods[windex]);
+        }
+      });
+      // Order results by wod_type and values
+      if (w.wod_type === 4) w._results.sort((a, b) => circuitSort(a, b));
+      else w._results.sort((a, b) => wodSort(a, b));
 
-  ////// PUSH DATA TO WODS DATA (Re arrange)
-  for (let i = 0; i < wl; i++) {
-    wodsData.push([]);
-    teams.forEach((team) => {
-      wodsData[i].push({
-        name: team.name,
-        amount: team.wods[i]?.amount ? team.wods[i].amount : 0,
-        time: team.wods[i]?.time ? team.wods[i].time : null,
-        amount_type: team.wods[i]?.amount_type
-          ? team.wods[i].amount_type
-          : null,
-        tiebrake: team.wods[i]?.tiebrake ? team.wods[i].tiebrake : 0,
-        percent: team.wods[i]?.percent ? team.wods[i].percent : 0,
+      // tr = team result
+      // apply points to team results and share amount_type
+      w._results.forEach((tr, tr_index) => {
+        // put CAP+ on for time if its: FORTIME & time exceed without cap amount
+        if (
+          w.wod_type === 2 &&
+          w.time_cap === tr.time &&
+          w.amount_cap > tr.amount
+        ) {
+          tr._amount_left = w.amount_cap - tr.amount;
+          tr._amount_type = "CAP+";
+        } else tr._amount_type = w.amount_type;
+        applyPoints(tr, tr_index, w, w._results.length);
       });
     });
-  }
-
-  ////// APPLY POINTS AND PERCENT
-  wodsData.forEach((wod, windex) => {
-    let ogWod = event.categories[categ - 1].wods[windex];
-    if (ogWod.wod_type === 1) {
-      AMRAP_points(ogWod, wod, teams.length);
-    } else if (ogWod.wod_type === 2) {
-      FORTIME_points(ogWod, wod, teams.length);
-    } else if (ogWod.wod_type === 3) {
-      RM_points(ogWod, wod, teams.length);
-    } else if (ogWod.wod_type === 4) {
-      CIRCUIT_points(ogWod,wod, teams.length);
-    }
   });
-  console.log(wodsData)
-  /// AMOUNT TYPES
-  teams.forEach((team) => {
-    wodsData.forEach((wod, windex) => {
-      let ogWod = event.categories[categ - 1].wods[windex];
-      let fi = wod.findIndex((elm) => elm.name === team.name);
-      if (team.percent === undefined) team.percent = 0;
-      if (wod[fi].points !== undefined) {
-        team.points += wod[fi].points;
-        team.percent += wod[fi].percent;
-        team.wods[windex].pos = wod[fi].pos;
-        team.wods[windex].amount_type = wod[fi].amount_type;
-        team.wods[windex].wod_type = ogWod.wod_type;
-        if (ogWod.wod_type === 2) {
-          team.wods[windex].time_cap = ogWod.time_cap;
-          team.wods[windex].amount_cap = ogWod.amount_cap;
-        }
-        // if(wod[fi].amount_type === 2){
 
-        // }
-        // team.wods[windex].amount = wod[fi].amount_type;
-      }
+  // plus every point and tiebrake
+  teams.forEach((t) => {
+    t.wods.forEach((w) => {
+      // verify that wod points exist to avoid NaN
+      t._points += w.points ? w.points : 0;
+      t._tiebrake_total += w.tiebrake;
     });
-  });
-  teams.forEach((team) => {
-    let perc = parseFloat((team.percent / wl).toFixed(3));
+    let perc = parseFloat((t._points / t.wods.length).toFixed(3));
     if (Number.isNaN(perc)) {
-      team.percent = 0;
+      t._percent = 0;
     } else {
-      team.percent = perc;
+      t._percent = perc;
     }
   });
-
-  if (teams[0]?.percent !== 0) {
-    TieBreaker(teams);
-    // console.log('or here?')
-  }
-  teams.forEach((team) => {
-    let last = wodsData.length - team.wods.length;
-    for (let i = 0; i < last; i++) {
-      team.wods.push({});
-    }
-  });
-  return teams;
-  // return [];
-};
-
-export const AMRAP_points = async (ogWod, wod, tl) => {
-  let ppw = Math.floor(100 / tl);
-  wod.sort((a, b) => wodSort(a, b));
-
-  // console.log(wod)
-  wod.forEach((team, index) => {
-    wodForeach(team, index, wod, tl, ppw);
-  });
-
-  // console.log(wod);
-};
-export const FORTIME_points = (ogWod, wod, tl) => {
-  let ppw = Math.floor(100 / tl);
-  wod.sort((a, b) => wodSort(a, b));
-
-  /// ppw = points per wods
-  wod.forEach((team, index) => {
-    wodForeach(team, index, wod, tl, ppw);
-  });
-
-  // console.log(wod);
-};
-
-export const RM_points = (ogWod, wod, tl) => {
-  let ppw = Math.floor(100 / tl);
-  wod.sort((a, b) => wodSort(a, b));
-
-  wod.forEach((team, index) => {
-    wodForeach(team, index, wod, tl, ppw);
-  });
-};
-
-export const CIRCUIT_points = (ogWod,wod, tl) => {
-  /// ppw = points per wods
-  let ppw = Math.floor(100 / tl);
-  wod.sort((a, b) => circuitSort(a, b));
-  wod.forEach((team, index) => {
-    wodForeach(team, index, wod, tl, ppw,ogWod);
-  });
-};
-
-export const TieBreaker = (teams) => {
-  //// TO DO Recorrer equipos y evaluar a todos aquellos que tengan la misma cantidad y sumar los tiebrakes, quien tenga menor tiebrake, tiene mejor rendimiento
-
-  // Añadir el total de tiebrake a todos los equipos
-  teams.forEach((team) => {
-    team.tiebrake_total = 0;
-    team.wods.forEach((wod) => {
-      if (wod !== null && wod.tiebrake !== undefined) {
-        team.tiebrake_total += wod.tiebrake;
-      }
+  // order teams per percent before spliting them into categories
+  teams.sort((a, b) => (a._percent < b._percent ? 1 : -1));
+  const categTeams = event.categories.map((c) => []);
+  event.categories.forEach((c, cindex) => {
+    teams.forEach((t) => {
+      if (t.category_id === c._id) categTeams[cindex].push(t);
     });
   });
+  // console.log(categTeams)
+  return categTeams;
+};
 
-  // Ordenar por prioridad de puntos, en caso de empate, tiebrake
-  teams.sort((a, b) => {
-    if (a.points < b.points) return 1;
-    else if (a.points > b.points) return -1;
-    else if (a.points === b.points) {
-      if (a.tiebrake_total > b.tiebrake_total) return 1;
-      else if (a.tiebrake_total < b.tiebrake_total) return -1;
+const wodSort = (a, b) => {
+  if (a.amount < b.amount) return 1;
+  else if (a.amount > b.amount) return -1;
+  else if (a.amount === b.amount) {
+    if (a.time > b.time) return 1;
+    else if (a.time < b.time) return -1;
+    else if (a.time === b.time) {
+      if (a.tiebrake > b.tiebrake) {
+        // here the tie winner indicator
+        b._tie_winner = true;
+        return 1;
+      } else if (a.tiebrake < b.tiebrake) {
+        a._tie_winner = true;
+        return -1;
+      } else if (a.tiebrake === b.tiebrake) return 0;
     }
-  });
+  }
+};
 
-  //Reducir porcentaje en base a la diferencia de tiebrake con el equipo anterior
-  teams.forEach((team, index) => {
-    if (index !== 0) {
-      if (team.points === teams[index - 1].points) {
-        let formula =
-          (100 -
-            (teams[index - 1].tiebrake_total * 100) / team.tiebrake_total) /
-          teams.length;
-        if (Number.isNaN(formula)) {
-          team.percent = 0;
-        } else {
-          team.percent = parseFloat((team.percent - formula).toFixed(3));
-        }
+const circuitSort = (a, b) => {
+  if (a.time > b.time) return 1;
+  else if (a.time < b.time) return -1;
+  else if (a.time === b.time) {
+    if (a.tiebrake > b.tiebrake) return 1;
+    else if (a.tiebrake < b.tiebrake) return -1;
+    else if (a.tiebrake === b.tiebrake) return 0;
+  }
+};
+
+const applyPoints = (tr, index, wod) => {
+  let tl = wod._results.length;
+  // ppw = points per wod
+  let ppw = Math.floor(100 / tl);
+  // Make sure that there are values, cheking time
+  if (tr.time !== 0 || tr.amount !== 0) {
+    // if the team_result is the first one, put him 100% and points
+    if (index === 0) {
+      tr.percent = 100;
+      tr.points = 100;
+      tr.pos = 1;
+      // if the tr is not the first one, continue
+    } else {
+      const prev = wod._results[index - 1];
+      // if EVERYTHING is the same as the previous tr
+      if (
+        tr.amount === prev.amount &&
+        tr.time === prev.time &&
+        tr.tiebrake === prev.tiebrake
+        // put the same values as the previous tr
+      ) {
+        tr.points = prev.points;
+        tr.percent = prev.percent;
+        tr.pos = prev.pos;
+
+        // if amounts aren't the same as previous tr
+        // place points and percent in base of ppw
+      } else {
+        tr.percent = ppw * (tl - index);
+        tr.points = ppw * (tl - index);
+        tr.pos = index + 1;
       }
     }
-  });
-  teams.sort((a, b) => {
-    if (a.percent < b.percent) return 1;
-    else if (a.percent > b.percent) return -1;
-  });
-  // console.log(teams)
+  }
 };
+
+
 
 export const pos = (pos) => {
   // console.log(pos)
@@ -257,94 +251,4 @@ export const pos = (pos) => {
     default:
       break;
   }
-};
-
-export const checkTie = (wod, nextWod, index) => {
-  if (nextWod) {
-    if (
-      wod !== null &&
-      wod.wod_type === 4 &&
-      wod.time === nextWod[index].time &&
-      wod.tiebrake !== 0 &&
-      wod.tiebrake !== nextWod[index].tiebrake
-    ) {
-      return true;
-    } else if (
-      wod !== null &&
-      wod.wod_type !== 4 &&
-      wod.amount !== 0 &&
-      wod.amount === nextWod[index].amount &&
-      wod.time === nextWod[index].time &&
-      wod.tiebrake !== 0 &&
-      wod.tiebrake !== nextWod[index].tiebrake
-    ) {
-      return true;
-    }
-    // if (
-    //   wod !== null &&
-    //   wod.amount !== 0 &&
-    //   wod.amount === nextWod[index].amount &&
-    //   wod.time === nextWod[index].time &&
-    //   wod.tiebrake !== 0 &&
-    //   wod.tiebrake !== nextWod[index].tiebrake
-    // ) {
-    //   return true;
-    // }
-  } else {
-    return false;
-  }
-};
-
-const wodSort = (a, b) => {
-  if (a.amount < b.amount) return 1;
-  else if (a.amount > b.amount) return -1;
-  else if (a.amount === b.amount) {
-    if (a.time > b.time) return 1;
-    else if (a.time < b.time) return -1;
-    else if (a.time === b.time) {
-      if (a.tiebrake > b.tiebrake) return 1;
-      else if (a.tiebrake < b.tiebrake) return -1;
-      else if (a.tiebrake === b.tiebrake) return 0;
-    }
-  }
-};
-const circuitSort = (a, b) => {
-  if (a.time > b.time) return 1;
-  else if (a.time < b.time) return -1;
-  else if (a.time === b.time) {
-    if (a.tiebrake > b.tiebrake) return 1;
-    else if (a.tiebrake < b.tiebrake) return -1;
-    else if (a.tiebrake === b.tiebrake) return 0;
-  }
-};
-
-const wodForeach = (team, index, wod, tl, ppw,ogWod=false) => {
-  if (ogWod?.wod_type === 4 || team.amount !== 0) {
-    if (index === 0) {
-      team.percent = 100;
-      team.points = 100;
-      team.pos = 1;
-    } else {
-      if (
-        team.amount === wod[index - 1].amount &&
-        team.time === wod[index - 1].time &&
-        team.tiebrake === wod[index - 1].tiebrake
-      ) {
-        team.points = wod[index - 1].points;
-        team.percent = wod[index - 1].percent;
-        team.pos = wod[index - 1].pos;
-      } else if (team.amount === wod[index - 1].amount) {
-        team.points = ppw * (tl - index);
-        team.percent = ppw * (tl - index);
-        team.pos = index + 1;
-        // team.percent = wod[index - 1].percent - 10 / tl;
-      } else {
-        team.percent = ppw * (tl - index);
-        team.points = ppw * (tl - index);
-        team.pos = index + 1;
-        // console.log(team)
-      }
-    }
-  }
-  // console.log(team.percent +" "+ team.name)
 };

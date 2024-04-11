@@ -1,55 +1,44 @@
 import { AnimatePresence, motion } from "framer-motion";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
-import { checkTie, order, pos } from "../../helpers/TableLogic";
-import { order2Improve } from "../../pages/Results";
-
-const lbToKg = (lb) => (lb * 0.453592).toFixed(2);
-// const kgToLb = (kg)=> (kg * 2.20462).toFixed(2)
+import { order, pos } from "../../helpers/TableLogic";
 
 const convSeconds = (s) => moment.utc(s * 1000).format("HH:mm:ss");
 
-export const Table = ({ input, event, categ, teams, admin, kg = true }) => {
-  const [right, setRight] = useState(false);
+export const Table = ({ input, event, cindex, teams, admin, kg = true }) => {
   const [info, setInfo] = useState([]);
-  const [data, setData] = useState(null)
+  const [data, setData] = useState(null);
 
   useEffect(() => {
-    
-    if(data === null&& event!==null && teams !== null){
-        (async () => {
-            console.log('data set')
-            setData( await order2Improve(event,teams));
-          })();
+    if (data === null && event !== null && teams !== null) {
+      (async () => {
+        setData(await order2Improve(event, teams));
+      })();
     }
-  }, [event,teams])
+  }, [event, teams]);
 
   useEffect(() => {
     if (data) {
-        // console.log(data[categ-1])
-        setInfo([...data[categ-1]])
+      setInfo([...data[cindex]]);
     }
-  }, [data]);
+  }, [data, cindex]);
 
-  
-  
-
-  const toggleRight = () => {
+  const testClick = () => {
     // console.log(info);
     // console.log(data);
     // console.log(info[0].wods[0])
     // console.log(info[1].wods[0])
-    // setRight(!right);
   };
 
   return (
     <div className="table">
-      <TableHeader {...{ toggleRight, right, event, categ }} />
+      <TableHeader {...{ testClick, event, cindex }} />
       {event && event.updating && !admin ? (
         <h1 className="updating_text">La tabla se está actualizando...</h1>
       ) : (
         <>
           {info.map((team, index) => {
+            // if there is something in the search bar, filtred it
             if (input.length > 0) {
               let regex = new RegExp(input, "i");
               if (regex.test(team.name))
@@ -57,8 +46,8 @@ export const Table = ({ input, event, categ, teams, admin, kg = true }) => {
                   <TableUser
                     key={index}
                     user={team}
-                    {...{ right, index, kg }}
-                    eventWods={event.categories[categ - 1].wods}
+                    {...{ index, kg }}
+                    eventWods={event.categories[cindex].wods}
                     last={index === info.length - 1 ? true : false}
                     nextUser={info[index + 1] && info[index + 1]}
                   />
@@ -68,8 +57,8 @@ export const Table = ({ input, event, categ, teams, admin, kg = true }) => {
                 <TableUser
                   key={index}
                   user={team}
-                  {...{ right, index, kg }}
-                  eventWods={event.categories[categ - 1].wods}
+                  {...{ index, kg }}
+                  eventWods={event.categories[cindex].wods}
                   last={index === info.length - 1 ? true : false}
                   nextUser={info[index + 1] && info[index + 1]}
                 />
@@ -81,38 +70,30 @@ export const Table = ({ input, event, categ, teams, admin, kg = true }) => {
     </div>
   );
 };
-export const TableHeader = ({ right, toggleRight, event, categ }) => {
+export const TableHeader = ({ testClick, event, cindex }) => {
   const ref1 = useRef(null);
-  const ref2 = useRef(null);
 
   const wtf = () => {
-    toggleRight();
-    // console.log(event.categories[categ - 1]);
+    testClick();
+    // console.log(event.categories[cindex]);
   };
 
   return (
     <div className="table_header" onClick={wtf}>
       <div className="header_names" ref={ref1}>
-        {/* <div
-          className="header_pa"
-          style={{ right: right ? "220px" : "auto" }}
-          ref={ref2}
-        > */}
         <div className="th_cell th_pos">
           <h1>Posicion</h1>
         </div>
         <div className="th_cell th_name">
           <h1>Nombre</h1>
         </div>
-        {event?.categories[categ - 1].wods.map((item, index) => (
+        {event?.categories[cindex].wods.map((item, index) => (
           <div className="th_cell" key={index}>
             <h1>{item.name}</h1>
           </div>
         ))}
       </div>
-      {/* </div> */}
       <div className="header_points">
-        {/* {paWidth > wodsWidth && <Arrow click={toggleRight} right={right} />} */}
         <h1>Puntos</h1>
         <div className="line"></div>
         <h1>Total</h1>
@@ -123,7 +104,6 @@ export const TableHeader = ({ right, toggleRight, event, categ }) => {
 export const TableUser = ({
   user,
   last = false,
-  right,
   index,
   nextUser = false,
   eventWods,
@@ -132,25 +112,22 @@ export const TableUser = ({
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   const toggleOpen = () => {
-    // user.wods.map((w,index)=>{
-    //   console.log(w)
-    // })
-    // console.log(user)
+    // console.log(user);
     setOpen(!open);
   };
 
-  const clickOutside = (event) => {
-    if (ref.current && !ref.current.contains(event.target)) {
-      setOpen(false);
-    }
-  };
+  //   const clickOutside = (event) => {
+  //     if (ref.current && !ref.current.contains(event.target)) {
+  //       setOpen(false);
+  //     }
+  //   };
 
-  useEffect(() => {
-    document.addEventListener("click", clickOutside, true);
-    return () => {
-      document.removeEventListener("click", clickOutside, true);
-    };
-  }, []);
+  //   useEffect(() => {
+  //     document.addEventListener("click", clickOutside, true);
+  //     return () => {
+  //       document.removeEventListener("click", clickOutside, true);
+  //     };
+  //   }, []);
 
   return (
     <div className="table_user_ctn" ref={ref}>
@@ -168,65 +145,39 @@ export const TableUser = ({
           <div className="tu_name">
             <h1>{user.name}</h1>
           </div>
-          {user.wods.map((wod, index) => (
-            <div
-              className={`tu_cell ${
-                checkTie(wod, nextUser.wods, index) ? "tie_bg" : false
-              }`}
-              key={index}
-            >
-              {checkTie(wod, nextUser.wods, index) ? (
-                <div className="tie">
-                  <IIcon />
-                </div>
-              ) : null}
-              {checkEmptyWod(wod,eventWods[index]?.wod_type) ? (
-                <>
-                  <h1 className="pos"> </h1>
-                  <h1> </h1>
-                </>
-              ) : (
-                <>
-                  <h1 className="pos">{pos(wod?.pos)}</h1>
-                  <h1>
-                    {wod.amount && eventWods[index]?.wod_type === 1
-                      ? `(${wod?.amount} ${wod?.amount_type})`
-                      : null}
-                    {wod.amount && eventWods[index]?.wod_type === 3 ? (
-                      <>
-                        {!kg
-                          ? `(${(wod?.amount).toFixed(2)} ${wod?.amount_type})`
-                          : `(${lbToKg(wod?.amount)} Kgs)`}
-                      </>
-                    ) : null}
-                  </h1>
-                  {wod.amount && eventWods[index]?.wod_type === 2 ? (
-                    <>
-                      {wod.time < wod.time_cap ? (
-                        <h1>{`(${convSeconds(wod?.time)})`}</h1>
-                      ) : (
-                        <h1>{`(CAP+${wod.amount_cap - wod.amount})`}</h1>
-                      )}
-                    </>
-                  ):null}
-                  {wod.time && eventWods[index]?.wod_type === 4 ? (
-                    <>
-                      <h1>{`(${convSeconds(wod?.time)})`}</h1>
-                    </>
-                  ):null}
-                </>
-              )}
-              {/* <h1>{wod.amount && wod.wod_type === 2 && `(${convSeconds(wod?.time)})`}</h1>
-              {wod.amount && wod.wod_type === 1
-                      (wod.wod_type === 1 || wod.wod_type === 3) &&
-                      `(${wod?.amount} ${wod?.amount_type})`}
-               */}
-            </div>
-          ))}
+          {user.wods.map((wod, index) => {
+            let wod_type = eventWods[index]?.wod_type;
+            return (
+              <div
+                className={`tu_cell ${wod._tie_winner ? "tie_bg" : false}`}
+                key={index}
+              >
+                {wod._tie_winner && (
+                  <div className="tie">
+                    <IIcon />
+                  </div>
+                )}
+                {wod.time === 0 && wod.amount === 0 ? (
+                  <>
+                    <h1 className="pos"> </h1>
+                    <h1> </h1>
+                  </>
+                ) : (
+                  <>
+                    <h1 className="pos">{pos(wod?.pos)}</h1>
+                    {wod_type === 1 && <Values_AMRAP wod={wod} />}
+                    {wod_type === 2 && <Values_FORTIME wod={wod} />}
+                    {wod_type === 3 && <Values_RM wod={wod} kg={kg} />}
+                    {wod_type === 4 && <Values_CIRCUIT wod={wod} />}
+                  </>
+                )}
+              </div>
+            );
+          })}
         </div>
         <div className={`tu_points ${last && "no_b"}`}>
-          <h1>{user.points}</h1>
-          <h1>{user.percent}%</h1>
+          <h1>{user._points}</h1>
+          <h1>{user._percent}%</h1>
         </div>
       </motion.div>
       <AnimatePresence>
@@ -245,7 +196,11 @@ export const TableUser = ({
               return (
                 <div key={index} className="wods_display_item">
                   <h1>{eventWods[index].name}</h1>
-                  <WodInfo {...{ wod, kg }} evntwod={eventWods[index]} />
+                  <WodInfo
+                    {...{ wod, kg }}
+                    wt={eventWods[index]?.wod_type}
+                    eventWod={eventWods[index]}
+                  />
                 </div>
               );
             })}
@@ -269,19 +224,20 @@ const IIcon = () => {
   );
 };
 /// WODS GUIDE 1=AMRAP 2=FORTIME 3=RM 4=CIRCUIT
-const WodInfo = ({ wod, kg, evntwod }) => {
+const WodInfo = ({ wod, kg, wt, eventWod }) => {
   return (
     <>
-      {/* <h1>{wodName(wod.wod_type)}</h1> */}
-      {wod.amount !== 0 && (
+      {wt === 3 ? (
+        <h1 className="amounts">{lbOrKg(wod.amount, kg)}</h1>
+      ) : (
         <h1 className="amounts">
-          {wodAmount(wod.amount, wod.wod_type, kg, evntwod.amount_type)}
+          {wod.amount} {eventWod.amount_type}
         </h1>
       )}
-      {wod.wod_type === 4 && wod.penalty !== 0 && (
+      {wt === 4 && wod.penalty !== 0 && (
         <h1 className="amounts">Penalty: {wod.penalty}</h1>
       )}
-      {(wod.wod_type === 2 || wod.wod_type === 4) && (
+      {wod.time !== 0 && (
         <h1 className="amounts">Tiempo: {wodTime(wod.time)} min</h1>
       )}
       {wod.tiebrake !== 0 && (
@@ -291,38 +247,33 @@ const WodInfo = ({ wod, kg, evntwod }) => {
   );
 };
 
-const wodName = (wod_type) => {
-  if (wod_type === 1) return "AMRAP";
-  else if (wod_type === 2) return "FORTIME";
-  else if (wod_type === 3) return "RM";
-};
-const wodAmount = (amount, wod_type, kg, amount_type) => {
-  // console.log(wod_type)
-  if (wod_type === 1 || wod_type === 2 || wod_type === 4)
-    return amount + " " + amount_type;
-  if (wod_type === 3 && kg) return lbToKg(amount) + " Kgs";
-  else if (wod_type === 3 && !kg) return amount + " Lbs";
-};
-const wodAmountType = (wod_type, kg) => {
-  if (wod_type === 1 || wod_type === 2 || wod_type === 4) return "Reps";
-  if (wod_type === 3 && kg) return "Kgs";
-  else if (wod_type === 3 && !kg) return "Lbs";
-};
-const wodTime = (wod_time) => {
-  // const minute = Math.floor(wod_time/60)
-  // const seconds = wod_time%60 !== 0 ? `:${wod_time%60}` :''
-  // return minute+seconds
-  return moment.utc(wod_time * 1000).format("mm:ss");
-};
+const wodTime = (time) => moment.utc(time * 1000).format("mm:ss");
 
-const checkEmptyWod = (wod,wod_type) => {
-  if (wod_type === 4) {
-    if (wod === null || !wod.time) return true;
-    else return false;
-  } else {
-    if (wod === null || !wod.amount || wod.amount === 0) return true;
-    else return false;
-  }
-
-  // return false;
+const Values_AMRAP = ({ wod }) => {
+  return (
+    <h1>
+      ({wod.amount} {wod._amount_type})
+    </h1>
+  );
+};
+const Values_FORTIME = ({ wod }) => {
+  return (
+    <>
+      {wod._amount_type === "CAP+" ? (
+        <h1>(CAP+{wod._amount_left})</h1>
+      ) : (
+        <h1>({convSeconds(wod?.time)})</h1>
+      )}
+    </>
+  );
+};
+const lbOrKg = (amount, isKg) => {
+  if (isKg) return `${(amount * 0.453592).toFixed(2)} Kgs`;
+  else return `${amount.toFixed(2)} Lbs`;
+};
+const Values_RM = ({ wod, kg }) => {
+  return <h1>({lbOrKg(wod.amount, kg)})</h1>;
+};
+const Values_CIRCUIT = ({ wod }) => {
+  return <h1>({convSeconds(wod?.time)})</h1>;
 };
