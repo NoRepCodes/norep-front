@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import "../sass/results.sass";
 import "../sass/tables.sass";
 import eventimg from "../images/EC.png";
-import corner from "../images/corner.png";
 import pf1 from "../images/arw.png";
 import pf2 from "../images/pf2.png";
 import pf3 from "../images/pf3.png";
@@ -11,38 +10,23 @@ import { useRef } from "react";
 import { Banner } from "../components/Banner";
 import { Context } from "../components/Context";
 import { findTeams, toggleUpdating } from "../api/events.api";
-import moment from "moment";
-import // EditResultsModal,
-// EditTeamsModal,
-"../components/Modals";
 
-import p1 from "../images/p1.png";
-import p2 from "../images/p2.png";
-import p3 from "../images/p3.png";
 import {
   AnimatePresence,
   motion,
-  useAnimate,
-  useMotionValue,
-  useSpring,
 } from "framer-motion";
-import { order, pos } from "../helpers/TableLogic";
-import { Table } from "./Table";
 import { HamburguerMenu } from "../components/Header";
 import { UpdateEventModal } from "../components/modals/UpdateEventModal";
 import { ArwIcon, StrongIcon } from "../components/PartnersSvg";
 import { EditWodsModal } from "../components/modals/EditWodsModal";
 import { EditTeamsModal } from "../components/modals/EditTeamsModal";
 import { EditResultsModal } from "../components/modals/EditResultsModal";
-// import UpdateEventM from "../components/modals/UpdateEventM";
+import ResultAside from "../components/results/ResultAside";
+import ResultInfo from "../components/results/ResultInfo";
 
 const ww = window.innerWidth;
 const wh = window.innerHeight;
-const fs = (num) => num * (ww / 100) + num * (wh / 100);
 
-const isObjEmpty = (obj) => {
-  return Object.keys(obj).length === 0;
-};
 const blankResults = {
   amount: 0,
   tiebrake: 0,
@@ -102,26 +86,22 @@ export const Results = () => {
   }, [event, categ]);
 
   const resetTeams = async () => {
-    // console.log('is working?')
-    // console.log(event.categories[categ - 1])
     const { status, data } = await findTeams(event._id);
     if (status === 200) {
-      let wl = event.categories[categ - 1].wods.length;
-      let aux = [...data];
-      aux.forEach((team, i1) => {
-        for (let i = 0; i < wl; i++) {
-          // console.log(team.wods[i])
-          if (team.wods[i] === undefined) aux[i1].wods[i] = { ...blankResults };
-        }
-      });
-      // console.log(aux);
-      setTeams(aux);
+      setTeams(data)
+      // let wl = event.categories[categ - 1].wods.length;
+      // let aux = [...data];
+      // aux.forEach((team, i1) => {
+      //   for (let i = 0; i < wl; i++) {
+      //     if (team.wods[i] === undefined) aux[i1].wods[i] = { ...blankResults };
+      //   }
+      // });
+      // setTeams(aux);
     }
   };
 
   const click = () => {
-    // console.log(teams[0].category_id)
-    // console.log(event.categories[categ - 1])
+    // order2Improve(event, teams);
   };
 
   if (event === null)
@@ -133,8 +113,6 @@ export const Results = () => {
     );
 
   const toggleUpdate = async () => {
-    // console.log(event);
-    // setEvent({...event,updating:!event.updating});
     return new Promise(async (resolve, reject) => {
       const { status, data } = await toggleUpdating(event._id, !event.updating);
       if (status === 200) {
@@ -143,10 +121,6 @@ export const Results = () => {
       } else {
         reject(false);
       }
-      // setTimeout(() => {
-      //   setEvent((prev) => ({ ...prev, updating: !event.updating }));
-      //   resolve(true);
-      // }, 2000);
     });
   };
 
@@ -177,7 +151,7 @@ export const Results = () => {
         <EditTeamsModal
           close={toggleTeamModal}
           teamsValue={teams}
-          {...{ event, categ, set: setTeams,setCateg }}
+          {...{ event, categ, set: setTeams, setCateg }}
         />
       )}
       {updateEventModal && (
@@ -221,221 +195,8 @@ export const Results = () => {
   );
 };
 
-const ResultAside = ({
-  event,
-  categ,
-  setCateg,
-  input,
-  setInput,
-  kg,
-  setKg,
-}) => {
-  const [open, setOpen] = useState(false);
-  // const ml = useMotionValue(0);
-  const [cope, animate] = useAnimate();
-  useEffect(() => {
-    const ml_fs = fs(12);
-    const pamount = event.partners.length * ml_fs - ml_fs;
-    const si = setInterval(() => {
-      const aux_ml =
-        parseInt(
-          window.getComputedStyle(cope.current).marginLeft.replace("px", "")
-        ) * -1;
-      const item_ml = aux_ml === 0 ? 0 : Math.round(aux_ml / ml_fs) * ml_fs;
-      const amount = item_ml + fs(12);
-      if (Math.round(item_ml) >= Math.round(pamount))
-        animate(cope.current, { marginLeft: 0 });
-      else animate(cope.current, { marginLeft: -amount });
-      // }, 3000);
-    }, 10000);
-    return () => clearInterval(si);
-  }, [event]);
 
-  const toggle = () => setOpen(!open);
 
-  const onChangeText = (e) => setInput(e.target.value);
-
-  return (
-    <div className="results_aside">
-      <div className="ra_event">
-        <img src={event?.secure_url} alt="portada" />
-        {/* <img src={eventimg} alt="" /> */}
-        <div className="categ_ctn">
-          <h6>CATEGORIAS</h6>
-          <div className="categ_dropdown" onClick={toggle}>
-            {event ? (
-              <p>{event.categories[categ - 1].name}</p>
-            ) : (
-              <p>Selecciona una categoria</p>
-            )}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
-              <path d="M12 21l-12-18h24z" />
-            </svg>
-          </div>
-          {open && (
-            <div className="abs_categ_dropdown">
-              {event &&
-                event.categories.map((categ, index) => (
-                  <p
-                    key={index}
-                    onClick={() => {
-                      setCateg(index + 1);
-                      toggle();
-                    }}
-                  >
-                    {categ.name}
-                  </p>
-                ))}
-            </div>
-          )}
-        </div>
-        <div
-          className={!kg ? "lb_btn" : "kg_btn"}
-          onClick={() => {
-            setKg(!kg);
-          }}
-        >
-          <h6>{!kg ? "Lbs" : "Kgs"}</h6>
-          {!kg ? <SwitchLeftIcon /> : <SwitchRightIcon />}
-        </div>
-      </div>
-      <div className="user_input">
-        <input
-          type="text"
-          placeholder="Buscar Participantes"
-          value={input}
-          onChange={onChangeText}
-        />
-      </div>
-      <div className="partners_carousel">
-        <motion.div
-          ref={cope}
-          className="pc_absolute"
-          style={{
-            width:
-              event?.partners.length === 0
-                ? fs(12)
-                : fs(12) * event.partners.length,
-          }}
-        >
-          {event?.partners.length > 0 ? (
-            <>
-              {event?.partners.map((p, index) => (
-                <img
-                  src={p.secure_url}
-                  alt={`patrocinante ` + index + 1}
-                  key={index}
-                />
-              ))}
-            </>
-          ) : (
-            <img src={pf1} alt="patrocinanteA" />
-          )}
-
-          {/* <img src={pf1} alt="patrocinanteA" />
-          <img src={pf2} alt="patrocinanteB" />
-          <img src={pf3} alt="patrocinanteC" /> */}
-        </motion.div>
-      </div>
-    </div>
-  );
-};
-const ResultInfo = ({
-  input,
-  event,
-  categ,
-  teams,
-  setInput,
-  setCateg,
-  admin,
-  kg,
-}) => {
-  const [open, setOpen] = useState(false);
-  const toggle = () => {
-    setOpen(!open);
-  };
-  const onChangeText = (e) => {
-    setInput(e.target.value);
-  };
-  return (
-    <div className="results_info">
-      <div className="ri_header">
-        <div className="partners">
-          <div className="p_img_ctn">
-            <StrongIcon />
-          </div>
-          <div className="p_img_ctn">
-            <ArwIcon />
-          </div>
-        </div>
-        <div className="ri_header_top">
-          <img src={corner} alt="corner" className="corner" />
-          <img src={event?.secure_url} alt="banner" className="resp_ri_img" />
-          <h1 className="ri_title">{event?.name}</h1>
-          <h1>Individuales</h1>
-          <h1>2023 - Final</h1>
-        </div>
-        <div className="ri_header_bot">
-          <div className="rhb_left">
-            <h1>{event?.place}</h1>
-            <h1 className="ri_date">
-              {convertDate(event?.since)} - {convertDate(event?.until)}
-            </h1>
-          </div>
-        </div>
-      </div>
-      <div className="user_input">
-        <input
-          type="text"
-          placeholder="Buscar participantes..."
-          value={input}
-          onChange={onChangeText}
-        />
-      </div>
-      <div style={{ position: "relative" }}>
-        <div className="resp_categories_ctn" onClick={toggle}>
-          {event ? (
-            <p>{event.categories[categ - 1].name}</p>
-          ) : (
-            <p>Selecciona una categoria</p>
-          )}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-          >
-            <path d="M12 21l-12-18h24z" />
-          </svg>
-        </div>
-        {open && (
-          <div className="abs_resp_categ_dropdown">
-            {event &&
-              event.categories.map((categ, index) => (
-                <p
-                  key={index}
-                  onClick={() => {
-                    setCateg(index + 1);
-                    toggle();
-                  }}
-                >
-                  {categ.name}
-                </p>
-              ))}
-          </div>
-        )}
-      </div>
-      <Table {...{ input, event, categ, teams, admin, kg }} />
-    </div>
-  );
-};
-
-const convertDate = (date) => moment.unix(date).format("DD, MMM");
 
 const HamburguerBtns = ({
   toggleWodsM,
@@ -452,10 +213,6 @@ const HamburguerBtns = ({
     setUpd(true);
     await toggleUpdate();
     setUpd(false);
-    // setTimeout(() => {
-    //   // toggleUpdate();
-    //   setUpd(false)
-    // }, 5000);
   };
   const hbaAnimate = {
     initial: { opacity: 0 },
@@ -466,10 +223,6 @@ const HamburguerBtns = ({
   };
   return (
     <div className="hamburguerBtns">
-      {/* {open?
-      <div>a</div>
-      :<div>b</div>
-      } */}
       <HamburguerMenu onClick={toggleOpen} openMenu={open} />
       <AnimatePresence>
         {open && (
@@ -528,25 +281,165 @@ const EyeCloseIcon = () => {
   );
 };
 
-const SwitchLeftIcon = () => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fillRule="evenodd"
-      clipRule="evenodd"
-    >
-      <path d="M6 18h12c3.311 0 6-2.689 6-6s-2.689-6-6-6h-12.039c-3.293.021-5.961 2.701-5.961 6 0 3.311 2.688 6 6 6zm12-10c-2.208 0-4 1.792-4 4s1.792 4 4 4 4-1.792 4-4-1.792-4-4-4z" />
-    </svg>
-  );
+
+let evAux = {
+  categories: [
+    {
+      _id: "",
+      name: "",
+      wods: [
+        {
+          name: "",
+          time_cap: 0,
+          amount_cap: 0,
+          amount_type: "",
+          wod_type: 0,
+          _results: [],
+        },
+      ],
+    },
+  ],
 };
-const SwitchRightIcon = () => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fillRule="evenodd"
-      clipRule="evenodd"
-    >
-      <path d="M18 18h-12c-3.311 0-6-2.689-6-6s2.689-6 6-6h12.039c3.293.021 5.961 2.701 5.961 6 0 3.311-2.688 6-6 6zm-12-10c2.208 0 4 1.792 4 4s-1.792 4-4 4-4-1.792-4-4 1.792-4 4-4z" />
-    </svg>
-  );
+
+let teamAux = [
+  {
+    _id: "",
+    name: "",
+    category_id: "",
+    event_id: "",
+    box: "",
+    wods: [
+      {
+        amount: 0,
+        amount_type: "",
+        time: 0,
+        tiebrake: 0,
+        penalty: 0,
+      },
+    ],
+  },
+];
+
+export const order2Improve = async (eventx = evAux, data = teamAux) => {
+  console.log(data)
+  // iterate values to avoid reflecting the real variables
+  let event = { ...eventx };
+  let teams = [...data];
+  /// Insert ghost values on teams
+  teams.forEach((team) => {
+    team._points = 0;
+    team._percent = 0;
+    team._tiebrake_total = 0;
+  });
+
+  // For each category and for each wod, distribute wods teams 
+  // and sort, apply _points + _amount_type
+  event.categories.forEach((c) => {
+    c.wods.forEach((w, windex) => {
+      // reset results
+      w._results = [];
+      // Push team wods result into category wod
+      teams.forEach((t) => {
+        if (t.category_id === c._id) {
+          w._results.push(t.wods[windex]);
+        }
+      });
+      // Order results by wod_type and values
+      if (w.wod_type === 4) w._results.sort((a, b) => circuitSort(a, b));
+      else w._results.sort((a, b) => wodSort(a, b));
+
+      // tr = team result
+      // apply points to team results and share amount_type
+      w._results.forEach((tr, tr_index) => {
+        // put CAPS + on for time (w.amount_type === 2)
+        if (w.wod_type === 2 && w.time_cap === tr.time)
+          tr._amount_type = "CAPS +";
+        else tr._amount_type = w.amount_type;
+        applyPoints(tr, tr_index, w, w._results.length);
+      });
+    });
+  });
+
+  // plus every point and tiebrake
+  teams.forEach((t) => {
+    t.wods.forEach((w) => {
+      t._points += w.points;
+      t._tiebrake_total += w.tiebrake;
+    });
+    let perc = parseFloat((t._points / t.wods.length).toFixed(3));
+    if (Number.isNaN(perc)) {
+      t._percent = 0;
+    } else {
+      t._percent = perc;
+    }
+  });
+
+  const categTeams = event.categories.map((c) => []);
+  event.categories.forEach((c, cindex) => {
+    teams.forEach((t) => {
+      if (t.category_id === c._id) categTeams[cindex].push(t);
+    });
+  })
+  // console.log(categTeams)
+  return categTeams
+};
+
+const wodSort = (a, b) => {
+  if (a.amount < b.amount) return 1;
+  else if (a.amount > b.amount) return -1;
+  else if (a.amount === b.amount) {
+    if (a.time > b.time) return 1;
+    else if (a.time < b.time) return -1;
+    else if (a.time === b.time) {
+      if (a.tiebrake > b.tiebrake) return 1;
+      else if (a.tiebrake < b.tiebrake) return -1;
+      else if (a.tiebrake === b.tiebrake) return 0;
+    }
+  }
+};
+
+const circuitSort = (a, b) => {
+  if (a.time > b.time) return 1;
+  else if (a.time < b.time) return -1;
+  else if (a.time === b.time) {
+    if (a.tiebrake > b.tiebrake) return 1;
+    else if (a.tiebrake < b.tiebrake) return -1;
+    else if (a.tiebrake === b.tiebrake) return 0;
+  }
+};
+
+const applyPoints = (tr, index, wod) => {
+  let tl = wod._results.length;
+  // ppw = points per wod
+  let ppw = Math.floor(100 / tl);
+  // Make sure that there are values, cheking time
+  if (tr.time !== 0) {
+    // if the team_result is the first one, put him 100% and points
+    if (index === 0) {
+      tr.percent = 100;
+      tr.points = 100;
+      tr.pos = 1;
+      // if the tr is not the first one, continue
+    } else {
+      const prev = wod._results[index - 1];
+      // if EVERYTHING is the same as the previous tr
+      if (
+        tr.amount === prev.amount &&
+        tr.time === prev.time &&
+        tr.tiebrake === prev.tiebrake
+        // put the same values as the previous tr
+      ) {
+        tr.points = prev.points;
+        tr.percent = prev.percent;
+        tr.pos = prev.pos;
+
+        // if amounts aren't the same as previous tr
+        // place points and percent in base of ppw
+      } else {
+        tr.percent = ppw * (tl - index);
+        tr.points = ppw * (tl - index);
+        tr.pos = index + 1;
+      }
+    }
+  }
 };

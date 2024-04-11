@@ -25,12 +25,13 @@ export const EditResultsModal = ({ close, event, categ, teams, setTeams }) => {
   const click = async () => {
     setLoad(true);
     let newList = list.map((item) => {
-      console.log(item)
+      console.log(item);
       if (item.wod_type === 1 || item.wod_type === 2) {
         return {
           ...item,
           time: convTime(item.time),
           tiebrake: convTime(item.tiebrake),
+          penalty: convTime(item.penalty),
           amount: parseInt(item.amount),
         };
       } else {
@@ -38,11 +39,12 @@ export const EditResultsModal = ({ close, event, categ, teams, setTeams }) => {
           ...item,
           time: convTime(item.time),
           tiebrake: convTime(item.tiebrake),
+          penalty: convTime(item.penalty),
           amount: parseInt(item.amount),
         };
       }
     });
-    
+
     // console.log(newList)
     const { status, data } = await updateResults(newList, windex);
     setLoad(false);
@@ -60,7 +62,7 @@ export const EditResultsModal = ({ close, event, categ, teams, setTeams }) => {
       // console.log(aux);
       // setTeams(data);
     } else {
-      alert(data.msg)
+      alert(data.msg);
     }
     // console.log(newList)
   };
@@ -70,18 +72,19 @@ export const EditResultsModal = ({ close, event, categ, teams, setTeams }) => {
       let aux = teams.filter(
         (t) => t.category_id === event.categories[categ - 1]._id
       );
-      aux = aux.filter(
-        (t) =>
-          windex === 0 ||
-          (t.wods[windex - 1].amount !== 0 &&
-            t.wods[windex - 1].amount !== undefined)
-      );
+      // aux = aux.filter(
+      //   (t) =>
+      //     windex === 0 ||
+      //     (t.wods[windex - 1].amount !== 0 &&
+      //       t.wods[windex - 1].amount !== undefined)
+      // );
       let selecWod = event.categories[categ - 1].wods[windex];
       let wt = selecWod.wod_type;
       let infoTeams = aux.map((t, i) => {
         if (
-          t.wods[windex].amount === undefined ||
-          t.wods[windex].amount === 0
+          // t.wods[windex].amount === undefined ||
+          // t.wods[windex].amount === 0
+          false
         ) {
           return {
             ...blankResults,
@@ -106,10 +109,11 @@ export const EditResultsModal = ({ close, event, categ, teams, setTeams }) => {
                 ? t.wods[windex].tiebrake
                 : convSeconds(t.wods[windex].tiebrake),
             time: convSeconds(t.wods[windex].time),
+            penalty: convSeconds(t.wods[windex].penalty),
           };
         }
       });
-      console.log(infoTeams);
+      // console.log(infoTeams);
       setList(infoTeams);
     }
   }, [windex]);
@@ -222,6 +226,12 @@ const UsersList = ({ event, categ, windex, list, setList }) => {
   );
 };
 
+const ru_wod_type = (wod_type) => {
+  if (wod_type === 4) return "PUNTOS";
+  else if (wod_type === 3) return "LBS";
+  else return "REPS";
+};
+
 const RU_Input = ({
   user,
   wod_type,
@@ -238,12 +248,15 @@ const RU_Input = ({
     <div className="ru_ctn">
       <h5>{user.name}</h5>
       <div className="ru_inputs">
-        <InputArray
-          label={wod_type === 4 ? "PUNTOS" : "REPS"}
-          value={user.amount}
-          update={hReps}
-          index={index}
-        />
+        {wod_type !== 4 && (
+          <InputArray
+            label={ru_wod_type(wod_type)}
+            value={user.amount}
+            update={hReps}
+            index={index}
+          />
+        )}
+
         {(wod_type === 2 || wod_type === 4) && (
           <InputTime
             label="TIEMPO"
@@ -269,7 +282,7 @@ const RU_Input = ({
           />
         )}
         {wod_type === 4 && (
-          <InputArray
+          <InputTime
             label="PENALTY"
             value={user.penalty}
             update={hPenalty}

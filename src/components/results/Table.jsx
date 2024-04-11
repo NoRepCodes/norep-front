@@ -1,7 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
-import { checkTie, order, pos } from "../helpers/TableLogic";
+import { checkTie, order, pos } from "../../helpers/TableLogic";
+import { order2Improve } from "../../pages/Results";
 
 const lbToKg = (lb) => (lb * 0.453592).toFixed(2);
 // const kgToLb = (kg)=> (kg * 2.20462).toFixed(2)
@@ -11,20 +12,33 @@ const convSeconds = (s) => moment.utc(s * 1000).format("HH:mm:ss");
 export const Table = ({ input, event, categ, teams, admin, kg = true }) => {
   const [right, setRight] = useState(false);
   const [info, setInfo] = useState([]);
+  const [data, setData] = useState(null)
 
   useEffect(() => {
-    if (teams) {
-      (async () => {
-        setInfo(await order(teams, event, categ));
-      })();
+    
+    if(data === null&& event!==null && teams !== null){
+        (async () => {
+            console.log('data set')
+            setData( await order2Improve(event,teams));
+          })();
     }
-  }, [teams, categ, event]);
+  }, [event,teams])
+
+  useEffect(() => {
+    if (data) {
+        // console.log(data[categ-1])
+        setInfo([...data[categ-1]])
+    }
+  }, [data]);
+
+  
+  
 
   const toggleRight = () => {
-    console.log(teams);
+    // console.log(info);
+    // console.log(data);
     // console.log(info[0].wods[0])
     // console.log(info[1].wods[0])
-    // console.log(info)
     // setRight(!right);
   };
 
@@ -44,6 +58,7 @@ export const Table = ({ input, event, categ, teams, admin, kg = true }) => {
                     key={index}
                     user={team}
                     {...{ right, index, kg }}
+                    eventWods={event.categories[categ - 1].wods}
                     last={index === info.length - 1 ? true : false}
                     nextUser={info[index + 1] && info[index + 1]}
                   />
@@ -117,8 +132,11 @@ export const TableUser = ({
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   const toggleOpen = () => {
-    setOpen(!open);
+    // user.wods.map((w,index)=>{
+    //   console.log(w)
+    // })
     // console.log(user)
+    setOpen(!open);
   };
 
   const clickOutside = (event) => {
@@ -162,7 +180,7 @@ export const TableUser = ({
                   <IIcon />
                 </div>
               ) : null}
-              {wod === null || !wod.amount || wod.amount === 0 ? (
+              {checkEmptyWod(wod,eventWods[index]?.wod_type) ? (
                 <>
                   <h1 className="pos"> </h1>
                   <h1> </h1>
@@ -171,10 +189,10 @@ export const TableUser = ({
                 <>
                   <h1 className="pos">{pos(wod?.pos)}</h1>
                   <h1>
-                    {wod.amount && wod.wod_type === 1
+                    {wod.amount && eventWods[index]?.wod_type === 1
                       ? `(${wod?.amount} ${wod?.amount_type})`
                       : null}
-                    {wod.amount && wod.wod_type === 3 ? (
+                    {wod.amount && eventWods[index]?.wod_type === 3 ? (
                       <>
                         {!kg
                           ? `(${(wod?.amount).toFixed(2)} ${wod?.amount_type})`
@@ -182,7 +200,7 @@ export const TableUser = ({
                       </>
                     ) : null}
                   </h1>
-                  {wod.amount && wod.wod_type === 2 && (
+                  {wod.amount && eventWods[index]?.wod_type === 2 ? (
                     <>
                       {wod.time < wod.time_cap ? (
                         <h1>{`(${convSeconds(wod?.time)})`}</h1>
@@ -190,15 +208,12 @@ export const TableUser = ({
                         <h1>{`(CAP+${wod.amount_cap - wod.amount})`}</h1>
                       )}
                     </>
-                  )}
-                  {wod.amount && wod.wod_type === 4 && (
+                  ):null}
+                  {wod.time && eventWods[index]?.wod_type === 4 ? (
                     <>
-                      <h1>
-                        ({wod?.amount - wod?.penalty}{" "}
-                        {eventWods[index]?.amount_type})
-                      </h1>
+                      <h1>{`(${convSeconds(wod?.time)})`}</h1>
                     </>
-                  )}
+                  ):null}
                 </>
               )}
               {/* <h1>{wod.amount && wod.wod_type === 2 && `(${convSeconds(wod?.time)})`}</h1>
@@ -260,13 +275,11 @@ const WodInfo = ({ wod, kg, evntwod }) => {
       {/* <h1>{wodName(wod.wod_type)}</h1> */}
       {wod.amount !== 0 && (
         <h1 className="amounts">
-          {wodAmount(wod.amount, wod.wod_type, kg,evntwod.amount_type)}
+          {wodAmount(wod.amount, wod.wod_type, kg, evntwod.amount_type)}
         </h1>
       )}
-      {(wod.wod_type === 4 && wod.penalty !== 0) && (
-        <h1 className="amounts">
-          Penalty: {wod.penalty}
-        </h1>
+      {wod.wod_type === 4 && wod.penalty !== 0 && (
+        <h1 className="amounts">Penalty: {wod.penalty}</h1>
       )}
       {(wod.wod_type === 2 || wod.wod_type === 4) && (
         <h1 className="amounts">Tiempo: {wodTime(wod.time)} min</h1>
@@ -283,11 +296,12 @@ const wodName = (wod_type) => {
   else if (wod_type === 2) return "FORTIME";
   else if (wod_type === 3) return "RM";
 };
-const wodAmount = (amount, wod_type, kg,amount_type) => {
+const wodAmount = (amount, wod_type, kg, amount_type) => {
   // console.log(wod_type)
-  if (wod_type === 1 || wod_type === 2 || wod_type === 4) return amount + " " +amount_type;
+  if (wod_type === 1 || wod_type === 2 || wod_type === 4)
+    return amount + " " + amount_type;
   if (wod_type === 3 && kg) return lbToKg(amount) + " Kgs";
-  else if (wod_type === 3 && !kg) return amount + " Lbs" ;
+  else if (wod_type === 3 && !kg) return amount + " Lbs";
 };
 const wodAmountType = (wod_type, kg) => {
   if (wod_type === 1 || wod_type === 2 || wod_type === 4) return "Reps";
@@ -299,4 +313,16 @@ const wodTime = (wod_time) => {
   // const seconds = wod_time%60 !== 0 ? `:${wod_time%60}` :''
   // return minute+seconds
   return moment.utc(wod_time * 1000).format("mm:ss");
+};
+
+const checkEmptyWod = (wod,wod_type) => {
+  if (wod_type === 4) {
+    if (wod === null || !wod.time) return true;
+    else return false;
+  } else {
+    if (wod === null || !wod.amount || wod.amount === 0) return true;
+    else return false;
+  }
+
+  // return false;
 };

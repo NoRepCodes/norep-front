@@ -38,12 +38,15 @@ export const order = async (data, event, categ) => {
     let ogWod = event.categories[categ - 1].wods[windex];
     if (ogWod.wod_type === 1) {
       AMRAP_points(ogWod, wod, teams.length);
-    } else if (ogWod.wod_type === 2 || ogWod.wod_type === 4) {
+    } else if (ogWod.wod_type === 2) {
       FORTIME_points(ogWod, wod, teams.length);
     } else if (ogWod.wod_type === 3) {
       RM_points(ogWod, wod, teams.length);
+    } else if (ogWod.wod_type === 4) {
+      CIRCUIT_points(ogWod,wod, teams.length);
     }
   });
+  console.log(wodsData)
   /// AMOUNT TYPES
   teams.forEach((team) => {
     wodsData.forEach((wod, windex) => {
@@ -96,7 +99,7 @@ export const AMRAP_points = async (ogWod, wod, tl) => {
 
   // console.log(wod)
   wod.forEach((team, index) => {
-    wodForeach(team, index, wod, tl,ppw);
+    wodForeach(team, index, wod, tl, ppw);
   });
 
   // console.log(wod);
@@ -107,17 +110,27 @@ export const FORTIME_points = (ogWod, wod, tl) => {
 
   /// ppw = points per wods
   wod.forEach((team, index) => {
-    wodForeach(team, index, wod, tl,ppw);
+    wodForeach(team, index, wod, tl, ppw);
   });
 
   // console.log(wod);
 };
+
 export const RM_points = (ogWod, wod, tl) => {
   let ppw = Math.floor(100 / tl);
   wod.sort((a, b) => wodSort(a, b));
 
   wod.forEach((team, index) => {
-    wodForeach(team, index, wod, tl,ppw);
+    wodForeach(team, index, wod, tl, ppw);
+  });
+};
+
+export const CIRCUIT_points = (ogWod,wod, tl) => {
+  /// ppw = points per wods
+  let ppw = Math.floor(100 / tl);
+  wod.sort((a, b) => circuitSort(a, b));
+  wod.forEach((team, index) => {
+    wodForeach(team, index, wod, tl, ppw,ogWod);
   });
 };
 
@@ -128,7 +141,7 @@ export const TieBreaker = (teams) => {
   teams.forEach((team) => {
     team.tiebrake_total = 0;
     team.wods.forEach((wod) => {
-      if ( wod !== null && wod.tiebrake !== undefined ) {
+      if (wod !== null && wod.tiebrake !== undefined) {
         team.tiebrake_total += wod.tiebrake;
       }
     });
@@ -168,6 +181,7 @@ export const TieBreaker = (teams) => {
 };
 
 export const pos = (pos) => {
+  // console.log(pos)
   switch (pos) {
     case 1:
       return "1ro";
@@ -247,9 +261,17 @@ export const pos = (pos) => {
 
 export const checkTie = (wod, nextWod, index) => {
   if (nextWod) {
-
     if (
       wod !== null &&
+      wod.wod_type === 4 &&
+      wod.time === nextWod[index].time &&
+      wod.tiebrake !== 0 &&
+      wod.tiebrake !== nextWod[index].tiebrake
+    ) {
+      return true;
+    } else if (
+      wod !== null &&
+      wod.wod_type !== 4 &&
       wod.amount !== 0 &&
       wod.amount === nextWod[index].amount &&
       wod.time === nextWod[index].time &&
@@ -257,11 +279,17 @@ export const checkTie = (wod, nextWod, index) => {
       wod.tiebrake !== nextWod[index].tiebrake
     ) {
       return true;
-      // return "tie"
     }
-    // console.log(wod)
-    // console.log(nextWod[index])
-    // console.log(index)
+    // if (
+    //   wod !== null &&
+    //   wod.amount !== 0 &&
+    //   wod.amount === nextWod[index].amount &&
+    //   wod.time === nextWod[index].time &&
+    //   wod.tiebrake !== 0 &&
+    //   wod.tiebrake !== nextWod[index].tiebrake
+    // ) {
+    //   return true;
+    // }
   } else {
     return false;
   }
@@ -280,9 +308,18 @@ const wodSort = (a, b) => {
     }
   }
 };
+const circuitSort = (a, b) => {
+  if (a.time > b.time) return 1;
+  else if (a.time < b.time) return -1;
+  else if (a.time === b.time) {
+    if (a.tiebrake > b.tiebrake) return 1;
+    else if (a.tiebrake < b.tiebrake) return -1;
+    else if (a.tiebrake === b.tiebrake) return 0;
+  }
+};
 
-const wodForeach = (team, index, wod, tl,ppw) => {
-  if (team.amount !== 0) {
+const wodForeach = (team, index, wod, tl, ppw,ogWod=false) => {
+  if (ogWod?.wod_type === 4 || team.amount !== 0) {
     if (index === 0) {
       team.percent = 100;
       team.points = 100;
