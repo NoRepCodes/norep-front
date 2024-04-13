@@ -90,42 +90,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 // TO DO
 
 /**
- * close session button - ✅
- * move buttons to hamburguer icon - ✅
- * show "loading" when updating - ✅
- * rotate images (carousel) - ✅
- * remove temporal partners on mobile - ✅
- * user box info display - ✅
- * fix categories modal - ✅
- * Remove time and add select wods - NOT SELECT BUT BETTER INPUT ✅
- * fix time-issue - ✅
- *
- * Add old events option  ✅
- * option to delete category at create and delete event  ✅
- * crud/ temporal partners (carousel imgs)  ✅
- * only allow admins to acces inaccesible events  ✅
- * btn to alternate between lbs and kgs  ✅
- * merge update with create event modal  ✅
- *
- * Loading page  ✅
- *
- * CIRCUIT NEW TABLE LOGIC ✅
- * AJUST MODALS ✅
- * {
- *    Edit Event  ✅
- *    Edit Wods  ✅
- *    Edit Teams  ✅
- *    Edit Results  ✅
- * }
- *
- * DOMAIN ✅
- * official partners links and svg ~ Need links
- * fix bottom banner jump ❌
- * admins users logic /CRUD ✅
- *
- * - - - - LAST ONE
- * Icon in tab ✅
- * LOGIN ADMIN ✅
- * TEST ENVIROMENT ✅
- * do testing, duh
+ * ✅
+ * Check updates
+ * {Event, Results, Teams, Wods...} EVERY UPDATE
+ * Check the category select in the Edits Results
+ * 
+ CHECK UPDATE EVENT, ITS SO BROKEN
  */

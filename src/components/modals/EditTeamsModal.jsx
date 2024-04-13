@@ -5,8 +5,8 @@ import { CrossIcon } from "./ModalTools";
 export const EditTeamsModal = ({
   close,
   event,
-  categ,
-  setCateg,
+  cindex,
+  setCindex,
   teamsValue,
   set,
 }) => {
@@ -20,7 +20,7 @@ export const EditTeamsModal = ({
       {
         name: "",
         box: "",
-        category_id: event.categories[categ - 1]._id,
+        category_id: event.categories[cindex]._id,
         new: true,
       },
     ]);
@@ -41,34 +41,6 @@ export const EditTeamsModal = ({
     setTeams(aux);
   };
 
-  const click = async () => {
-    const filtredTeams = [];
-    teams.forEach((t, index) => {
-      if (t.category_id === event.categories[categ - 1]._id)
-        filtredTeams.push(t);
-    });
-    // console.log(filtredTeams)
-    setLoad(true);
-    const { status, data } = await editTeams(
-      event._id,
-      event.categories[categ - 1]._id,
-      filtredTeams,
-      toDelete
-    );
-    setLoad(false);
-    if (status === 200) {
-      let aux = []
-      data.forEach((t, index) => {
-        if (t.category_id === event.categories[categ - 1]._id) aux.push(t);
-      });
-      set([...data]);
-      setTeams(aux)
-      // close();
-    } else {
-      alert(data.msg);
-    }
-  };
-
   const removeTeam = (index) => {
     let aux = [...teams];
     if (aux[index]._id) {
@@ -78,6 +50,37 @@ export const EditTeamsModal = ({
     aux.splice(index, 1);
     setTeams([...aux]);
   };
+  
+  const click = async () => {
+    // console.log(teams)
+    const filtredTeams = [];
+    teams.forEach((t, index) => {
+      if (t.category_id === event.categories[cindex]._id)
+        filtredTeams.push(t);
+    });
+    console.log(filtredTeams)
+    setLoad(true);
+    const { status, data } = await editTeams(
+      event._id,
+      event.categories[cindex]._id,
+      filtredTeams,
+      toDelete
+    );
+    setLoad(false);
+    if (status === 200) {
+      let aux = []
+      data.forEach((t, index) => {
+        if (t.category_id === event.categories[cindex]._id) aux.push(t);
+      });
+      set([...data]);
+      setTeams([...data])
+      // close();
+    } else {
+      alert(data.msg);
+    }
+  };
+
+
 
   return (
     <div className="blackscreen">
@@ -88,10 +91,10 @@ export const EditTeamsModal = ({
             <CrossIcon />
           </div>
         </div>
-        <CategoriesSelect {...{ setCateg, categ, event }} />
+        <CategoriesSelect {...{ setCindex, cindex, event }} />
         <div className="plus_teams_ctn">
           {teams.map((t, i) => {
-            if (t.category_id === event.categories[categ - 1]._id) {
+            if (t.category_id === event.categories[cindex]._id) {
               return (
                 <div className="plus_team" key={i}>
                   <InputTeam
@@ -154,13 +157,13 @@ const InputTeam = ({ name, label, value, update, index }) => {
   );
 };
 
-const CategoriesSelect = ({ setCateg, categ, event }) => {
+export const CategoriesSelect = ({ setCindex, cindex, event }) => {
   const [open, setOpen] = useState(false);
   const toggle = () => setOpen(!open);
   return (
     <div className="categories_select">
       <div className="categories_select_btn" onClick={toggle}>
-        {event && <h6>{event.categories[categ - 1].name}</h6>}
+        {event && <h6>{event.categories[cindex].name}</h6>}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"
@@ -177,7 +180,7 @@ const CategoriesSelect = ({ setCateg, categ, event }) => {
               <h6
                 key={index}
                 onClick={() => {
-                  setCateg(index + 1);
+                  setCindex(index);
                   toggle();
                 }}
               >

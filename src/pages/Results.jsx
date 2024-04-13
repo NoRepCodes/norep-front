@@ -15,6 +15,10 @@ import { EditTeamsModal } from "../components/modals/EditTeamsModal";
 import { EditResultsModal } from "../components/modals/EditResultsModal";
 import ResultAside from "../components/results/ResultAside";
 import ResultInfo from "../components/results/ResultInfo";
+const body = document.getElementById('body');
+
+const showScroll = ()=> body.style.overflow = 'auto'
+const hideScroll = ()=> body.style.overflow = 'hidden'
 
 export const Results = () => {
   let { _id } = useParams();
@@ -29,19 +33,27 @@ export const Results = () => {
 
   const [wodsModal, setWodsModal] = useState(false);
   const toggleWodsM = () => {
+    if(wodsModal) showScroll()
+    else hideScroll()
     setWodsModal(!wodsModal);
   };
   const [resuModal, setResuModal] = useState(false);
   const toggleResuM = () => {
+    if(resuModal) showScroll()
+    else hideScroll()
     setResuModal(!resuModal);
   };
 
   const [teamModal, setTeamModal] = useState(false);
   const toggleTeamModal = () => {
+    if(teamModal) showScroll()
+    else hideScroll()
     setTeamModal(!teamModal);
   };
   const [updateEventModal, setUpdateEventModal] = useState(false);
   const toggleUpdateEventModal = () => {
+    if(updateEventModal) showScroll()
+    else hideScroll()
     setUpdateEventModal(!updateEventModal);
   };
 
@@ -61,13 +73,12 @@ export const Results = () => {
   useEffect(() => {
     if (event) {
       (async () => {
-        // await resetTeams();
         if (!teams) {
           await resetTeams();
         }
       })();
     }
-  }, [event, cindex]);
+  }, [event]);
 
   const resetTeams = async () => {
     const { status, data } = await findTeams(event._id);
@@ -116,7 +127,7 @@ export const Results = () => {
       {wodsModal && (
         <EditWodsModal
           close={toggleWodsM}
-          {...{ event, cindex, setEvents, events }}
+          {...{ event, cindex, setEvents, events,setCindex }}
         />
       )}
       {resuModal && (

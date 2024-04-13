@@ -9,34 +9,33 @@ const blankResults = {
   amount: 0,
   tiebrake: 0,
   time: 0,
-  penalty: 0,
+  penalty: '00:00:00',
 };
 
-export const EditResultsModal = ({ close, event, categ, teams, setTeams }) => {
+export const EditResultsModal = ({ close, event, cindex, teams, setTeams }) => {
   const [windex, setWindex] = useState(null);
   const [load, setLoad] = useState(false);
   const [list, setList] = useState([]);
 
   const chooseWod = (index) => {
-    // console.log(teams)
     setWindex(index);
   };
 
   const click = async () => {
     setLoad(true);
     let newList = list.map((item) => {
-      console.log(item);
-      if (item.wod_type === 1 || item.wod_type === 2) {
+      // console.log(item);
+      if (item.wt === 3) {
         return {
           ...item,
           time: convTime(item.time),
-          tiebrake: convTime(item.tiebrake),
+          tiebrake: item.tiebrake,
           penalty: convTime(item.penalty),
           amount: parseInt(item.amount),
         };
       } else {
         return {
-          ...item,
+         ...item,
           time: convTime(item.time),
           tiebrake: convTime(item.tiebrake),
           penalty: convTime(item.penalty),
@@ -45,90 +44,76 @@ export const EditResultsModal = ({ close, event, categ, teams, setTeams }) => {
       }
     });
 
-    // console.log(newList)
     const { status, data } = await updateResults(newList, windex);
     setLoad(false);
     if (status === 200) {
-      let wl = event.categories[categ - 1].wods.length;
-      let aux = [...data];
-      aux.forEach((team, i1) => {
+      let wl = event.categories[cindex].wods.length;
+      let oldTeams = [...teams]
+      data.forEach((team, i1) => {
         for (let i = 0; i < wl; i++) {
-          // console.log(team.wods[i])
-          if (team.wods[i] === undefined) aux[i1].wods[i] = { ...blankResults };
+          if (team.wods[i] === undefined) data[i1].wods[i] = { ...blankResults,penalty:0 };
         }
+        oldTeams.forEach((ot,ot_index) => {
+          if(team._id === ot._id) {
+            console.log('is this working?')
+            oldTeams[ot_index] = team
+          }
+        });
       });
-      setTeams(aux);
+      setTeams(oldTeams);
       close();
-      // console.log(aux);
-      // setTeams(data);
     } else {
       alert(data.msg);
     }
-    // console.log(newList)
   };
 
   useEffect(() => {
-    if (windex !== null) {
-      let aux = teams.filter(
-        (t) => t.category_id === event.categories[categ - 1]._id
-      );
-      // aux = aux.filter(
-      //   (t) =>
-      //     windex === 0 ||
-      //     (t.wods[windex - 1].amount !== 0 &&
-      //       t.wods[windex - 1].amount !== undefined)
-      // );
-      let selecWod = event.categories[categ - 1].wods[windex];
-      let wt = selecWod.wod_type;
-      let infoTeams = aux.map((t, i) => {
-        if (
-          // t.wods[windex].amount === undefined ||
-          // t.wods[windex].amount === 0
-          false
-        ) {
-          return {
-            ...blankResults,
-            _id: t._id,
-            name: t.name,
-            amount_type: selecWod.amount_type,
-            tiebrake: wt === 3 ? 0 : "00:00:00",
-            time:
-              wt === 2 || wt === 4
-                ? "00:00:00"
-                : convSeconds(selecWod.time_cap),
-            wt,
-          };
-        } else {
-          return {
-            ...t.wods[windex],
-            _id: t._id,
-            name: t.name,
-            wt,
-            tiebrake:
-              wt === 3
-                ? t.wods[windex].tiebrake
-                : convSeconds(t.wods[windex].tiebrake),
-            time: convSeconds(t.wods[windex].time),
-            penalty: convSeconds(t.wods[windex].penalty),
-          };
-        }
-      });
-      // console.log(infoTeams);
-      setList(infoTeams);
+    try {
+      if (windex !== null) {
+        let aux = teams.filter(
+          (t) => t.category_id === event.categories[cindex]._id
+        );
+        let selecWod = event.categories[cindex].wods[windex];
+        let wt = selecWod.wod_type;
+        let infoTeams = aux.map((t, i) => {
+          console.log(t)
+          if (t.wods[windex] === undefined) {
+            return {
+              ...blankResults,
+              _id: t._id,
+              name: t.name,
+              amount_type: selecWod.amount_type,
+              tiebrake: wt === 3 ? 0 : "00:00:00",
+              time:
+                wt === 2 || wt === 4
+                  ? "00:00:00"
+                  : convSeconds(selecWod.time_cap),
+              wt,
+            };
+          } else {
+            return {
+              ...t.wods[windex],
+              _id: t._id,
+              name: t.name,
+              wt,
+              tiebrake:
+                wt === 3
+                  ? t.wods[windex].tiebrake
+                  : convSeconds(t.wods[windex].tiebrake),
+              time: convSeconds(t.wods[windex].time),
+              penalty: convSeconds(t.wods[windex].penalty),
+            };
+          }
+        });
+        console.log(infoTeams)
+        setList(infoTeams);
+      }
+    } catch (error) {
+      console.log(error);
     }
   }, [windex]);
 
-  useEffect(() => {
-    // console.log(teams)
-  }, []);
-
   const goBack = () => {
-    console.log(teams);
-    // let aux = 0
-    // teams.forEach(t => {
-    //   if(t.wods.length > aux) aux = t.wods.length
-    // });
-    // console.log(aux)
     setWindex(null);
   };
 
@@ -143,12 +128,12 @@ export const EditResultsModal = ({ close, event, categ, teams, setTeams }) => {
         </div>
         {windex === null ? (
           <SelectWod
-            wods={event.categories[categ - 1].wods}
+            wods={event.categories[cindex].wods}
             chooseWod={chooseWod}
             teams={teams}
           />
         ) : (
-          <UsersList {...{ event, categ, teams, windex, list, setList }} />
+          <UsersList {...{ event, cindex, teams, windex, list, setList }} />
         )}
         <div className="mt_auto"></div>
         <div className="bottom_ctn">
@@ -171,7 +156,7 @@ export const EditResultsModal = ({ close, event, categ, teams, setTeams }) => {
   );
 };
 
-const UsersList = ({ event, categ, windex, list, setList }) => {
+const UsersList = ({ event, cindex, windex, list, setList }) => {
   const hReps = (value, index) => {
     const aux = list.map((t, i) => {
       if (i === index) return { ...t, amount: value };
@@ -204,7 +189,10 @@ const UsersList = ({ event, categ, windex, list, setList }) => {
 
   return (
     <div className="users_list">
-      <h6>{event.categories[categ - 1].wods[windex].name}</h6>
+      <h6>
+        {event.categories[cindex].wods[windex].name} -{" "}
+        {getWodTypeName(event.categories[cindex].wods[windex].wod_type)}
+      </h6>
       {list.map((user, i) => (
         <RU_Input
           key={user._id}
@@ -212,7 +200,7 @@ const UsersList = ({ event, categ, windex, list, setList }) => {
           wod_type={user.wt}
           {...{
             event,
-            categ,
+            cindex,
             windex,
             hReps,
             hTime,
@@ -237,7 +225,7 @@ const RU_Input = ({
   wod_type,
   windex,
   event,
-  categ,
+  cindex,
   hReps,
   hTime,
   hTiebrake,
@@ -315,6 +303,21 @@ const SelectWod = ({ wods, chooseWod, teams }) => {
   );
 };
 
+const getWodTypeName = (wod_type) => {
+  switch (wod_type) {
+    case 1:
+      return "AMRAP";
+    case 2:
+      return "FORTIME";
+    case 3:
+      return "RM";
+    case 4:
+      return "CIRCUITO";
+    default:
+      return "";
+  }
+};
+
 const fillInputs = () => {};
 
 /**
@@ -322,9 +325,9 @@ const fillInputs = () => {};
  * (() => {
     if (windex !== null) {
       let aux = teams.filter(
-        (t) => t.category_id === event.categories[categ - 1]._id
+        (t) => t.category_id === event.categories[cindex]._id
       );
-      let selecWod = event.categories[categ - 1].wods[windex];
+      let selecWod = event.categories[cindex].wods[windex];
       let wt = selecWod.wod_type;
       let infoTeams = aux.map((t, i) => {
         if (t.wods[windex].amount === undefined) {

@@ -56,6 +56,7 @@ const ResultInfo = ({
             placeholder="Buscar participantes..."
             value={input}
             onChange={onChangeText}
+            id="searchbar_team_input_mobile"
           />
         </div>
         <div style={{ position: "relative" }}>

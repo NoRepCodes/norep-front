@@ -1,4 +1,3 @@
-
 let evAux = {
   categories: [
     {
@@ -18,6 +17,13 @@ let evAux = {
   ],
 };
 
+const emptyWodResult = {
+  amount: 0,
+  amount_type: "",
+  time: 0,
+  tiebrake: 0,
+  penalty: 0,
+};
 let teamAux = [
   {
     _id: "",
@@ -25,15 +31,7 @@ let teamAux = [
     category_id: "",
     event_id: "",
     box: "",
-    wods: [
-      {
-        amount: 0,
-        amount_type: "",
-        time: 0,
-        tiebrake: 0,
-        penalty: 0,
-      },
-    ],
+    wods: [emptyWodResult],
   },
 ];
 
@@ -57,6 +55,8 @@ export const order = async (eventx = evAux, data = teamAux) => {
       // Push team wods result into category wod
       teams.forEach((t) => {
         if (t.category_id === c._id) {
+          // if the wod is empty, put ghost results there, otherwise, put real values
+          if (t.wods[windex] === null) t.wods[windex] = { ...emptyWodResult };
           w._results.push(t.wods[windex]);
         }
       });
@@ -67,6 +67,7 @@ export const order = async (eventx = evAux, data = teamAux) => {
       // tr = team result
       // apply points to team results and share amount_type
       w._results.forEach((tr, tr_index) => {
+        if (tr === undefined) tr = { ...emptyWodResult };
         // put CAP+ on for time if its: FORTIME & time exceed without cap amount
         if (
           w.wod_type === 2 &&
@@ -84,9 +85,12 @@ export const order = async (eventx = evAux, data = teamAux) => {
   // plus every point and tiebrake
   teams.forEach((t) => {
     t.wods.forEach((w) => {
-      // verify that wod points exist to avoid NaN
-      t._points += w.points ? w.points : 0;
-      t._tiebrake_total += w.tiebrake;
+      // verify that wod exist
+      if (w !== null) {
+        // verify that wod points exist to avoid NaN
+        t._points += w.points ? w.points : 0;
+        t._tiebrake_total += w.tiebrake;
+      }
     });
     let perc = parseFloat((t._points / t.wods.length).toFixed(3));
     if (Number.isNaN(perc)) {
@@ -95,15 +99,46 @@ export const order = async (eventx = evAux, data = teamAux) => {
       t._percent = perc;
     }
   });
-  // order teams per percent before spliting them into categories
-  teams.sort((a, b) => (a._percent < b._percent ? 1 : -1));
+  // order teams per percent and _total_tie_brakes
+  teams.sort((a, b) => tieBrakeSort(a, b));
+
+  // split teams into categories
   const categTeams = event.categories.map((c) => []);
   event.categories.forEach((c, cindex) => {
     teams.forEach((t) => {
       if (t.category_id === c._id) categTeams[cindex].push(t);
     });
   });
-  // console.log(categTeams)
+
+  // apply formula for those with the same points to reduce percent
+  categTeams.forEach((c) => {
+    c.forEach((team, index) => {
+      if (index !== 0 && team._points === c[index - 1]._points) {
+        let formula = 0;
+        let ttt = team._tiebrake_total === 0 ? 1: team._tiebrake_total
+        // separate formula in case of small teams amount
+        if(c.length >= 5){
+        // if(true){
+          //ORIGINAL FORMULA, IDK
+          formula =
+            (100 - (c[index - 1]._tiebrake_total * 100) / ttt) /
+            c.length;
+        }else{
+          formula =
+            (c[index - 1]._tiebrake_total / ttt) * 0.1;
+        }
+        if (Number.isNaN(formula)) {
+          team._percent = 0;
+        } else {
+          team._percent = parseFloat(
+            (c[index - 1]._percent - formula).toFixed(3)
+          );
+        }
+      }
+    });
+  });
+
+  // console.log(categTeams);
   return categTeams;
 };
 
@@ -133,6 +168,15 @@ const circuitSort = (a, b) => {
     if (a.tiebrake > b.tiebrake) return 1;
     else if (a.tiebrake < b.tiebrake) return -1;
     else if (a.tiebrake === b.tiebrake) return 0;
+  }
+};
+
+const tieBrakeSort = (a, b) => {
+  if (a._points < b._points) return 1;
+  else if (a._points > b._points) return -1;
+  else if (a._points === b._points) {
+    if (a._tiebrake_total > b._tiebrake_total) return 1;
+    else if (a._tiebrake_total < b._tiebrake_total) return -1;
   }
 };
 
@@ -172,10 +216,7 @@ const applyPoints = (tr, index, wod) => {
   }
 };
 
-
-
 export const pos = (pos) => {
-  // console.log(pos)
   switch (pos) {
     case 1:
       return "1ro";
@@ -252,3 +293,9 @@ export const pos = (pos) => {
       break;
   }
 };
+
+
+////ORIGINAL FORMULA, IDK
+// formula =
+// (100 - (c[index - 1]._tiebrake_total * 100) / team._total_tiebrake) /
+// c.length;

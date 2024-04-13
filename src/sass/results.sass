@@ -107,11 +107,13 @@
     display: flex
     flex-direction: column
     box-sizing: border-box
-    width: 100%
+    width: fs(12)
     border: 1px solid v.$fourth
     img
       background-color: #181818
       width: 100%
+      height: calc( fs(12)  - 2px )
+      box-sizing: border-box
 
     .categ_ctn
       background-color: v.$primary
@@ -354,8 +356,9 @@
 
       .resp_ri_img
         background-color: #181818
-        height: 100%
-        // width: fs(12)
+        // height: 100%
+        height: fs(12)
+        width: fs(12)
         position: absolute
         left: 0px
         top: 0px
@@ -459,3 +462,8 @@
     margin-left: calc( fs(12) * (-2) )
   100%
     margin-left: 0
+
+
+@media screen and (width < 450px)
+  .corner
+    display: none !important

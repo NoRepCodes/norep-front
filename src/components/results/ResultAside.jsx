@@ -96,6 +96,7 @@ const ResultAside = ({
             placeholder="Buscar Participantes"
             value={input}
             onChange={onChangeText}
+            id="searchbar_team_input"
           />
         </div>
         <div className="partners_carousel">

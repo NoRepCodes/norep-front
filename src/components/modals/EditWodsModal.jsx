@@ -1,6 +1,7 @@
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { updateWods } from "../../api/events.api";
+import { CategoriesSelect } from "./EditTeamsModal";
 import { convTime, CrossIcon, InputsWOD } from "./ModalTools";
 
 const blankwod = {
@@ -18,11 +19,11 @@ const rType = (num) => {
   else if (num === 4) return 1;
 };
 
-export const EditWodsModal = ({ close, event, categ, setEvents, events }) => {
+export const EditWodsModal = ({ close, event, cindex, setEvents, events,setCindex }) => {
   const [load, setLoad] = useState(false);
   const [wods, setWods] = useState(false);
   useEffect(() => {
-    let aux = event.categories[categ - 1].wods.map((w, i) => {
+    let aux = event.categories[cindex].wods.map((w, i) => {
       return {
         ...w,
         time_cap: moment.utc(w.time_cap * 1000).format("HH:mm:ss"),
@@ -30,7 +31,7 @@ export const EditWodsModal = ({ close, event, categ, setEvents, events }) => {
     });
     // console.log(aux)
     setWods(aux);
-  }, []);
+  }, [cindex]);
 
   if (!wods) return <div className="blackscreen"></div>;
 
@@ -44,7 +45,7 @@ export const EditWodsModal = ({ close, event, categ, setEvents, events }) => {
     });
     const { status, data } = await updateWods(
       event._id,
-      event.categories[categ - 1]._id,
+      event.categories[cindex]._id,
       newWods
     );
     setLoad(false);
@@ -97,7 +98,7 @@ export const EditWodsModal = ({ close, event, categ, setEvents, events }) => {
   const handleType = async (value, index) => {
     let aux = wods.map((w, i) => {
       if (i === index){
-        let at = rType(value) === 4 ? 'Puntos' : 'Reps'
+        let at = rType(value) === 3 ? 'Lbs' : 'Reps'
         return { ...blankwod, wod_type: rType(value), name: w.name,amount_type:at };
       }
       else return w;
@@ -128,9 +129,11 @@ export const EditWodsModal = ({ close, event, categ, setEvents, events }) => {
             <CrossIcon />
           </div>
         </div>
+        <CategoriesSelect {...{ setCindex, cindex, event }} />
         <div className="modal_form">
-          {wods?.map((item, index) => (
-            <InputsWOD
+          {wods?.map((item, index) =>{
+            return (
+              <InputsWOD
               key={index}
               wod={item}
               {...{
@@ -143,12 +146,10 @@ export const EditWodsModal = ({ close, event, categ, setEvents, events }) => {
                 minusWod,
               }}
             />
-          ))}
-          {/* {wods?.map((item,index)=>{
-              if(item.wod_type === 1) return <InputsWOD_AMRAP key={index} wod={item} {...{handleName,handleTime,handleType}} />
-              else if(item.wod_type === 2) return <InputsWOD_FORTIME key={index} wod={item} {...{handleName,handleTime,handleType,handleReps}} />
-              else if(item.wod_type === 3) return <InputsWOD_RM key={index} wod={item} {...{handleName,handleTime,handleType}} />
-            })} */}
+            )
+          }
+            
+          )}
         </div>
         <div className="mt_auto"></div>
         <div className="bottom_ctn">

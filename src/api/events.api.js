@@ -40,7 +40,7 @@ export const createEvent = async (inputs, categ, img, partn) => {
 export const updateEvent = async (inputs, categ, image, partners, toDelete, _id, categToDelete) => {
     // console.log(formData)
     let categories = []
-    categories = categ.map((c, i) => ({ name: c, wods: [] }))
+    categories = categ.map((c, i) => ({ name: c.name, wods: c.wods,_id:c._id }))
     return await axios.post(`${url}updateEvent`, { ...inputs, categories, image, partners, toDelete, _id, categToDelete }).then(res => {
         return res
     }).catch(err => {

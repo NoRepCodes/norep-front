@@ -10,7 +10,7 @@ export const Table = ({ input, event, cindex, teams, admin, kg = true }) => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    if (data === null && event !== null && teams !== null) {
+    if (event !== null && teams !== null) {
       (async () => {
         setData(await order(event, teams));
       })();
@@ -26,7 +26,7 @@ export const Table = ({ input, event, cindex, teams, admin, kg = true }) => {
   const testClick = () => {
     // console.log(info);
     // console.log(data);
-    // console.log(info[0].wods[0])
+    console.log(info);
     // console.log(info[1].wods[0])
   };
 
@@ -44,7 +44,7 @@ export const Table = ({ input, event, cindex, teams, admin, kg = true }) => {
               if (regex.test(team.name))
                 return (
                   <TableUser
-                    key={index}
+                    key={team._id}
                     user={team}
                     {...{ index, kg }}
                     eventWods={event.categories[cindex].wods}
@@ -55,7 +55,7 @@ export const Table = ({ input, event, cindex, teams, admin, kg = true }) => {
             } else {
               return (
                 <TableUser
-                  key={index}
+                  key={team._id}
                   user={team}
                   {...{ index, kg }}
                   eventWods={event.categories[cindex].wods}
@@ -227,18 +227,17 @@ const IIcon = () => {
 const WodInfo = ({ wod, kg, wt, eventWod }) => {
   return (
     <>
-      {wt === 3 ? (
-        <h1 className="amounts">{lbOrKg(wod.amount, kg)}</h1>
-      ) : (
+      {(wt === 1 || wt === 2) && (
         <h1 className="amounts">
           {wod.amount} {eventWod.amount_type}
         </h1>
       )}
-      {wt === 4 && wod.penalty !== 0 && (
-        <h1 className="amounts">Penalty: {wod.penalty}</h1>
-      )}
+      {wt === 3 && <h1 className="amounts">{lbOrKg(wod.amount, kg)}</h1>}
       {wod.time !== 0 && (
         <h1 className="amounts">Tiempo: {wodTime(wod.time)} min</h1>
+      )}
+      {wt === 4 && wod.penalty !== 0 && (
+        <h1 className="amounts">Penalty: {wod.penalty}</h1>
       )}
       {wod.tiebrake !== 0 && (
         <h1 className="amounts">Tiebrake: {wodTime(wod.tiebrake)} min</h1>

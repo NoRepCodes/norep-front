@@ -28,9 +28,14 @@ const testValues = {
   accesible: true,
 };
 
+const emptyCategory = {
+  name: "",
+  wods: [],
+};
+
 export const UpdateEventModal = ({
   event,
-  categ,
+  cindex,
   close,
   setEvents,
   resetTeams,
@@ -48,7 +53,7 @@ export const UpdateEventModal = ({
     since: convertDate(event.since),
     accesible: event.accesible,
   });
-  const [categories, setCategories] = useState(categoriesName(event));
+  const [categories, setCategories] = useState([...event.categories]);
   const [categToDelete, setCategToDelete] = useState([]);
 
   const navigate = useNavigate();
@@ -65,7 +70,7 @@ export const UpdateEventModal = ({
   };
 
   const confirm = async () => {
-    setLoad(true);
+    // setLoad(true);
     if (validation()) {
       /// SET IMAGES TO DELETE IN CASE IS NOT IN THE NEY ARRAY
       let toDelete = [];
@@ -88,7 +93,6 @@ export const UpdateEventModal = ({
           newPartners.push(event.partners[indexof]);
         } else newPartners.push(p);
       });
-
       const { status, data } = await updateEvent(
         inputs,
         categories,
@@ -120,24 +124,25 @@ export const UpdateEventModal = ({
   };
 
   const plusCateg = () => {
-    setCategories([...categories, []]);
+    setCategories([...categories, {...emptyCategory}]);
   };
   const minusCateg = (index) => {
     let aux = [...categories];
     // Find if there is a category to get his ID and delete teams after
-    let exist = event.categories.findIndex((elm) => elm.name === aux[index]);
+    let exist = event.categories.findIndex(
+      (elm) => elm.name === aux[index].name
+    );
     if (exist >= 0 ? true : false) {
       let aux2 = [...categToDelete];
       aux2.push(event.categories[exist]._id);
       setCategToDelete(aux2);
     }
-
     aux.splice(index, 1);
     setCategories([...aux]);
   };
   const updateCateg = (value, index) => {
     let aux = [...categories];
-    aux[index] = value;
+    aux[index].name = value;
     setCategories(aux);
   };
   const deleteEventClick = async () => {
@@ -260,7 +265,7 @@ const CategoriesInput = ({
           name={`categ ${index + 1}`}
           label={`Categoría ${index + 1}`}
           update={updateCateg}
-          value={categ}
+          value={categ.name}
           index={index}
           key={index}
           minus={minusCateg}

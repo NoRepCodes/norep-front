@@ -3,14 +3,15 @@ import { useRef } from "react";
 import "../../sass/modals/modalTools.sass";
 // export const ArrayInput = ({ label, ocArr, value, index }) => {
 
-const splitTime = (time)=>{
-  let val = time.split(":")
-    val.forEach((num,index) => {
-      if(num === ''||num==='0') val[index] = '00'
-    });
-    return `${val[0]}:${val[1]}:${val[2]}` 
-}
-export const convTime = (s) => moment.duration(splitTime(s), "HH:mm:ss").asSeconds();
+const splitTime = (time) => {
+  let val = time.split(":");
+  val.forEach((num, index) => {
+    if (num === "" || num === "0") val[index] = "00";
+  });
+  return `${val[0]}:${val[1]}:${val[2]}`;
+};
+export const convTime = (s) =>
+  moment.duration(splitTime(s), "HH:mm:ss").asSeconds();
 //   const text = (e) => {
 //     ocArr(e.target.value, index);
 //   };
@@ -117,32 +118,38 @@ export const InputTime = ({ name, label, value, update, index }) => {
     <div className="input_label">
       <label htmlFor={name}>{label}</label>
       <div className="input_time">
-        <input
-          type="text"
-          placeholder="hh"
-          onChange={onChangeText}
-          ref={refh}
-          maxLength={2}
-          value={value.split(":")[0]}
-        />
+        <div className="hours" >
+          <input
+            type="text"
+            placeholder="hh"
+            onChange={onChangeText}
+            ref={refh}
+            maxLength={2}
+            value={value.split(":")[0]}
+          />
+        </div>
         <h1>:</h1>
-        <input
-          type="text"
-          placeholder="mm"
-          onChange={onChangeText}
-          ref={refm}
-          maxLength={2}
-          value={value.split(":")[1]}
-        />
+        <div className="minutes" >
+          <input
+            type="text"
+            placeholder="mm"
+            onChange={onChangeText}
+            ref={refm}
+            maxLength={2}
+            value={value.split(":")[1]}
+          />
+        </div>
         <h1>:</h1>
-        <input
-          type="text"
-          placeholder="ss"
-          onChange={onChangeText}
-          ref={refs}
-          maxLength={2}
-          value={value.split(":")[2]}
-        />
+        <div className="seconds" >
+          <input
+            type="text"
+            placeholder="ss"
+            onChange={onChangeText}
+            ref={refs}
+            maxLength={2}
+            value={value.split(":")[2]}
+          />
+        </div>
       </div>
     </div>
   );
@@ -222,10 +229,10 @@ export const InputsWOD = ({
   return (
     <div className="inputs_wod_ctn">
       <div className="title_ctn">
-      <h6 className="title1" >
-        WOD {index + 1}: 
-      </h6>
-      <h6 className="title2" onClick={hType}>{rTypeName(wod.wod_type)}</h6>
+        <h6 className="title1">WOD {index + 1}:</h6>
+        <h6 className="title2" onClick={hType}>
+          {rTypeName(wod.wod_type)}
+        </h6>
       </div>
       <div className="inputs_wod_form">
         <InputArray
@@ -251,9 +258,10 @@ export const InputsWOD = ({
           />
         )}
         {(wod.wod_type === 2 || wod.wod_type === 3) && (
-          <h5 className="wat_btn" onClick={haType}>{wod.amount_type.toUpperCase()}</h5>
+          <h5 className="wat_btn" onClick={haType}>
+            {wod.amount_type.toUpperCase()}
+          </h5>
         )}
-        {wod.wod_type === 4 && <h5>PUNTOS</h5>}
       </div>
     </div>
   );
