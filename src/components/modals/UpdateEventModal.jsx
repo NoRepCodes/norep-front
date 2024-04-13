@@ -114,8 +114,6 @@ export const UpdateEventModal = ({
           })
         );
         if (categToDelete.length > 0) await resetTeams();
-        // setEvents((prev) => [...prev, data]);
-        // console.log(data)
         close();
       } else {
         alert(data.msg);

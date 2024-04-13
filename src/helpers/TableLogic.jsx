@@ -138,7 +138,6 @@ export const order = async (eventx = evAux, data = teamAux) => {
     });
   });
 
-  // console.log(categTeams);
   return categTeams;
 };
 

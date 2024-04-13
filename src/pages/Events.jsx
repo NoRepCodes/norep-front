@@ -1,33 +1,43 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useState } from "react";
-import { getEventsPlusTeams } from "../api/events.api";
+import { getEventsPlusTeams, searchTeam } from "../api/events.api";
 import { Banner } from "../components/Banner";
 import "../sass/events.sass";
 import { EventCard } from "./Home";
-import {motion} from 'framer-motion'
+import { motion } from "framer-motion";
+import { Context } from "../components/Context";
 
 export const Events = () => {
-  const [events, setEvents] = useState([]);
-  const [teams, setTeams] = useState([]);
-
+  const { events } = useContext(Context);
+  const [teams, setTeams] = useState(false);
+  const [first, setFirst] = useState(false);
   const [inputName, setInputName] = useState("");
 
   useEffect(() => {
-    (async () => {
-      const { status, data } = await getEventsPlusTeams();
-      if (status === 200) {
-        setEvents(data[0]);
-        setTeams(data[1]);
-      }
-    })();
-  }, []);
+    let tm;
+    if (first) {
+      tm = setTimeout(() => {
+        (async () => {
+          const { status, data } = await searchTeam(inputName);
+          if (status === 200) {
+            setTeams(data);
+          }
+        })();
+      }, 1000);
+    }
+
+    setFirst(true);
+    return () => {
+      clearTimeout(tm);
+    };
+  }, [inputName]);
 
   const onChangeText = (e) => {
     setInputName(e.target.value);
   };
 
   return (
-    <div className="events_ctn" id="eventos" >
+    <div className="events_ctn" id="eventos">
       <div className="content">
         <div className="search_aside">
           <h6>EVENTOS</h6>
@@ -44,9 +54,14 @@ export const Events = () => {
             <input type="date" placeholder="Elige la fecha" />
           </div> */}
         </div>
-        <motion.div className="cards_ctn" initial={{y:200,opacity:0}} animate={{y:0,opacity:1}} transition={{duration:.7}} >
+        <motion.div
+          className="cards_ctn"
+          initial={{ y: 200, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.7 }}
+        >
           {events.map((event, index) => {
-            if (inputName.length > 0) {
+            if (teams && inputName.length > 0) {
               let regex = new RegExp(inputName, "i");
               let bool = false;
               teams.forEach((t) => {

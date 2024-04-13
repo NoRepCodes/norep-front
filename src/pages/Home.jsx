@@ -19,9 +19,6 @@ const Home = () => {
   const { events, time } = useContext(Context);
 
   const click = () => {
-    // console.log(moment().locale("es"));
-    // let aux = moment.unix(events[0].until).format("DD, MMM.")
-    // console.log(time);
   };
 
   const variants = {

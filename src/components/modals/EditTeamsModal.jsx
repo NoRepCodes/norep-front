@@ -52,13 +52,11 @@ export const EditTeamsModal = ({
   };
   
   const click = async () => {
-    // console.log(teams)
     const filtredTeams = [];
     teams.forEach((t, index) => {
       if (t.category_id === event.categories[cindex]._id)
         filtredTeams.push(t);
     });
-    console.log(filtredTeams)
     setLoad(true);
     const { status, data } = await editTeams(
       event._id,

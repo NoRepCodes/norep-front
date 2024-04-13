@@ -24,7 +24,6 @@ export const EditResultsModal = ({ close, event, cindex, teams, setTeams }) => {
   const click = async () => {
     setLoad(true);
     let newList = list.map((item) => {
-      // console.log(item);
       if (item.wt === 3) {
         return {
           ...item,
@@ -55,7 +54,6 @@ export const EditResultsModal = ({ close, event, cindex, teams, setTeams }) => {
         }
         oldTeams.forEach((ot,ot_index) => {
           if(team._id === ot._id) {
-            console.log('is this working?')
             oldTeams[ot_index] = team
           }
         });
@@ -76,7 +74,6 @@ export const EditResultsModal = ({ close, event, cindex, teams, setTeams }) => {
         let selecWod = event.categories[cindex].wods[windex];
         let wt = selecWod.wod_type;
         let infoTeams = aux.map((t, i) => {
-          console.log(t)
           if (t.wods[windex] === undefined) {
             return {
               ...blankResults,
@@ -105,7 +102,6 @@ export const EditResultsModal = ({ close, event, cindex, teams, setTeams }) => {
             };
           }
         });
-        console.log(infoTeams)
         setList(infoTeams);
       }
     } catch (error) {
@@ -165,7 +161,6 @@ const UsersList = ({ event, cindex, windex, list, setList }) => {
     setList(aux);
   };
   const hTiebrake = (value, index) => {
-    // console.log(value)
     const aux = list.map((t, i) => {
       if (i === index) return { ...t, tiebrake: value };
       else return t;
@@ -319,75 +314,3 @@ const getWodTypeName = (wod_type) => {
 };
 
 const fillInputs = () => {};
-
-/**
- * 
- * (() => {
-    if (windex !== null) {
-      let aux = teams.filter(
-        (t) => t.category_id === event.categories[cindex]._id
-      );
-      let selecWod = event.categories[cindex].wods[windex];
-      let wt = selecWod.wod_type;
-      let infoTeams = aux.map((t, i) => {
-        if (t.wods[windex].amount === undefined) {
-          // let at = selecWod.amount_type;
-          return {
-            ...blankResults,
-              _id: t._id,
-              name: t.name,
-              amount_type: selecWod.amount_type,
-              tiebrake: wt === 3 ? 0 : "00:00:00",
-              time: wt === 2 || wt === 4 ? '00:00:00':convSeconds(selecWod.time_cap) ,
-              wt,
-          }
-          // if (wt === 1) {
-          //   return {
-          //     ...blankResults,
-          //     _id: t._id,
-          //     name: t.name,
-          //     amount_type: at,
-          //     tiebrake: "00:00:00",
-          //     time: convSeconds(selecWod.time_cap),
-          //     wt,
-          //   };
-          // } else if (wt === 2 || wt === 4) {
-          //   return {
-          //     ...blankResults,
-          //     _id: t._id,
-          //     name: t.name,
-          //     amount_type: at,
-          //     tiebrake: "00:00:00",
-          //     time: "00:00:00",
-          //     wt,
-          //   };
-          // } else if (wt === 3) {
-          //   return {
-          //     ...blankResults,
-          //     _id: t._id,
-          //     name: t.name,
-          //     amount_type: at,
-          //     tiebrake: 0,
-          //     time: convSeconds(selecWod.time_cap),
-          //     wt,
-          //   };
-          // }
-        } else {
-          return {
-            ...t.wods[windex],
-            _id: t._id,
-            name: t.name,
-            wt,
-            tiebrake:
-              wt === 3
-                ? t.wods[windex].tiebrake
-                : convSeconds(t.wods[windex].tiebrake),
-            time: convSeconds(t.wods[windex].time),
-          };
-        }
-      });
-      // console.log(infoTeams);
-      setList(infoTeams);
-    }
-  }, [windex]);
- */

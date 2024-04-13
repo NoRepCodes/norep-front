@@ -28,7 +28,6 @@ export const Banner = () => {
               return -1;
             else return 1;
           });
-          // console.log(aux)
           setLatest(aux[0]);
         }
       })();
@@ -36,7 +35,6 @@ export const Banner = () => {
   }, [events]);
 
   const test = ()=>{
-    console.log(latest)
   }
 
   return (

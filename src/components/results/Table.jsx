@@ -24,10 +24,6 @@ export const Table = ({ input, event, cindex, teams, admin, kg = true }) => {
   }, [data, cindex]);
 
   const testClick = () => {
-    // console.log(info);
-    // console.log(data);
-    console.log(info);
-    // console.log(info[1].wods[0])
   };
 
   return (
@@ -75,7 +71,6 @@ export const TableHeader = ({ testClick, event, cindex }) => {
 
   const wtf = () => {
     testClick();
-    // console.log(event.categories[cindex]);
   };
 
   return (
@@ -112,7 +107,6 @@ export const TableUser = ({
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   const toggleOpen = () => {
-    // console.log(user);
     setOpen(!open);
   };
 

@@ -28,7 +28,6 @@ export const Header = ({ children }) => {
     localStorage.removeItem("adm");
     setAdmin(false);
   };
-  // console.log(href);
 
   return (
     <div className="page_ctn">

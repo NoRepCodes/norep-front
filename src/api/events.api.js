@@ -27,7 +27,6 @@ export const findTeams = async (event_id) => {
 
 
 export const createEvent = async (inputs, categ, img, partn) => {
-    // console.log(formData)
     let partners = partn === null ? [] : partn
     let categories = []
     categories = categ.map((c, i) => ({ name: c, wods: [] }))
@@ -38,7 +37,6 @@ export const createEvent = async (inputs, categ, img, partn) => {
     })
 }
 export const updateEvent = async (inputs, categ, image, partners, toDelete, _id, categToDelete) => {
-    // console.log(formData)
     let categories = []
     categories = categ.map((c, i) => ({ name: c.name, wods: c.wods,_id:c._id }))
     return await axios.post(`${url}updateEvent`, { ...inputs, categories, image, partners, toDelete, _id, categToDelete }).then(res => {
@@ -95,6 +93,13 @@ export const toggleUpdating = async (event_id, state) => {
 }
 export const loginAdmin = async (username,password) => {
     return await axios.post(`${url}loginAdmin`, { username, password }).then(res => {
+        return res
+    }).catch(err => {
+        return catchError(err)
+    })
+}
+export const searchTeam = async (searchTeam) => {
+    return await axios.post(`${url}searchTeam`, { searchTeam }).then(res => {
         return res
     }).catch(err => {
         return catchError(err)

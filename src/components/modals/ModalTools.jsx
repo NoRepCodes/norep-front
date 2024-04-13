@@ -30,7 +30,6 @@ export const InputArray = ({ name, label, value, update, index, minus }) => {
   };
   const remove = () => {
     minus(index);
-    // console.log("test");
   };
   return (
     <div className="input_label">
@@ -58,7 +57,6 @@ export const InputDate = ({ name, label, value, set }) => {
   const onChangeText = (e) => {
     const att = e.target.getAttribute("name");
     const value = e.target.value;
-    console.log(value);
     set((prev) => ({ ...prev, [att]: value }));
   };
   return (
@@ -223,7 +221,6 @@ export const InputsWOD = ({
   };
 
   const hTime = (e) => {
-    console.log(e);
   };
 
   return (

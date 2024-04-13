@@ -29,7 +29,6 @@ export const EditWodsModal = ({ close, event, cindex, setEvents, events,setCinde
         time_cap: moment.utc(w.time_cap * 1000).format("HH:mm:ss"),
       };
     });
-    // console.log(aux)
     setWods(aux);
   }, [cindex]);
 
@@ -57,9 +56,7 @@ export const EditWodsModal = ({ close, event, cindex, setEvents, events,setCinde
           return ev;
         }
       });
-      console.log(newEvents)
       setEvents(newEvents);
-      // console.log(data)
       close();
     }else {
       alert(data.msg)
@@ -107,8 +104,6 @@ export const EditWodsModal = ({ close, event, cindex, setEvents, events,setCinde
   };
   const handleAmountType = (value, index) => {
     let aux = [...wods];
-    // console.log(value)
-    // console.log(aux[index])
     aux[index].amount_type = value === "Reps" ? "Lbs" : "Reps";
     setWods(aux);
   };

@@ -60,7 +60,6 @@ const App = () => {
       if (status === 200) {
         setEvents(data[0]);
         setTime(data[1]);
-        // console.log(data)
       }
       const adm = JSON.parse(localStorage.getItem("adm"));
       if (adm) {
