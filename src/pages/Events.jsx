@@ -7,6 +7,11 @@ import { EventCard } from "./Home";
 import { motion } from "framer-motion";
 import { Context } from "../components/Context";
 
+const orderEvents= (a,b)=>{
+  if(a.since > b.since) return -1
+  else return 1
+}
+
 export const Events = () => {
   const { events } = useContext(Context);
   const [teams, setTeams] = useState(false);
@@ -60,7 +65,7 @@ export const Events = () => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.7 }}
         >
-          {events.map((event, index) => {
+          {events.sort(orderEvents).map((event, index) => {
             if (teams && inputName.length > 0) {
               let regex = new RegExp(inputName, "i");
               let bool = false;

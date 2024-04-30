@@ -23,8 +23,7 @@ export const Table = ({ input, event, cindex, teams, admin, kg = true }) => {
     }
   }, [data, cindex]);
 
-  const testClick = () => {
-  };
+  const testClick = () => {};
 
   return (
     <div className="table">
@@ -265,7 +264,9 @@ const lbOrKg = (amount, isKg) => {
   else return `${amount.toFixed(2)} Lbs`;
 };
 const Values_RM = ({ wod, kg }) => {
-  return <h1>({lbOrKg(wod.amount, kg)})</h1>;
+  if (wod._amount_type === "Reps") {
+    return <h1>({wod.amount} Reps)</h1>;
+  }else return <h1>({lbOrKg(wod.amount, kg)})</h1>
 };
 const Values_CIRCUIT = ({ wod }) => {
   return <h1>({convSeconds(wod?.time)})</h1>;
