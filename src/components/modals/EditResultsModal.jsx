@@ -9,7 +9,7 @@ const blankResults = {
   amount: 0,
   tiebrake: 0,
   time: 0,
-  penalty: '00:00:00',
+  penalty: 0,
 };
 
 export const EditResultsModal = ({ close, event, cindex, teams, setTeams }) => {
@@ -29,15 +29,15 @@ export const EditResultsModal = ({ close, event, cindex, teams, setTeams }) => {
           ...item,
           time: convTime(item.time),
           tiebrake: item.tiebrake,
-          penalty: convTime(item.penalty),
+          penalty: parseInt(item.penalty),
           amount: parseInt(item.amount),
         };
       } else {
         return {
-         ...item,
+          ...item,
           time: convTime(item.time),
           tiebrake: convTime(item.tiebrake),
-          penalty: convTime(item.penalty),
+          penalty: parseInt(item.penalty),
           amount: parseInt(item.amount),
         };
       }
@@ -47,14 +47,15 @@ export const EditResultsModal = ({ close, event, cindex, teams, setTeams }) => {
     setLoad(false);
     if (status === 200) {
       let wl = event.categories[cindex].wods.length;
-      let oldTeams = [...teams]
+      let oldTeams = [...teams];
       data.forEach((team, i1) => {
         for (let i = 0; i < wl; i++) {
-          if (team.wods[i] === undefined) data[i1].wods[i] = { ...blankResults,penalty:0 };
+          if (team.wods[i] === undefined)
+            data[i1].wods[i] = { ...blankResults, penalty: 0 };
         }
-        oldTeams.forEach((ot,ot_index) => {
-          if(team._id === ot._id) {
-            oldTeams[ot_index] = team
+        oldTeams.forEach((ot, ot_index) => {
+          if (team._id === ot._id) {
+            oldTeams[ot_index] = team;
           }
         });
       });
@@ -98,14 +99,14 @@ export const EditResultsModal = ({ close, event, cindex, teams, setTeams }) => {
                   ? t.wods[windex].tiebrake
                   : convSeconds(t.wods[windex].tiebrake),
               time: convSeconds(t.wods[windex].time),
-              penalty: convSeconds(t.wods[windex].penalty),
+              penalty: t.wods[windex].penalty,
             };
           }
         });
         setList(infoTeams);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }, [windex]);
 
@@ -154,11 +155,13 @@ export const EditResultsModal = ({ close, event, cindex, teams, setTeams }) => {
 
 const UsersList = ({ event, cindex, windex, list, setList }) => {
   const hReps = (value, index) => {
-    const aux = list.map((t, i) => {
-      if (i === index) return { ...t, amount: value };
-      else return t;
-    });
-    setList(aux);
+    if (value.match(/^[0-9]*$/)) {
+      const aux = list.map((t, i) => {
+        if (i === index) return { ...t, amount: value };
+        else return t;
+      });
+      setList(aux);
+    }
   };
   const hTiebrake = (value, index) => {
     const aux = list.map((t, i) => {
@@ -175,11 +178,13 @@ const UsersList = ({ event, cindex, windex, list, setList }) => {
     setList(aux);
   };
   const hPenalty = (value, index) => {
-    const aux = list.map((t, i) => {
-      if (i === index) return { ...t, penalty: value };
-      else return t;
-    });
-    setList(aux);
+    if (value.match(/^[0-9]*$/)) {
+      const aux = list.map((t, i) => {
+        if (i === index) return { ...t, penalty: value };
+        else return t;
+      });
+      setList(aux);
+    }
   };
 
   return (
@@ -231,14 +236,12 @@ const RU_Input = ({
     <div className="ru_ctn">
       <h5>{user.name}</h5>
       <div className="ru_inputs">
-        {wod_type !== 4 && (
-          <InputArray
-            label={ru_wod_type(wod_type)}
-            value={user.amount}
-            update={hReps}
-            index={index}
-          />
-        )}
+        <InputArray
+          label={ru_wod_type(wod_type)}
+          value={user.amount}
+          update={hReps}
+          index={index}
+        />
 
         {(wod_type === 2 || wod_type === 4) && (
           <InputTime
@@ -248,24 +251,23 @@ const RU_Input = ({
             index={index}
           />
         )}
-        {(wod_type === 1 || wod_type === 2 || wod_type === 4) && (
-          <InputTime
-            label="TIEBRAKE"
-            value={user.tiebrake}
-            update={hTiebrake}
-            index={index}
-          />
-        )}
-        {wod_type === 3 && (
+        <InputTime
+          label="TIEBRAKE"
+          value={user.tiebrake}
+          update={hTiebrake}
+          index={index}
+        />
+
+        {/* {wod_type === 3 && (
           <InputArray
             label="TIEBRAKE"
             value={user.tiebrake}
             update={hTiebrake}
             index={index}
           />
-        )}
+        )} */}
         {wod_type === 4 && (
-          <InputTime
+          <InputArray
             label="PENALTY"
             value={user.penalty}
             update={hPenalty}
@@ -312,5 +314,3 @@ const getWodTypeName = (wod_type) => {
       return "";
   }
 };
-
-const fillInputs = () => {};

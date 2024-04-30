@@ -179,7 +179,7 @@ export const TableUser = ({
             className="wods_display"
             initial={{ height: 0, paddingTop: 0 }}
             animate={{
-              height: "calc(5vw + 5vh)",
+              height: "calc(5.5vw + 5.5vh)",
               paddingTop: "calc(1.1vw + 1.1vh)",
             }}
             exit={{ height: 0, paddingTop: 0 }}
@@ -225,6 +225,11 @@ const WodInfo = ({ wod, kg, wt, eventWod }) => {
           {wod.amount} {eventWod.amount_type}
         </h1>
       )}
+      {wt === 4 && (
+        <h1 className="amounts">
+          {wod.amount - wod.penalty} {eventWod.amount_type}
+        </h1>
+      )}
       {wt === 3 && <h1 className="amounts">{lbOrKg(wod.amount, kg)}</h1>}
       {wod.time !== 0 && (
         <h1 className="amounts">Tiempo: {wodTime(wod.time)} min</h1>
@@ -266,8 +271,8 @@ const lbOrKg = (amount, isKg) => {
 const Values_RM = ({ wod, kg }) => {
   if (wod._amount_type === "Reps") {
     return <h1>({wod.amount} Reps)</h1>;
-  }else return <h1>({lbOrKg(wod.amount, kg)})</h1>
+  } else return <h1>({lbOrKg(wod.amount, kg)})</h1>;
 };
 const Values_CIRCUIT = ({ wod }) => {
-  return <h1>({convSeconds(wod?.time)})</h1>;
+  return <h1>({wod?.amount - wod?.penalty})</h1>;
 };

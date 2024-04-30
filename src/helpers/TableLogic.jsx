@@ -115,17 +115,15 @@ export const order = async (eventx = evAux, data = teamAux) => {
     c.forEach((team, index) => {
       if (index !== 0 && team._points === c[index - 1]._points) {
         let formula = 0;
-        let ttt = team._tiebrake_total === 0 ? 1: team._tiebrake_total
+        let ttt = team._tiebrake_total === 0 ? 1 : team._tiebrake_total;
         // separate formula in case of small teams amount
-        if(c.length >= 5){
-        // if(true){
+        if (c.length >= 5) {
+          // if(true){
           //ORIGINAL FORMULA, IDK
           formula =
-            (100 - (c[index - 1]._tiebrake_total * 100) / ttt) /
-            c.length;
-        }else{
-          formula =
-            (c[index - 1]._tiebrake_total / ttt) * 0.1;
+            (100 - (c[index - 1]._tiebrake_total * 100) / ttt) / c.length;
+        } else {
+          formula = (c[index - 1]._tiebrake_total / ttt) * 0.1;
         }
         if (Number.isNaN(formula)) {
           team._percent = 0;
@@ -161,12 +159,23 @@ const wodSort = (a, b) => {
 };
 
 const circuitSort = (a, b) => {
-  if (a.time > b.time) return 1;
-  else if (a.time < b.time) return -1;
-  else if (a.time === b.time) {
-    if (a.tiebrake > b.tiebrake) return 1;
-    else if (a.tiebrake < b.tiebrake) return -1;
-    else if (a.tiebrake === b.tiebrake) return 0;
+  let aa = a.amount - a.penalty;
+  let bb = b.amount - b.penalty;
+  if (aa < bb) return 1;
+  else if (aa > bb) return -1;
+  else if (aa === bb) {
+    if (a.time > b.time) return 1;
+    else if (a.time < b.time) return -1;
+    else if (a.time === b.time) {
+      if (a.tiebrake > b.tiebrake) {
+        // here the tie winner indicator
+        b._tie_winner = true;
+        return 1;
+      } else if (a.tiebrake < b.tiebrake) {
+        a._tie_winner = true;
+        return -1;
+      } else if (a.tiebrake === b.tiebrake) return 0;
+    }
   }
 };
 
@@ -197,7 +206,8 @@ const applyPoints = (tr, index, wod) => {
       if (
         tr.amount === prev.amount &&
         tr.time === prev.time &&
-        tr.tiebrake === prev.tiebrake
+        tr.tiebrake === prev.tiebrake &&
+        tr.penalty === prev.penalty
         // put the same values as the previous tr
       ) {
         tr.points = prev.points;
@@ -292,7 +302,6 @@ export const pos = (pos) => {
       break;
   }
 };
-
 
 ////ORIGINAL FORMULA, IDK
 // formula =

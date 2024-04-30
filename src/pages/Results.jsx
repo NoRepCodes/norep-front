@@ -23,7 +23,7 @@ const hideScroll = ()=> body.style.overflow = 'hidden'
 export const Results = () => {
   let { _id } = useParams();
   const { events, setEvents, admin } = useContext(Context);
-  const [event, setEvent] = useState(null);
+  const [event, setEvent] = useState(false);
   // cindex = category index
   const [cindex, setCindex] = useState(0);
   const [teams, setTeams] = useState(null);
@@ -91,7 +91,8 @@ export const Results = () => {
     // order2Improve(event, teams);
   };
 
-  if (event === null) return <div className="error_page" />;
+  // To do, this...
+  if (event === false) return <div className="error_page" />;
   else if (event === undefined) {
     return (
       <div className="error_page">
