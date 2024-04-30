@@ -6,6 +6,11 @@ import "../sass/events.sass";
 import { EventCard } from "./Home";
 import {motion} from 'framer-motion'
 
+
+const orderEvents= (a,b)=>{
+  if(a.since > b.since) return -1
+  else return 1
+}
 export const Events = () => {
   const [events, setEvents] = useState([]);
   const [teams, setTeams] = useState([]);
@@ -45,7 +50,7 @@ export const Events = () => {
           </div> */}
         </div>
         <motion.div className="cards_ctn" initial={{y:200,opacity:0}} animate={{y:0,opacity:1}} transition={{duration:.7}} >
-          {events.map((event, index) => {
+          {events.sort(orderEvents).map((event, index) => {
             if (inputName.length > 0) {
               let regex = new RegExp(inputName, "i");
               let bool = false;
