@@ -231,8 +231,8 @@ const HamburguerBtns = ({
                 <h1>Actualizando...</h1>
               ) : (
                 <>
-                  {updating ? <h1>Mostrando Res.</h1> : <h1>Ocultando Res.</h1>}
-                  {updating ? <EyeIcon /> : <EyeCloseIcon />}
+                  {!updating ? <h1>Mostrando Res.</h1> : <h1>Ocultando Res.</h1>}
+                  {!updating ? <EyeIcon /> : <EyeCloseIcon />}
                 </>
               )}
             </button>
