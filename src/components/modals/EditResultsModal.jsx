@@ -251,12 +251,21 @@ const RU_Input = ({
             index={index}
           />
         )}
-        <InputTime
-          label="TIEBRAKE"
-          value={user.tiebrake}
-          update={hTiebrake}
-          index={index}
-        />
+        {wod_type === 3 ? (
+          <InputArray
+            label="Tiebrake"
+            value={user.tiebrake}
+            update={hTiebrake}
+            index={index}
+          />
+        ) : (
+          <InputTime
+            label="TIEBRAKE"
+            value={user.tiebrake}
+            update={hTiebrake}
+            index={index}
+          />
+        )}
 
         {/* {wod_type === 3 && (
           <InputArray

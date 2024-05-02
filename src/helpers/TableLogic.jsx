@@ -56,7 +56,8 @@ export const order = async (eventx = evAux, data = teamAux) => {
       teams.forEach((t) => {
         if (t.category_id === c._id) {
           // if the wod is empty, put ghost results there, otherwise, put real values
-          if (t.wods[windex] === null) t.wods[windex] = { ...emptyWodResult };
+          if (t.wods[windex] === undefined)
+            t.wods[windex] = { ...emptyWodResult };
           w._results.push(t.wods[windex]);
         }
       });
@@ -93,6 +94,7 @@ export const order = async (eventx = evAux, data = teamAux) => {
       }
     });
     let perc = parseFloat((t._points / t.wods.length).toFixed(3));
+
     if (Number.isNaN(perc)) {
       t._percent = 0;
     } else {
@@ -125,12 +127,13 @@ export const order = async (eventx = evAux, data = teamAux) => {
         } else {
           formula = (c[index - 1]._tiebrake_total / ttt) * 0.1;
         }
-        if (Number.isNaN(formula)) {
+        if (Number.isNaN(formula) || team.wods.length === 0) {
           team._percent = 0;
         } else {
           team._percent = parseFloat(
             (c[index - 1]._percent - formula).toFixed(3)
           );
+          if(team._percent < 0) team._percent = 0
         }
       }
     });
