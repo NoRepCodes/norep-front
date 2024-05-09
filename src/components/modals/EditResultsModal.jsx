@@ -30,7 +30,7 @@ export const EditResultsModal = ({ close, event, cindex, teams, setTeams }) => {
           time: convTime(item.time),
           tiebrake: item.tiebrake,
           penalty: parseInt(item.penalty),
-          amount: parseInt(item.amount),
+          amount: parseFloat(item.amount.toString()),
         };
       } else {
         return {
@@ -38,7 +38,7 @@ export const EditResultsModal = ({ close, event, cindex, teams, setTeams }) => {
           time: convTime(item.time),
           tiebrake: convTime(item.tiebrake),
           penalty: parseInt(item.penalty),
-          amount: parseInt(item.amount),
+          amount: praseFloatparseInt(item.amount.toString()),
         };
       }
     });
@@ -108,6 +108,7 @@ export const EditResultsModal = ({ close, event, cindex, teams, setTeams }) => {
     } catch (error) {
       // console.log(error);
     }
+    return () => setList([]);
   }, [windex]);
 
   const goBack = () => {
@@ -155,7 +156,7 @@ export const EditResultsModal = ({ close, event, cindex, teams, setTeams }) => {
 
 const UsersList = ({ event, cindex, windex, list, setList }) => {
   const hReps = (value, index) => {
-    if (value.match(/^[0-9]*$/)) {
+    if (value.match(/^[0-9]*\.?[0-9]*$/)) {
       const aux = list.map((t, i) => {
         if (i === index) return { ...t, amount: value };
         else return t;
