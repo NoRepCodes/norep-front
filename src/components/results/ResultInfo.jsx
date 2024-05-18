@@ -38,8 +38,8 @@ const ResultInfo = ({
             <img src={corner} alt="corner" className="corner" />
             <img src={event?.secure_url} alt="banner" className="resp_ri_img" />
             <h1 className="ri_title">{event?.name}</h1>
-            <h1>Individuales</h1>
-            <h1>2023 - Final</h1>
+            <h1></h1>
+            <h1></h1>
           </div>
           <div className="ri_header_bot">
             <div className="rhb_left">
