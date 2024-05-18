@@ -38,7 +38,7 @@ export const EditResultsModal = ({ close, event, cindex, teams, setTeams }) => {
           time: convTime(item.time),
           tiebrake: convTime(item.tiebrake),
           penalty: parseInt(item.penalty),
-          amount: praseFloatparseInt(item.amount.toString()),
+          amount: parseFloat(item.amount.toString()),
         };
       }
     });
