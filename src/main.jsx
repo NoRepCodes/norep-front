@@ -79,9 +79,9 @@ const App = () => {
 
   return (
     <Context.Provider value={{ events, time, admin, setAdmin, setEvents }}>
-      <React.StrictMode>
+{/*       <React.StrictMode> */}
         <RouterProvider router={router} />
-      </React.StrictMode>
+{/*       </React.StrictMode> */}
     </Context.Provider>
   );
 };
