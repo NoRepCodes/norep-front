@@ -57,7 +57,7 @@ const EditResultsModal = ({
   event,
   setWods,
 }: EditResultsModalT) => {
-  const [searchbar, setSearchbar] = useState("");
+  // const [searchbar, setSearchbar] = useState("");
   const [w_id, setW_id] = useState<string | undefined>(undefined);
   const [newResults, setNewResults] = useState<CustomResT[]>([]);
   const [load, setLoad] = useState(false);
@@ -212,8 +212,8 @@ type UserList = {
   setNewResults: React.Dispatch<React.SetStateAction<CustomResT[]>>;
 };
 const UsersList = ({
-  event,
-  category,
+  // event,
+  // category,
   wod,
   newResults,
   setNewResults,
