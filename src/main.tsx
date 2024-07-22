@@ -5,7 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Context } from "./components/Context";
 import { Header } from "./components/Header";
 // import LoadingPage from "./components/LoadingPage";
-import AdminLogin from "./pages/Admin/AdminLogin";
+// import AdminLogin from "./pages/Admin/AdminLogin";
 import Events from "./pages/Events/Events";
 import Home from "./pages/Home/Home";
 import Results from "./pages/Results/Results";

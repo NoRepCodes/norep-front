@@ -1,4 +1,4 @@
-import { PropsWithChildren, useContext, useState } from "react";
+import { PropsWithChildren, useContext } from "react";
 import { Link, Outlet, useHref } from "react-router-dom";
 import "../sass/header.sass";
 import "../sass/modals.sass";
@@ -10,16 +10,11 @@ import useModal from "../hooks/useModal";
 // import { CreateEventModal } from "./Modals";
 
 export const Header = ({ children }: PropsWithChildren) => {
-  const { admin, setAdmin, setEvents, user, setUser } = useContext(Context);
+  const { admin, setAdmin,  user, setUser } = useContext(Context);
   const [openCreate, toggleModal] = useModal();
   //@ts-ignore
   const href = useHref();
   const [openMenu, toggleMenu] = useModal();
-  // const toggleMenu = () => {
-  //   // setOpenMenu(!openMenu);
-  //   toggleModal();
-  // };
-  const [open, setOpen] = useState(false);
 
   const closeSessionMobile = () => {
     localStorage.removeItem("adm");
@@ -258,18 +253,6 @@ const IconDoor = () => {
       clipRule="evenodd"
     >
       <path d="M13.033 2v-2l10 3v18l-10 3v-2h-9v-7h1v6h8v-18h-8v7h-1v-8h9zm1 20.656l8-2.4v-16.512l-8-2.4v21.312zm-3.947-10.656l-3.293-3.293.707-.707 4.5 4.5-4.5 4.5-.707-.707 3.293-3.293h-9.053v-1h9.053z" />
-    </svg>
-  );
-};
-const IconPaper = () => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-    >
-      <path d="M18.5 15c-2.483 0-4.5 2.015-4.5 4.5s2.017 4.5 4.5 4.5 4.5-2.015 4.5-4.5-2.017-4.5-4.5-4.5zm2.5 5h-2v2h-1v-2h-2v-1h2v-2h1v2h2v1zm-7.18 4h-12.82v-24h10.189c3.163 0 9.811 7.223 9.811 9.614v3.887c-.624-.261-1.297-.422-2-.476v-2.569c0-4.106-6-2.456-6-2.456s1.518-6-2.638-6h-7.362v20h9.501c.313.749.765 1.424 1.319 2z" />
     </svg>
   );
 };

@@ -17,7 +17,7 @@ import "./tables.sass";
 import {
   CategoryType,
   EventType,
-  TeamType,
+  // TeamType,
   WodType,
 } from "../../types/event.t";
 import { Context } from "../../components/Context";
@@ -215,7 +215,7 @@ const HamburguerBtns = ({
   updating,
 }: HambBtnType) => {
   const [open, setOpen] = useState(false);
-  const [upd, setUpd] = useState(false);
+  // const [upd, setUpd] = useState(false);
   const toggleOpen = () => setOpen(!open);
   const toggleTab = async () => {
     // setUpd(true);
@@ -249,8 +249,9 @@ const HamburguerBtns = ({
             <div className="hba_item" onClick={toggleResM}>
               <h1>Editar Resultados</h1>
             </div>
-            <button className="hba_item" onClick={toggleTab} disabled={upd}>
-              {upd ? (
+            <button className="hba_item" onClick={toggleTab} disabled={true}>
+            {/* <button className="hba_item" onClick={toggleTab} disabled={upd}> */}
+              {true ? (
                 <h1>Actualizando...</h1>
               ) : (
                 <>

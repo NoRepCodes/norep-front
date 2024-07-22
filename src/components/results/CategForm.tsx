@@ -4,7 +4,9 @@ import { Context } from "../Context";
 import { useNavigate } from "react-router-dom";
 import { CategoryType, EventType } from "../../types/event.t";
 import { checkUsers, registerTicket } from "../../api/user.api";
-const cardrex = /^[0-9]{5,9}$/gm;
+//@ts-ignore
+import moment from "moment";
+// const cardrex = /^[0-9]{5,9}$/gm;
 type ConvertBase64T = (file: Blob) => Promise<string | ArrayBuffer | null>;
 const convertBase64: ConvertBase64T = (file) => {
   return new Promise((resolve, reject) => {
@@ -229,11 +231,31 @@ const FormCage = ({
 const DateBox = ({ date }: { date: string }) => {
   return (
     <div className="date_box">
-      <h6 className="date_box_day">07</h6>
-      <h6 className="date_box_month">SEPTIEMBRE</h6>
+      <h6 className="date_box_day">{moment(date).format('DD')}</h6>
+      <h6 className="date_box_month">{getMonthName(moment(date).format('MM'))}</h6>
     </div>
   );
 };
+
+const getMonthName = (s:string)=>{
+  // console.log(s);
+  switch (s) {
+    case '01': return 'ENERO'
+    case '02': return 'FEBRERO'
+    case '03': return 'MARZO'
+    case '04': return 'ABRIL'
+    case '05': return 'MAYO'
+    case '06': return 'JUNIO'
+    case '07': return 'JULIO'
+    case '08': return 'AGOSTO'
+    case '09': return 'SEPTIEMBRE'
+    case '10': return 'OCTUBRE'
+    case '11': return 'NOVIEMBRE'
+    case '12': return 'DICIEMBRE'
+    default : return ''
+    // case '12': return 'ENERO'
+  }
+}
 
 const ErrorText = ({ text }: { text: string }) => {
   return (
