@@ -1,0 +1,108 @@
+@use '../../sass/var' as v
+.categ_form
+  background-color: #fff
+  width: 100%
+  border-top: 1px solid v.$dark
+  border-right: 1px solid v.$dark
+  box-sizing: border-box
+  padding: 1.5em
+  display: flex
+  flex-direction: column
+  gap: 1em
+
+  .cf_title
+    color: v.$dark
+    font-size: 4em
+    display: inline-block
+    border-bottom: .5em solid v.$primary
+
+.dates_ctn
+  display: flex
+  gap: 1em
+  .date_box
+    padding: 12px
+    background-color: v.$primary
+    border-radius: 12px
+    &_day
+      color: v.$dark
+      font-size: 4em
+      text-align: center
+    &_month
+      color: v.$dark
+      font-size: 1em
+      text-align: center
+      // letter-spacing: -1px
+
+.categ_form
+  .inscription_btn
+    background-color: v.$primary
+    color: v.$dark
+    width: 210px
+    h6
+      font-size: 2.5em
+      color: v.$dark
+    &:hover
+      background-color: v.$fourth
+      h6
+        color: v.$primary
+
+.cf_info
+  display: flex
+  flex-direction: column
+  // gap: 4px
+  font-size: .9em
+  background-color: #ebebeb
+  padding: 1em
+  width: 400px
+
+.categ_form,.register_page
+  .form
+    display: flex
+    gap: .5em
+    flex-direction: column
+    .form_cage
+      min-height: 2.5em
+      border-bottom: 6px solid v.$primary
+      width: 400px
+      display: flex
+      flex-direction: column
+      label
+        font-family: 'RobotoMono'
+        font-weight: bold
+      input
+        font-family: 'RobotoMono'
+        font-weight: bold
+
+    .file_cage
+      width: 400px
+      height: 200px
+      background-color: #ebebeb
+      display: flex
+      flex-direction: column
+      justify-content: center
+      align-items: center
+      cursor: pointer
+      h6
+        color: #959595
+
+    .btn_confirm
+      width: 400px
+      margin-top: 1em
+      background-color: v.$primary
+      padding: .5em 0px
+      font-size: 1em
+      font-weight: bold
+      &:hover
+        background-color: v.$fourth
+        color: v.$primary
+    .error_cage
+      background-color: #ebebeb
+      width: 400px
+      padding: .5em
+      box-sizing: border-box
+      display: flex
+      gap: 1em
+      align-items: center
+
+    img
+      height: 100%

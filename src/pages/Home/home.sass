@@ -1,0 +1,165 @@
+@use '../../sass/var' as v
+
+.Home
+  display: flex
+  flex-direction: column
+  width: 100%
+  height: 100%
+
+.hero_info_ctn
+  position: relative
+  width: 100%
+  height: 20vw
+  min-height: 350px
+  display: flex
+  flex-direction: column
+  justify-content: center
+  background: linear-gradient(90deg, rgba(24,24,24,1) 0%, rgba(255,255,255,0) 100%)
+  gap: 1rem
+  p
+    color: #eee
+    margin-left: 10vw
+    z-index: 200
+  h6
+    margin-left: 10vw
+    font-size: 5em
+    z-index: 200
+    color: #eee
+  span
+    color: v.$primary
+
+.more_info
+  margin-left: 10vw
+  border: 2px solid #eee
+  width: 11em
+  padding: 6px 12px
+  box-sizing: border-box
+  border-radius: 24px
+  z-index: 200
+  color: #181818
+  p
+    text-align: center
+    margin-left: 0px
+    font-weight: bold
+
+.heroimg
+  position: absolute
+  width: 100%
+  height: 100%
+  object-fit: cover
+  z-index: -100
+
+.home_content
+  background-color: #fff
+  min-height: 60vh
+  width: 100%
+  box-sizing: border-box
+  display: flex
+  flex-direction: row
+  justify-content: space-evenly
+  padding: 5em 3em
+  flex-wrap: wrap
+
+/////
+.event_cell
+  min-width: 350px
+  width: 25%
+  display: flex
+  flex-direction: column
+
+  .big_text
+    font-size: 5em
+    color: v.$fourth
+    margin-bottom: 1.5rem
+
+  .more_info
+    margin-top: 1.5rem
+    margin-left: 0px
+    border: 2px solid v.$fourth
+  .ett
+    margin-bottom: 1.5rem
+
+    h5
+      font-size: 2.5em
+      padding: 0px .5em
+      background-color: v.$primary
+      display: inline
+
+.event_card
+  cursor: pointer
+  display: flex
+  flex-direction: row
+  min-height: 135px
+  margin-top: 1px
+  outline: 1px solid v.$fourth
+  h1
+    font-weight: 600
+    font-size: 0.8em
+    color: #181818
+  img
+    background-color: #181818
+    height: 135px
+    min-width: 135px
+  .ec_info
+    padding: 1em
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+    width: 50%
+
+  .ec_date
+    color: lighten(v.$fourth,60)
+    font-size: 0.7em
+  .ec_mi
+    border-bottom: 1px solid v.$fourth
+    display: inline
+    cursor: pointer
+
+  .ec_info_mid
+    display: flex
+    flex-direction: column
+    gap: .3em
+
+    h1
+      font-size: .7em
+      white-space: nowrap
+      overflow: hidden
+      text-overflow: ellipsis
+    .ec_name
+      margin-bottom: .2em
+      font-size: .9em
+
+/////// RESPONSIVE
+@media screen and (width < 1000px)
+  .home_content
+    padding: 1em
+    padding-top: 3em
+    .big_text
+      font-size: fs(5)
+    .event_cell
+      min-width: 320px
+
+  .hero_info_ctn
+    justify-content: center
+    align-items: center
+    background: linear-gradient(90deg, rgba(24,24,24,0.5) 0%, rgba(24,24,24,0.5046393557422969) 100%)
+    h6
+      margin-left: 0px
+      font-size: 3em
+    p
+      margin-left: 0px
+    .more_info
+      margin-left: 0px
+
+  .short_text
+    br
+      display: none
+
+@media screen and (width < 1200px)
+  .first_cell
+    display: flex
+    align-items: center
+    width: 100vw
+
+  .cards_cells
+    margin-top: 3em

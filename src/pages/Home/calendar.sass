@@ -1,0 +1,122 @@
+@use '../../sass/var' as v
+//////////////////
+.calendar
+  width: 100%
+  height: auto
+  min-height: 100vh
+  display: flex
+  flex-direction: column
+  align-items: center
+  padding: 5em 4em 7em
+  box-sizing: border-box
+  overflow-x: hidden
+
+  .title
+    font-size: 5em
+    margin-bottom: 1rem
+    color: v.$fourth
+  .subtitle
+    margin-bottom: 3rem
+
+.calendar_ctn
+  display: grid
+  grid-template-columns: repeat(6, 1fr)
+  gap: 2rem
+  width: 100%
+  height: 100%
+  justify-content: space-between
+  overflow: auto
+
+.calendar_row
+  width: 100%
+  min-width: 250px
+  h6
+    font-size: 2em
+    color: v.$fourth
+
+  .calendar_cards_ctn
+    width: 100%
+    height: 650px
+    display: flex
+    flex-direction: column
+    gap: 1em
+
+.calendar_card
+  padding: 1em
+  width: 100%
+  min-height: 170px
+  background-color: #fff
+  display: flex
+  flex-direction: column
+  border: 1px solid v.$fourth
+  border-top: 1.5em solid v.$secondary
+  box-sizing: border-box
+  justify-content: space-between
+  cursor: pointer
+  color: #181818
+
+.cc_top
+  display: flex
+  flex-direction: column
+  gap: .5em
+  // background-color: red
+  overflow: hidden
+
+  .cc_title
+    font-weight: bold
+    font-size: 1.4em
+  .cc_categ
+    overflow: hidden
+    white-space: nowrap
+    text-overflow: ellipsis
+    width: 100%
+    font-size: 1em
+    padding: .1em 0px
+  .cc_date
+    font-size: .7em
+
+.cc_bot
+  display: flex
+  flex-direction: row
+  align-items: center
+  justify-content: space-between
+
+  h1
+    font-weight: bold
+    border-bottom: 1px solid v.$fourth
+
+  p
+    font-family: 'RobotoMono'
+    color: lighten(v.$fourth,60 )
+    font-size: .8em
+
+.card_bottom
+  height: 1em
+  width: 100%
+  background-color: #fff
+
+.test
+  width: 100%
+  height: 100%
+  // background-image: url('../images/logop.svg')
+
+@media screen and (width < 1000px)
+  .calendar
+    padding: 5vh 10vw
+    .title
+      font-size: 4em
+
+    .calendar_row
+      min-width: 200px
+
+      .calendar_card
+        .cc_title
+          font-size: 1.1em
+        .cc_categ,.cc_date
+          font-size: .9em
+
+        .cc_bot
+          h1
+            font-size: .7em
+          p
+            font-size: .7em

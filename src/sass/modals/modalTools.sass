@@ -1,0 +1,179 @@
+@use '../var' as v 
+.blackscreen
+  width: 100%
+  height: 100%
+  background-color: #181818a5
+  position: absolute
+  display: flex
+  justify-content: center
+  align-items: center
+  z-index: 5000
+  position: fixed
+
+.modal_ctn
+  width: 850px
+  height: 80vh
+  background-color: #fff
+  padding: 2.5em 2.5em 4em
+  box-sizing: border-box
+  border-radius: 12px
+  display: flex
+  flex-direction: column
+  overflow: auto
+.modal_top
+  display: flex
+  flex-direction: row
+  justify-content: space-between
+  h6
+    color: #181818
+    font-size: 2em
+  .cross_ctn
+    margin-top: -2em
+    margin-right: -2em
+    padding: 1em
+    cursor: pointer
+
+.inputs_wod_form,.ru_inputs
+  display: flex
+  flex-direction: row
+  flex-wrap: wrap
+  gap: 2em
+  width: 100%
+  align-items: flex-end
+
+  .input_label
+    display: flex
+    flex-direction: column
+    width: 150px
+    gap: .5em
+
+  label
+    font-family: 'Anton'
+    // font-size: 1em
+    font-size: 1.2em
+    user-select: none
+
+  input
+    border: 1px solid #181818
+    box-sizing: border-box
+    padding: .5em 1em
+    min-height: 35px
+
+  .input_label_top
+    display: flex
+    justify-content: space-between
+    align-items: flex-end
+    svg
+      height: 20px
+      width: 20px
+      cursor: pointer
+
+  // label
+
+  .wat_btn
+    width: 2em
+    text-align: center
+    cursor: pointer
+    border: 1px solid v.$fourth
+    padding: .5em 1em
+    user-select: none
+    &:hover
+      color: v.$light
+      background-color: v.$fourth
+
+.categories_select
+  user-select: none
+  position: relative
+  width: 50%
+  background-color: v.$third
+  h6
+    color: v.$fourth
+
+.categories_select_btn
+  box-sizing: border-box
+  padding: 0px 1em
+  height: 3em
+  border: 1px solid v.$fourth
+  width: 100%
+  margin-top: 1em
+  display: flex
+  flex-direction: row
+  align-items: center
+  justify-content: space-between
+  cursor: pointer
+
+  &:hover
+    background-color: v.$dark
+    h6
+      color: v.$third
+    path
+      fill: v.$third
+
+.abs_categories_select
+  display: flex
+  position: absolute
+  top: calc( 1em + 3em )
+  width: 100%
+  background-color: v.$third
+  flex-direction: column
+  box-sizing: border-box
+  z-index: 2000
+
+  h6
+    padding: 0px 1em
+    box-sizing: border-box
+    border: 1px solid #191919
+    width: 100%
+    height: 3em
+    font-size: 1em
+    line-height: 3em
+    border-top: 0px
+
+    &:hover
+      background-color: v.$fourth
+      color: v.$third
+
+.input_time
+  display: flex
+  flex-direction: row
+  align-items: center
+  justify-content: space-between
+  input
+    width: 45px
+    padding: 0px
+    text-align: center
+  .hours
+    position: relative
+    &::after
+      top: 2px
+      left: 3px
+      content: 'h'
+      font-size: .6em
+      position: absolute
+  .minutes
+    position: relative
+    &::after
+      top: 2px
+      left: 3px
+      content: 'm'
+      font-size: .6em
+      position: absolute
+  .seconds
+    position: relative
+    &::after
+      top: 2px
+      left: 3px
+      content: 's'
+      font-size: .6em
+      position: absolute
+
+@media screen and (width < 1000px)
+  .modal_ctn
+    width: 320px
+    padding: 2em 2em 4em
+
+  .modal_top
+    .cross_ctn
+      margin-top: -1em
+      margin-right: -1em
+      padding: .5em

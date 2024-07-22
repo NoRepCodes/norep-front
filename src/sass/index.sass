@@ -1,0 +1,66 @@
+@use './var' as v
+
+.ErrorPage
+  background-color: v.$fourth
+  &p
+    color: v.$light
+
+.dark
+  background-color: #181818
+  ::-webkit-calendar-picker-indicator
+    background-color: v.$light
+  p
+    color: v.$light
+  path
+    fill: v.$light
+  div
+    border-color: v.$light
+  .modal
+    background-color: #181818
+  input
+    color: v.$light
+    background-color: #181818
+    border-color: v.$light
+  .btn
+    background-color: v.$light
+    p
+      color: #181818
+  .categ_active
+    background-color: v.$light
+    p
+      color: #181818
+
+.light
+  background-color: v.$light
+  p
+    color: #181818
+  path
+    fill: #181818
+  div
+    border-color: #181818
+  .modal
+    background-color: v.$light
+  input
+    color: #181818
+    background-color: v.$light
+    border-color: #181818
+  .btn
+    background-color: #181818
+    p
+      color: v.$light
+  .categ_active
+    background-color: #181818
+    p
+      color: v.$light
+
+h6
+  font-family: 'Anton'
+  color: v.$light
+h5
+  font-family: 'Anton'
+
+p
+  font-family: 'Roboto'
+
+h1
+  font-family: 'RobotoMono'

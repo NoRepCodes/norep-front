@@ -1,0 +1,92 @@
+@use '../../sass/var' as v
+
+.register_page
+  // position: absolute
+  width: 100vw
+  min-height: 90vh
+  background-color: #fff
+  background-image: url("../../images/rep1.jpeg")
+  background-repeat: no-repeat
+  background-size: cover
+  background-position: top
+  display: flex
+  flex-direction: column
+  justify-content: center
+  // z-index: 2000
+
+  .form
+    display: flex
+    flex-direction: column
+    // align-items: center
+    // justify-content: center
+    width: 35vw
+    min-width: 600px
+    margin-left: 5vw
+    height: auto
+    max-height: 80vh
+    background-color: #fff
+    border-radius: 12px
+    overflow: auto
+    box-sizing: border-box
+    padding: 2em 3em
+    h6
+      width: 100%
+      text-align: center
+      font-size: 3em
+      color: v.$fourth
+    .location,.shirt
+      display: flex
+      flex-direction: row
+      justify-content: space-between
+      .form_cage
+        width: 25%
+    .shirt
+      .form_cage
+        width: 45%
+    .form_cage
+      min-height: auto
+      width: 100%
+      border: 0px
+      // input
+      //   padding: 4px 1em
+      .line
+        height: 6px
+        width: 100%
+        background-color: v.$primary
+
+  button
+    padding: .2em
+    background-color: v.$primary
+    width: 200px
+    align-self: center
+    font-family: 'Anton'
+    font-size: 1.5em
+    margin-top: 1em
+    &:hover
+      background-color: v.$fourth
+      color: v.$primary
+
+  img
+    width: 82px
+    height: 82px
+    align-self: center
+
+@media screen and (width < 1000px)
+  .register_page
+    .form
+      align-self: center
+      margin-left: 0px
+
+@media screen and (width < 600px)
+  .register_page
+    .form
+      padding: 2em
+      width: 90vw
+      min-width: 90vw
+      .location,.shirt
+        display: flex
+        flex-direction: column
+        width: 100%
+        gap: 1em
+        .form_cage
+          width: 100%

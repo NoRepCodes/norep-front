@@ -1,0 +1,149 @@
+@use '../var' as v 
+.modal_ctn
+  gap: 12px
+  .img_ctn
+    // margin-top: 1em
+    gap: 12px
+    display: flex
+    flex-direction: column
+    .top
+      display: flex
+      flex-direction: row
+      align-items: center
+      // margin-bottom: .5em
+      label
+        font-family: 'Anton'
+        font-size: 1.2em
+        // margin-bottom: .5em
+      svg
+        width: 24px
+        height: 24px
+        margin-left: 1em
+        cursor: pointer
+
+    input
+      display: none
+    .input_img
+      border: 1px dashed #191919
+      width: 150px
+      height: 150px
+      display: flex
+      align-items: center
+      justify-content: center
+      font-size: 2em
+      border-radius: 4px
+      cursor: pointer
+      &:hover
+        background-color: #00000014
+
+    img
+      width: 150px
+      height: 150px
+      border-radius: 4px
+      cursor: pointer
+
+  .cem_form
+    display: flex
+    flex-direction: column
+    gap: 24px
+    margin-top: 1em
+
+  .btn_plus_categ
+    width: 200px
+    padding: .7em 0px
+    background-color: #fff
+    display: flex
+    align-items: center
+    justify-content: center
+    border-radius: 4px
+    border: 2px solid #181818
+    box-sizing: border-box
+    cursor: pointer
+    align-self: flex-end
+    // margin-top: 1em
+    &:hover
+      background-color: #191919
+      h6
+        color: #fff
+    h6
+      text-align: center
+      color: #181818
+  .cem_partners
+    display: grid
+    grid-template-columns: 1fr 1fr 1fr
+    width: 100%
+    justify-content: space-between
+
+  .check_event
+    cursor: pointer
+    display: flex
+    // margin-top: 1.5em
+    align-items: center
+    -webkit-user-select: none
+    -ms-user-select: none
+    user-select: none
+    label
+      cursor: pointer
+      margin-right: .5em
+      font-family: 'Anton'
+      font-size: 1.2em
+    svg
+      width: 24px
+      height: 24px
+
+//new
+.cem_form
+  margin: 24px 0px
+  label
+    font-family: 'Anton'
+  input
+    border-bottom: 2px solid #191919
+
+  button
+    font-family: 'Anton'
+    border: 2px solid #191919
+    border-radius: 6px
+    padding: .7em
+    &:hover
+      background-color: #191919
+      color: #eee
+  .category_input_top
+    display: flex
+    justify-content: space-between
+    border-bottom: 2px solid #191919
+    padding-bottom: 12px
+
+  .cem_input_before
+    position: absolute
+    bottom: 12px
+    left: 6px
+
+.modal_btn1
+  font-family: 'Anton'
+  border: 2px solid #fff
+  background-color: #191919
+  border-radius: 6px
+  padding: .7em
+  color: #fff
+  &:hover
+    border: 2px solid #191919
+    background-color: #fff
+    color: #191919
+
+.create_evnt_ctn
+  display: flex
+  flex-direction: column
+  max-width: 320px
+
+.warning
+  background-color: v.$primary
+  font-size: 12px
+  padding: 1em
+
+.partners_ctn
+  display: flex
+  gap: 1em
+
+@media screen and ( width < 1000px  )
+  .partners_ctn
+    flex-direction: column

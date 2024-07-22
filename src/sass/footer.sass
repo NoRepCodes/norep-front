@@ -1,0 +1,47 @@
+@use 'var' as v
+.footer_ctn
+  padding: 3em 2em 2em 2em
+  background-color: v.$fourth
+  .footer_content
+    display: flex
+    flex-direction: row
+    flex-wrap: wrap
+    gap: 3em
+    img
+      width: 150px
+      height: 150px
+      // background-color: red
+    .footer_item
+      max-width: 200px
+      display: flex
+      flex-direction: column
+      gap: .5em
+      h6
+        font-size: 2em
+        margin-bottom: 1em
+      p
+        font-size: 0.9em
+        color: #eee
+  .copyright
+    color:#eeeeeebe
+    font-size: .8em
+    margin-top: 2rem
+    text-align: center
+
+.footer_description
+  padding: 4em 0px 0px 0px
+  p
+    text-align: center
+    color: #eee
+    font-size: .8em
+
+@media screen and (width < 1000px)
+  .footer_content
+    justify-content: center
+    flex-direction: column !important
+    align-items: center
+    .footer_item
+      width: 50vw
+      align-items: center
+    img
+      display: none

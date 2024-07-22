@@ -1,0 +1,469 @@
+@use '../../sass/var' as v
+
+@function fs($num)
+
+  @return calc($num *1vw + $num*1vh)
+
+.results
+  // height: 120vh
+  width: 90vw
+  display: flex
+  flex-direction: column
+  justify-content: center
+  padding: 5em 0vw
+  align-self: center
+  box-sizing: border-box
+
+.btns_ctn
+  display: flex
+  flex-direction: row
+  gap: 2em
+  .back_btn_ctn,.wods_btn,.results_btn,.teams_btn
+    background-color: v.$fourth
+    // width: 13em
+    padding: 0px 2em
+    min-height: 3em
+    display: flex
+    align-items: center
+    justify-content: center
+    cursor: pointer
+    h1
+      color: #eee
+      font-size: .9em
+    span
+      color: v.$primary
+      text-decoration: underline
+
+  .wods_btn
+    margin-left: auto
+    // width: 10em
+
+.results_ctn
+  // border: 1px solid v.$fourth
+  height: 100%
+  width: 100%
+  display: flex
+  flex-direction: row
+  box-sizing: border-box
+
+.results_aside
+  width: fs(12)
+  display: flex
+  flex-direction: column
+  box-sizing: border-box
+  gap: 2em
+  -webkit-user-select: none
+  -ms-user-select: none
+  user-select: none
+
+  .partners_carousel
+    width: fs(12)
+    height: fs(12)
+    position: relative
+    overflow: hidden
+    .pc_absolute
+      display: flex
+      flex-direction: row
+      top: 0px
+      height: 100%
+      // width: calc( fs(12) * 3 )
+      // margin-left: calc(  fs(-12) *1  )
+      // animation: carousel 30s infinite
+      .bk1,.bk2,.bk3
+        width: 100%
+        height: 100%
+      .bk1
+        background-color: red
+      .bk2
+        background-color: blue
+      .bk3
+        background-color: gray
+    img
+      background-color: #181818
+      width: fs(12)
+
+  .kg_btn,.lb_btn
+    border-top: 1px solid #191919
+    background-color: v.$primary
+    padding: 1em 1.5em
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    cursor: pointer
+    h6
+      font-size: 1.2em
+      color: v.$fourth
+    svg
+      width: 24px
+      height: 24px
+  .kg_btn
+    background-color: #191919
+    h6
+      color: v.$primary
+    path
+      fill: v.$primary
+
+  .ra_event
+    display: flex
+    flex-direction: column
+    box-sizing: border-box
+    width: fs(12)
+    border: 1px solid v.$fourth
+    img
+      background-color: #181818
+      width: 100%
+      height: calc( fs(12)  - 2px )
+      box-sizing: border-box
+
+    .categ_ctn
+      background-color: v.$primary
+      display: flex
+      flex-direction: column
+      position: relative
+      border-top: 1px solid v.$fourth
+      h6
+        padding: 1.5rem 1.5rem
+        height: 6rem
+        font-size: 2em
+        color: v.$fourth
+        box-sizing: border-box
+    .categ_dropdown
+      border-top: 1px solid v.$fourth
+      padding: 1em 1.5em
+      height: 64px
+      box-sizing: border-box
+      cursor: pointer
+      display: flex
+      justify-content: space-between
+      align-items: center
+      p
+        text-decoration: underline
+
+    .abs_categ_dropdown
+      position: absolute
+      width: 100%
+      background-color: v.$primary
+      z-index: 200
+      left: 0px
+      top: calc(6rem + 64px)
+      outline: 1px solid #181818
+
+      p
+        text-decoration: none
+        padding: 1em 1.5em
+        outline: 1px solid v.$fourth
+        margin-top: 1px
+        &:nth-child(1)
+          margin-top: 0px
+        &:hover
+          background-color: darken(v.$primary,20 )
+
+  .user_input
+    position: relative
+    width: 100%
+    border: 1px solid v.$fourth
+    box-sizing: border-box
+    input
+      padding: .9em 1em
+      width: 100%
+      box-sizing: border-box
+
+.results_info
+  display: flex
+  flex-direction: column
+  width: calc( 90vw - fs(12) )
+  height: 100%
+  position: relative
+
+  .resp_categories_ctn
+    display: none
+  .user_input
+    display: none
+
+.ri_header
+  position: relative
+  display: flex
+  flex-direction: column
+  min-height: fs(12)
+  padding: fs(2)
+  box-sizing: border-box
+  border: 1px solid v.$fourth
+  border-left: 0px
+  justify-content: space-between
+  width: 100%
+
+  .partners
+    display: flex
+    justify-content: flex-end
+    position: absolute
+    height: 60px
+    // width: 500px
+    // background-color: red
+    bottom: fs(1)
+    right: fs(1.5)
+    gap: .5em
+
+    .p_img_ctn
+      width: 120px
+      height: 50px
+
+      img
+        height: 100%
+        width: 100%
+      svg
+        width: 100%
+
+  .ri_header_top
+    display: flex
+    flex-direction: column
+    gap: .5em
+    h1
+      font-size: 1.2em
+    .ri_title
+      font-weight: bold
+      font-size: 1.5em
+    .corner
+      position: absolute
+      width: 10em
+      height: 10em
+      right: 1.5em
+      top: 1.5em
+    .resp_ri_img
+      display: none
+
+  .ri_header_bot
+    // background-color: #123123
+    display: flex
+    .rhb_left
+      display: flex
+      flex-direction: column
+      gap: 1.5em
+
+      .ri_date
+        color: lighten(v.$fourth,60 )
+
+.partners_resposive
+  display: none
+// @media screen and (width < 1360px)
+//   .results_aside
+//     width: 250px !important
+//     // background-color: red
+
+.hamburguerBtns
+  background-color: #191919
+  align-items: center
+  justify-content: center
+  display: flex
+  margin-left: auto
+  position: relative
+  cursor: pointer
+  -webkit-user-select: none
+  -ms-user-select: none
+  user-select: none
+
+  .hamb_ctn
+    // background-color: red
+    padding: 0px 1em
+    height: 50px
+    display: flex
+    align-items: center
+
+.hb_absolute_ctn
+  border-radius: 0px 0px 6px 6px
+  position: absolute
+  width: 300px
+  // height: 250px
+  background-color: #181818
+  top: 49px
+  right: 0px
+  z-index: 1500
+  opacity: 0
+  // animation: fadeIn .5s
+  button
+    h1
+      font-size: 1.2em
+
+.hba_item
+  color: #eee
+  padding: 1em
+  border-bottom: #eee 1px solid
+  justify-content: space-between
+  display: flex
+  flex-direction: row
+  // background-color: red
+  // border: 1px solid #eee
+  &:hover
+    transition: background-color .3s
+    background-color: v.$primary
+    color: #181818
+    border: 1px solid #181818
+    path
+      fill: v.$fourth
+
+  path
+    fill: v.$primary
+
+@media screen and (width < 1000px)
+  .results
+    padding-top: 2em
+    .back_btn_ctn
+      display: none !important
+    .results_ctn
+      flex-direction: column
+      .results_info
+        width: 100%
+        .user_input
+          position: relative
+          width: 100%
+          border: 1px solid v.$fourth
+          border-bottom: 0px
+          box-sizing: border-box
+          input
+            padding: 10px .5em 10px 2rem
+            width: 100%
+            box-sizing: border-box
+            font-size: .5em
+            font-family: 'Roboto'
+      .results_aside
+        width: 100% !important
+        display: none
+        .ra_event
+          width: 250px
+
+      .ri_header
+        position: relative
+        min-height: auto
+        height: fs(12)
+        padding: .9em
+        padding-left: calc( fs(12) + 1em )
+        border-bottom: 0px
+
+        .corner
+          width: fs(5)
+          height: fs(5)
+          right: .9em
+          top: .9em
+          z-index: -1
+        h1
+          font-size: fs(1)
+        .ri_title
+          font-size: fs(1.2)
+        .ri_header_top
+          gap: .3em
+        .ri_header_bot
+          .rhb_left
+            gap: .4em
+
+      .resp_ri_img
+        background-color: #181818
+        // height: 100%
+        height: fs(12)
+        width: fs(12)
+        position: absolute
+        left: 0px
+        top: 0px
+        display: flex
+
+    .resp_categories_ctn
+      display: flex
+      height: 36px
+      width: 100%
+      background-color: v.$primary
+      border: 1px solid #181818
+      box-sizing: border-box
+      padding: 1em 1.5em
+      box-sizing: border-box
+      cursor: pointer
+      display: flex
+      justify-content: space-between
+      align-items: center
+      position: relative
+      p
+        text-decoration: underline
+        font-size: .6em
+
+    .abs_resp_categ_dropdown
+      position: absolute
+      width: 100%
+      background-color: v.$primary
+      z-index: 1300
+      left: 0px
+      top: 35px
+      border: 1px solid #181818
+      box-sizing: border-box
+
+      p
+        text-decoration: none
+        padding: .7rem 1.5rem
+        outline: 1px solid v.$fourth
+        margin-top: 1px
+        font-size: .6em
+        &:nth-child(1)
+          margin-top: 0px
+        &:hover
+          background-color: darken(v.$primary,20 )
+
+  .partners_resposive
+    display: flex
+    flex-direction: row
+    justify-content: center
+    margin-top: 2em
+
+  .partners
+    display: none !important
+    height: 30px !important
+    bottom: fs(1) !important
+    right: fs(1) !important
+
+    .p_img_ctn
+      width: 86px !important
+      height: 30px !important
+
+  .hamburguerBtns
+    .hamb_ctn
+      padding: 0px .7em
+      height: 35px
+      svg
+        width: 18px
+        height: 18px
+
+  .hb_absolute_ctn
+    width: 200px
+    top: 35px
+    button
+      h1
+        font-size: 1em
+  .hba_item
+    padding: .5em
+    h1
+      font-size: .8em
+    svg
+      width: 16px
+      height: 16px
+
+@keyframes fadeIn
+  from
+    opacity: 0
+  to
+    opacity: 1
+
+@keyframes carousel
+  from
+    margin-left: 0
+  32%
+    margin-left: 0
+  33%
+    margin-left: calc( fs(12) * (-1) )
+  65%
+    margin-left: calc( fs(12) * (-1) )
+  66%
+    margin-left: calc( fs(12) * (-2) )
+  99%
+    margin-left: calc( fs(12) * (-2) )
+  100%
+    margin-left: 0
+
+
+@media screen and (width < 450px)
+  .corner
+    display: none !important

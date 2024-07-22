@@ -1,0 +1,153 @@
+@use 'var' as v
+
+.modal_form
+  display: flex
+  flex-direction: row
+  flex-wrap: wrap
+  margin-top: 3em
+  justify-content: space-between
+    // background-color: blue
+  gap: 1em
+
+.mt_auto
+  margin-top: auto
+.bottom_ctn
+  margin-top: 2em
+  width: 100%
+  display: flex
+  // justify-content: flex-end
+  .btn_plus_categ,.btn_confirm
+    width: 200px
+    background-color: #fff
+    padding: .7em 0px
+    border-radius: 4px
+    border: 2px solid #181818
+    box-sizing: border-box
+    cursor: pointer
+    margin-top: 0px !important
+    h6
+      text-align: center
+      color: #181818
+  .btn_confirm
+    background-color: #181818
+    display: flex
+    align-items: center
+    justify-content: center
+    margin-left: auto
+    h6
+      color: #fff
+    &:hover
+      border: 2px solid #191919
+      background-color: #fff
+      h6
+        color: #191919
+
+.modal_form
+  display: flex
+  flex-direction: column
+  gap: 2em
+  .title
+    font-size: 1.2em
+    margin-bottom: 1rem
+    user-select: none
+    cursor: pointer
+    background-color: blue
+  h6
+    color: #181818
+
+.inputs_wod_ctn
+  display: flex
+  flex-direction: column
+  width: 100%
+  .title_ctn
+    display: flex
+    gap: 1em
+    align-items: center
+    margin-bottom: 1rem
+    .title1,.title2
+      font-size: 1.2em
+      user-select: none
+    .title2
+      width: 3em
+      text-align: center
+      cursor: pointer
+      border: 1px solid v.$fourth
+      padding: .25em .5em
+      &:hover
+        color: v.$light
+        background-color: v.$fourth
+      // margin-right: auto
+
+.select_wod
+  margin-top: 2em
+  h6
+    color: #181818
+
+.wod_list
+  margin-top: 2em
+  display: flex
+  flex-direction: row
+  gap: 1em
+
+  .select_wod_item
+    display: flex
+    align-items: center
+    justify-content: center
+    padding: .5em 1em
+    border: 2px solid #181818
+    cursor: pointer
+    user-select: none
+
+.users_list
+  display: flex
+  flex-direction: column
+  margin-top: 1em
+  gap: 1em
+  h6
+    color: #181818
+
+.ru_ctn
+  display: flex
+  flex-direction: COLUMN
+  width: 100%
+  gap: 1em
+  border-top: 1px solid #181818
+  padding-top: 1em
+
+  h5
+    font-size: 1.2em
+
+.ru_inputs
+  width: 100%
+  display: flex
+  flex-direction: row
+  gap: 2em
+  .input_label
+    width: 150px !important
+
+.plus_teams_ctn
+  display: flex
+  flex-direction: column
+
+  .plus_team
+    display: flex
+    flex-direction: row
+    gap: 2em
+    margin-top: 2em
+    align-items: flex-end
+
+    .plus_team_cross
+      display: flex
+      align-items: center
+      border-radius: 2px
+      height: 24px
+      width: 24px
+      &:hover
+        background-color: #191919
+        path
+          fill: #eee
+
+    label
+      font-family: Anton
+    input
+      border-bottom: 1px solid #191919
