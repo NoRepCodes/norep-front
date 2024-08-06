@@ -235,9 +235,9 @@ const HamburguerBtns = ({
   const [upd, setUpd] = useState(false);
   const toggleOpen = () => setOpen(!open);
   const toggleTab = async () => {
-    // setUpd(true);
+    setUpd(true);
     await toggleUpdate();
-    // setUpd(false);
+    setUpd(false);
   };
   const hbaAnimate = {
     initial: { opacity: 0 },
