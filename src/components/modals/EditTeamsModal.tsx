@@ -33,7 +33,7 @@ const EditTeamsModal = ({
   };
 
   const pushTeam = () => {
-    setTeams([...teams, { name: "", _id: "_", captain: "_", users: [] }]);
+    setTeams([...teams, { name: "", _id: "_", users: [] }]);
   };
 
   const click = async () => {

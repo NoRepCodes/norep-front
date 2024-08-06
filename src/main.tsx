@@ -2,7 +2,7 @@ import { createRoot } from "react-dom/client";
 import { useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 // import { getEventsHome } from "./api/events.api";
-import { Context } from "./components/Context";
+import { Context,  MsgT } from "./components/Context";
 import { Header } from "./components/Header";
 // import LoadingPage from "./components/LoadingPage";
 // import AdminLogin from "./pages/Admin/AdminLogin";
@@ -70,7 +70,13 @@ const App = () => {
   // const [first, setFirst] = useState(false);
   const [admin, setAdmin] = useState(false);
   const [events, setEvents] = useState<EventType[] | undefined>(undefined);
-  const [user, setUser] = useState<UserType|undefined>(undefined);
+  const [user, setUser] = useState<UserType | undefined>(undefined);
+  const [msg, setMsg] = useState<MsgT>({
+    msg: "",
+    open: false,
+    type: "none",
+  });
+
   // useEffect(() => {
   //   (async () => {
   //     const { status, data } = await getEventsHome();
@@ -95,9 +101,11 @@ const App = () => {
 
   return (
     // <StrictMode>
-      <Context.Provider value={{ events, admin, setAdmin, setEvents,user, setUser }}>
-        <RouterProvider router={router} />
-      </Context.Provider>
+    <Context.Provider
+      value={{ events, admin, setAdmin, setEvents, user, setUser,msg, setMsg }}
+    >
+      <RouterProvider router={router} />
+    </Context.Provider>
     // </StrictMode>
   );
 };
@@ -107,22 +115,22 @@ createRoot(document.getElementById("root")!).render(<App />);
 // TO DO ✅ ❌ ⏳ ❓
 
 /**
- * PAGES: 
+ * PAGES:
  * - HOME
  * - - TS MIGRATION ✅
  * - - FETCH EVENTS ✅
  * - - LOGIC OF UPDATED ⏳ - Option: Search for most updated wod and retrieve Event_name + category_name
- *  
+ *
  * - ADMIN LOGIN
  * - - TS MIGRATION ✅
  * - - SET ADMIN IN REGULAR LOGIN ❓
- * 
- * - EVENTS 
+ *
+ * - EVENTS
  * - - TS MIGRATION ✅
  * - - FETCH EVENTS ✅
  * - - SEARCH FOR TEAM_NAME ✅
  * - - SEARCH FOR USER_NAME ⏳
- * 
+ *
  * - RESULTS
  * - - TS MIGRATION ✅
  * - - FETCH EVENTS ✅
@@ -132,51 +140,60 @@ createRoot(document.getElementById("root")!).render(<App />);
  * - - UPDATE EVENT ✅
  * - - - VERIFY THAT CATEGORY HAS EMPTY TEAMS BEFORE UPDATE & MANTAIN CATEGORY_ID's ✅
  * - - - MIX UPDATE AND CREATE EVENT MODAL INTO ONE ✅
- * 
+ *
  * - - UPDATE WODS ✅
  * - - - - CLEAN INPUTS ❓
  * - - - - VALIDATE INPUTS ✅
  * - - - - TO_DELETE VARIABLE ✅
  * - - - - SEND INFO AND UPDATE ✅
  * - - - - RESET RESULTS AFTER UPDATE ✅
- * - - - - 
- * 
+ * - - - -
+ *
  * - - UPDATE TEAMS (JUST WHEN NEEDED) ✅
  * - - UPDATE RESULTS ✅
- * - - 
- * 
+ * - -
+ *
  * - - CREATE USER (BACKEND) ✅
  * - - - - CARD_ID VALIDATION ✅
  * - - - - EMAIL VALIDATION ✅
- * 
+ *
  * - - USER CATEGORY REGISTER (BACKEND) ⏳
- * - - - - CREATE TICKET ⏳
+ * - - - - CREATE TICKET ✅
  * - - - - EMAIL SENDER AT ACCEPTANCE ⏳
- * - - - - REMOVE PAY-PICTURE AT ACCEPTANCE ⏳
- * - - - - VERIFY CARDS_ID ⏳
- * - - - - 
- * - - - - 
- * - - - - 
+ * - - - - REMOVE PAY-PICTURE AT ACCEPTANCE ✅
+ * - - - - VERIFY CARDS_ID ✅
+ * - - - -
  * 
+ * - - DO TICKET LOGIC ASAP
+ * - - - - CREATE/UPDATE TICKET DUE
+ * - - - - CREATE TICKET DUE
+ * 
+ * - - MOUSE DISSAPEAR ON INPUT ❓
+ * - - WITH ONE USER, DISSAPEAR TEAM NAME INPUT ✅
+ * - - CLEAR INPUT AFTER CATEG FORM ✅
+ * - - MESSAGE TO LET USERS KNOW THAT THEY SHOULD BE IN THE APP FIRST 
+ * - - WHEN THE TEAM PAY COMPLETELY, SHOW TABLE
+ * - - 
+ *
  * - LOGIN PAGE ✅
  * - - LOGIC ✅
  * - - DESIGN ✅
- * 
+ *
  * - REGISTER PAGE ✅
  * - - LOGIC ✅
  * - - DESIGN ✅
- * 
- * - TICKET DASHBOARD ❓
- * 
- * - TICKET DISPLAY ❓
- * - - 
- * 
+ *
+ * - TICKET DASHBOARD ✅
+ *
+ * - TICKET DISPLAY ✅
+ * - -
+ *
  * new pass yahoo Crossfit2024
- * 
+ *
  * sender
  * NoRep
  * norep.code@yahoo.com
  * Crossfit2024
- * 
- * 
+ *
+ *
  * */

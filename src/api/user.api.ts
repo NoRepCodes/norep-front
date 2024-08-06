@@ -3,7 +3,6 @@ import { UserType } from "../types/user.t";
 import { catchError, url } from "./url";
 import axios from "axios";
 
-
 export const registerUser = async (data: any) => {
   return await axios
     .post(`${url}registerUser`, data)
@@ -50,6 +49,16 @@ export const registerTicket = async (
   console.log(phone);
   return await axios
     .post(`${url}registerTicket`, { users, category_id, inputs, image, phone })
+    .then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return catchError(err);
+    });
+};
+export const pushTicket = async (captain_id: string,inputs:any,img:any) => {
+  return await axios
+    .post(`${url}pushTicket`, { captain_id,...inputs,img })
     .then((res) => {
       return res;
     })

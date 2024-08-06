@@ -4,9 +4,7 @@ export type TicketT = {
     _id:string,
     name:string
   }[];
-  secure_url: string;
-  public_id: string;
-  transf: string;
+  
   phone: string;
   event: string;
   category: string;
@@ -14,4 +12,11 @@ export type TicketT = {
   name: string;
   createdAt: string;
   updatedAt: string;
+  duesLimit: number;
+  dues:{
+    secure_url: string;
+    public_id: string;
+    transf: string;
+    payDues: number,
+  }[]
 };

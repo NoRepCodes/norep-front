@@ -108,7 +108,8 @@ type ConvertCategT = (categ: CategoryType[]) => InputCategT[];
 type CEMInputT = {
   name: string;
   label: string;
-  set: Dispatch<SetStateAction<InputEventT>>;
+  set?: Dispatch<SetStateAction<InputEventT>>;
+  custom?: (text: any) => void;
   value: string;
 };
 
@@ -134,14 +135,9 @@ const EventModal = ({ close, event }: EventModalT) => {
     _id: event?._id,
     name: event?.name ?? "",
     price: event?.price ?? 0,
-    since:
-      typeof event?.since === "number"
-        ? moment.unix(event?.since).format("YYYY-MM-DD")
-        : "",
-    until:
-      typeof event?.until === "number"
-        ? moment.unix(event?.until).format("YYYY-MM-DD")
-        : "",
+    since: event?.since ?? "",
+    until: event?.until ?? "",
+    dues: event?.dues ?? 1,
     place: event?.place ?? "",
     secure_url: event?.secure_url ?? "",
     public_id: event?.public_id ?? "",
@@ -190,7 +186,7 @@ const UpdateEventModal = ({
     partners: partn,
     ...others
   } = evnt;
-  const { setEvents } = useContext(Context);
+  const { setEvents, setMsg } = useContext(Context);
   const [image, setImage] = useState<ImageType[]>([{ secure_url, public_id }]);
   const [inputs, setInputs] = useState<InputEventT>({ ...others });
   const [categories, setCategories] = useState<InputCategT[]>(
@@ -198,8 +194,6 @@ const UpdateEventModal = ({
   );
   const [partners, setPartners] = useState<ImageType[]>([...partn]);
   const [load, setLoad] = useState(false);
-
-  const [error, setError] = useState<string | undefined>(undefined);
 
   const validation = () => {
     if (!image || !image[0]) return "No se han añadido una imagen al evento";
@@ -227,11 +221,15 @@ const UpdateEventModal = ({
   };
 
   const confirm = async () => {
-    // console.log(partners);
     const err = validation();
-    if (err !== undefined) return setError(err);
+    if (err !== undefined)
+      return setMsg({
+        msg: err,
+        type: "error",
+        open: true,
+      });
     const eventInfo = retrieveEventInfo(inputs, categories, image, partners);
-
+    // console.log(eventInfo);
     setLoad(true);
     const { status, data } = edit
       ? await updateEvent(eventInfo)
@@ -239,13 +237,25 @@ const UpdateEventModal = ({
     setLoad(false);
     if (status === 200) {
       setEvents(data);
+      setMsg({
+        msg: edit
+          ? "Evento actualizado con exito!"
+          : "Evento creado con exito!",
+        type: "success",
+        open: true,
+      });
       close();
     } else {
-      setError(data.msg);
+      setMsg({
+        msg: data.msg,
+        type: "error",
+        open: true,
+      });
     }
   };
 
   const plusCateg = () => {
+    console.log({...emptyCateg});
     setCategories([...categories, { ...emptyCateg }]);
   };
   const minusCateg = (index: number) => {
@@ -264,6 +274,11 @@ const UpdateEventModal = ({
       ...inputs,
       register_time: { ...inputs.register_time, until: v },
     });
+  const ocDues = (v: string) => {
+    if (v.match(/^[1-9]$/gm)) {
+      setInputs({ ...inputs, dues: v });
+    }
+  };
 
   return (
     <Modal title={edit ? "EDITAR EVENTO" : "CREAR EVENTO"} close={close}>
@@ -298,6 +313,12 @@ const UpdateEventModal = ({
             label="Nombre"
             set={setInputs}
             value={inputs.name}
+          />
+          <CEM_Input
+            name="dues"
+            label="Cuotas"
+            custom={ocDues}
+            value={inputs.dues}
           />
           <CEM_Input
             name="place"
@@ -364,12 +385,12 @@ const UpdateEventModal = ({
             />
           )}
         </div>
-        {error && (
+        {/* {error && (
           <p style={{ color: "red", textAlign: "center", padding: "1em 0px" }}>
             Error: {error}
           </p>
-        )}
-        <div style={{height:'1em'}} />
+        )} */}
+        <div style={{ height: "1em" }} />
         {edit ? (
           <button className="modal_btn1" onClick={confirm}>
             {!load ? "Editar Evento" : "Editando Evento..."}
@@ -478,11 +499,15 @@ const CheckClose = () => (
   </svg>
 );
 
-const CEM_Input = ({ name, label, set, value }: CEMInputT) => {
+const CEM_Input = ({ name, label, set, value, custom }: CEMInputT) => {
   const onChangeText = (e: any) => {
-    const att = e.target.getAttribute("name");
-    const value = e.target.value;
-    set((prev) => ({ ...prev, [att]: value }));
+    if (custom) {
+      custom(e.target.value);
+    } else if (set) {
+      const att = e.target.getAttribute("name");
+      const value = e.target.value;
+      set((prev) => ({ ...prev, [att]: value }));
+    }
   };
   return (
     <div className="cem_input_ctn">

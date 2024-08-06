@@ -1,7 +1,7 @@
 //@ts-ignore
 import moment from "moment";
 import { CategoryType, EventType, WodType } from "../../types/event.t";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { updateWods } from "../../api/event.api";
 //@ts-ignore
 // import {  } from "./EditTeamsModal";
@@ -12,6 +12,7 @@ import {
   Modal,
   InputWodT,
 } from "./ModalTools";
+import { Context } from "../Context";
 
 const blankwod: InputWodT = {
   amount_cap: "0",
@@ -53,8 +54,8 @@ const EditWodsModal = ({
   setWods,
   close,
 }: EditWodsModalT) => {
+  const {setMsg} = useContext(Context)
   const [load, setLoad] = useState(false);
-  const [error, setError] = useState<string | undefined>(undefined);
   const [newWods, setNewWods] = useState<InputWodT[]>([]);
   // const [newWods, setNewWods] = useState<InputWodT[]>(wods ? transformTimecap(wods) : []);
   const [toDelete, setToDelete] = useState<string[]>([]);
@@ -66,7 +67,6 @@ const EditWodsModal = ({
   // if (!wods) return <div className="blackscreen"></div>;
 
   const click = async () => {
-    setError(undefined);
     let nw:ValidateWodT[] = newWods.map((item) => {
       return {
         ...item,
@@ -78,7 +78,11 @@ const EditWodsModal = ({
       };
     });
     const validation = validate(nw);
-    if (typeof validation === "string") return setError(validation);
+    if (typeof validation === "string") return setMsg({
+      msg:validation,
+      type:'warning',
+      open:true,
+    });
     setLoad(true);
     const { status, data } = await updateWods({ wods: nw, toDelete });
     setLoad(false);
@@ -171,9 +175,9 @@ const EditWodsModal = ({
         })}
       </div>
       <div className="mt_auto"></div>
-      {error && (
+      {/* {error && (
         <p style={{ color: "red", padding: "1em 0px" }}>Error: {error}</p>
-      )}
+      )} */}
       <div className="bottom_ctn">
         <div className="btn_plus_categ" onClick={pushNewWod}>
           <h6>Añadir WOD</h6>

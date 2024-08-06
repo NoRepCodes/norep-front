@@ -32,7 +32,7 @@ export type TeamType = {
     _id: string,
     users: string[],
     name: string,
-    captain: string,
+    // captain: string,
     _points?: number,
     _percent?: number,
     _tie_total?: number,
@@ -71,6 +71,7 @@ export type EventType = KeyByString & {
     // since: number|string,
     // until: number|string,
     place: string,
+    dues: number,
     secure_url: string,
     public_id: string
     accesible: boolean,

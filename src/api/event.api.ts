@@ -56,3 +56,11 @@ export const updateTeams = async (teams:TeamType[],category_id:string) => {
         return catchError(err)
     })
 }
+
+export const toggleUpdating = async (category_id:string, state:boolean) => {
+    return await axios.post(`${url}toggleUpdating`, { category_id, state }).then(res => {
+        return res
+    }).catch(err => {
+        return catchError(err)
+    })
+}

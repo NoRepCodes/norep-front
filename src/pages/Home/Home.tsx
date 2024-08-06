@@ -112,7 +112,7 @@ export const EventCard = ({ event }: { event: EventType }) => {
           <div className="ec_info_mid">
             <h1 className="ec_name">{event.name}</h1>
             <h1>{event.categories[0]?.name}</h1>
-            <h1>{event.categories[0]?.name}</h1>
+            <h1>{event.categories[1]?.name}</h1>
             {/* {event.categories.length > 1 && <h1>{event.categories[1]?.name}</h1>} */}
           </div>
           <div>

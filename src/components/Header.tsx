@@ -2,15 +2,19 @@ import { PropsWithChildren, useContext } from "react";
 import { Link, Outlet, useHref } from "react-router-dom";
 import "../sass/header.sass";
 import "../sass/modals.sass";
+import "../sass/msg.sass";
 import logo from "../images/white.png";
 import { Footer } from "./Footer";
 import { Context } from "./Context";
 import EventModal from "./modals/CreateEventModal";
 import useModal from "../hooks/useModal";
+import { AnimatePresence } from "framer-motion";
+import MsgModal from "./MsgModal";
 // import { CreateEventModal } from "./Modals";
 
 export const Header = ({ children }: PropsWithChildren) => {
-  const { admin, setAdmin,  user, setUser } = useContext(Context);
+  const { admin, setAdmin, user, setUser, msg, setMsg } =
+    useContext(Context);
   const [openCreate, toggleModal] = useModal();
   //@ts-ignore
   const href = useHref();
@@ -24,13 +28,14 @@ export const Header = ({ children }: PropsWithChildren) => {
   };
 
   // const [openCreate, setOpenCreate] = useState(true);
-
   // const toggleModal = () => setOpenCreate(!openCreate);
+
   const closeSession = () => {
     localStorage.removeItem("adm");
     setUser(undefined);
     setAdmin(false);
   };
+
 
   return (
     <div className="page_ctn">
@@ -38,7 +43,10 @@ export const Header = ({ children }: PropsWithChildren) => {
         // <></>
         <EventModal close={toggleModal} />
       )}
-      <div className="header_ctn">
+      <AnimatePresence>
+        {msg.open && <MsgModal {...{ setMsg, msg }} />}
+      </AnimatePresence>
+      <div className="header_ctn" >
         <Link className="logo_ctn" to="/">
           <img src={logo} alt="logo" />
         </Link>

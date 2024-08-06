@@ -6,9 +6,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../../components/Context";
 
 const Login = () => {
-  const { setUser, admin,setAdmin } = useContext(Context);
+  const { setUser, admin, setAdmin, setMsg } = useContext(Context);
   const [load, setLoad] = useState(false);
-  // const [error, setError] = useState<string | undefined>(undefined);
   const [input, setInput] = useState({
     email: "",
     pass: "",
@@ -20,7 +19,11 @@ const Login = () => {
 
   const confirm = async () => {
     if (admin)
-      return alert("Cierre sesion como administrador antes de iniciar sesion");
+      return setMsg({
+        msg: "Cierre sesion como administrador antes de iniciar sesion",
+        open: true,
+        type: "warning",
+      });
     setLoad(true);
     const { status, data } = await login(input);
     setLoad(false);
@@ -29,8 +32,11 @@ const Login = () => {
       else setUser(data);
       navigate("/");
     } else {
-      alert(data.msg);
-      // setError(data.msg);
+      setMsg({
+        msg: data.msg,
+        type: "error",
+        open: true,
+      });
     }
   };
 

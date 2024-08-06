@@ -24,10 +24,11 @@ import { Context } from "../../components/Context";
 import { getEventPlusWods, getWods } from "../../api/guest.api";
 import EventModal from "../../components/modals/CreateEventModal";
 import CategForm from "../../components/results/CategForm";
+import { toggleUpdating } from "../../api/event.api";
 
 const Results = () => {
   const { _id } = useParams();
-  const { events, admin } = useContext(Context);
+  const { events, admin, setMsg } = useContext(Context);
   // MODALS WITH HOOKS
   const [teamM, toggleTeamM] = useModal();
   const [resM, toggleResM] = useModal();
@@ -71,6 +72,7 @@ const Results = () => {
   }, [events]);
 
   const click = () => {
+    // console.log(event);
     // toggleWodsM()
   };
 
@@ -85,15 +87,29 @@ const Results = () => {
   } else if (event === undefined) return <div className="error_page" />;
 
   const toggleUpdate = async () => {
-    // return new Promise(async (resolve, reject) => {
-    //   const { status, data } = await toggleUpdating(event._id, !event.updating);
-    //   if (status === 200) {
-    //     setEvent((prev) => ({ ...prev, updating: !event.updating }));
-    //     resolve(true);
-    //   } else {
-    //     reject(false);
-    //   }
-    // });
+    return new Promise(async (resolve, reject) => {
+      if (!category)
+        return setMsg({
+          type: "error",
+          msg: "No hay una categoria seleccionada.",
+          open: true,
+        });
+      const { status, data } = await toggleUpdating(
+        category._id,
+        !category.updating
+      );
+      if (status === 200) {
+        setCategory({ ...category, updating: !category.updating });
+        resolve(true);
+      } else {
+        setMsg({
+          open:true,
+          msg:data.msg,
+          type:'error'
+        })
+        reject(false);
+      }
+    });
   };
 
   const hamFunctions = {
@@ -102,8 +118,8 @@ const Results = () => {
     toggleResM,
     toggleUpdateEvtM,
     toggleUpdate,
-    updating: false,
-    // updating: event ? event.updating : null,
+    // updating: false,
+    updating: category ? category.updating : null,
   };
 
   return (
@@ -155,6 +171,7 @@ const Results = () => {
               <HamburguerBtns
                 {...hamFunctions}
                 manual_teams={event.manual_teams}
+                updating={category?.updating}
               />
             </>
           )}
@@ -164,7 +181,7 @@ const Results = () => {
             {...{ input, setInput, event, category, setCategory, kg, setKg }}
           />
           {/* {new Date(event.since) <= new Date() ? ( */}
-          { admin? (
+          {admin ? (
             <ResultInfo
               {...{
                 input,
@@ -178,7 +195,7 @@ const Results = () => {
               }}
             />
           ) : (
-            <CategForm {...{category,event}} />
+            <CategForm {...{ category, event,setCategory }} />
           )}
         </div>
         <div className="partners_resposive">
@@ -199,7 +216,7 @@ type HambBtnType = {
   toggleWodsM: () => void;
   toggleTeamM: () => void;
   toggleResM: () => void;
-  // toggleUpdate: () => void,
+  toggleUpdate: () => Promise<unknown>,
   toggleUpdateEvtM: () => void;
   updating?: boolean;
   manual_teams?: boolean;
@@ -210,16 +227,16 @@ const HamburguerBtns = ({
   toggleTeamM,
   toggleResM,
   toggleUpdateEvtM,
-  // toggleUpdate,
+  toggleUpdate,
   manual_teams,
   updating,
 }: HambBtnType) => {
   const [open, setOpen] = useState(false);
-  // const [upd, setUpd] = useState(false);
+  const [upd, setUpd] = useState(false);
   const toggleOpen = () => setOpen(!open);
   const toggleTab = async () => {
     // setUpd(true);
-    // await toggleUpdate();
+    await toggleUpdate();
     // setUpd(false);
   };
   const hbaAnimate = {
@@ -249,9 +266,9 @@ const HamburguerBtns = ({
             <div className="hba_item" onClick={toggleResM}>
               <h1>Editar Resultados</h1>
             </div>
-            <button className="hba_item" onClick={toggleTab} disabled={true}>
-            {/* <button className="hba_item" onClick={toggleTab} disabled={upd}> */}
-              {true ? (
+            {/* <button className="hba_item" onClick={toggleTab} disabled={true}> */}
+            <button className="hba_item" onClick={toggleTab} disabled={upd}>
+              {upd ? (
                 <h1>Actualizando...</h1>
               ) : (
                 <>

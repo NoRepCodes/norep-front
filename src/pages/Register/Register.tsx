@@ -24,9 +24,8 @@ type InputT = {
 };
 
 const Register = () => {
-  const {setUser} = useContext(Context)
+  const { setUser, setMsg } = useContext(Context);
   const [load, setLoad] = useState(false);
-  const [error, setError] = useState<string | undefined>(undefined);
   const [inputs, setInputs] = useState<InputT>({
     name: "",
     pass: "",
@@ -36,7 +35,7 @@ const Register = () => {
     birth: "",
     box: "",
     phone: "",
-    genre: "",
+    genre: "Masculino",
     location: {
       country: "",
       state: "",
@@ -53,7 +52,10 @@ const Register = () => {
   };
   const ocBirth = (e: any) => setInputs({ ...inputs, birth: e.target.value });
   const ocBox = (e: any) => setInputs({ ...inputs, box: e.target.value });
-  const ocGenre = (e: any) => setInputs({ ...inputs, genre: e.target.value });
+  const ocGenre = (e: any) => {
+    console.log(e);
+    setInputs({ ...inputs, genre: e.target.value })
+  };
   const ocPhone = (e: any) => setInputs({ ...inputs, phone: e.target.value });
   const ocCountry = (e: any) =>
     setInputs({
@@ -74,17 +76,30 @@ const Register = () => {
   const navigate = useNavigate();
 
   const confirm = async () => {
-    setError(undefined)
     const validation = validate(inputs);
-    if (validation) return setError(validation);
-    setLoad(true)
+    if (validation)
+      return setMsg({
+        msg: validation,
+        open: true,
+        type: "warning",
+      });
+    setLoad(true);
     const { status, data } = await registerUser(inputs);
-    setLoad(false)
+    setLoad(false);
     if (status === 200) {
-      setUser(data)
-      navigate("/")
+      setUser(data);
+      navigate("/");
+      setMsg({
+        msg: 'Su cuenta ha sido registrada con exito!',
+        open: true,
+        type: "success",
+      });
     } else {
-      setError(data.msg);
+      setMsg({
+        msg: data.msg,
+        open: true,
+        type: "error",
+      });
     }
   };
 
@@ -92,7 +107,7 @@ const Register = () => {
     <div className="register_page">
       <div className="form">
         <h6>REGISTRATE</h6>
-        {error&&<p>{error}</p>}
+        {/* {error && <p>{error}</p>} */}
         <FormCage oc={ocName} label="NOMBRE Y APELLIDO:" />
         <FormCage oc={ocEmail} label="CORREO:" />
         <FormCage secure oc={ocPass} label="CONTRASEÑA:" />
@@ -101,7 +116,7 @@ const Register = () => {
         {/* <FormCage oc={ocGenre} label="GENERO:" /> */}
         <div className="form_cage">
           <label>GÉNERO</label>
-          <select onChange={ocGenre} >
+          <select onChange={ocGenre} value={inputs.genre} >
             <option value="Masculino">Masculino</option>
             <option value="Femenino">Femenino</option>
           </select>
@@ -119,7 +134,9 @@ const Register = () => {
           <FormCage oc={ocPhone} label="TELEFONO:" />
         </div>
 
-        <button onClick={confirm}>{load?"REGISTRANDO...":"REGISTRATE"}</button>
+        <button onClick={confirm}>
+          {load ? "REGISTRANDO..." : "REGISTRATE"}
+        </button>
         <img src={logo} alt="logo" />
       </div>
     </div>
