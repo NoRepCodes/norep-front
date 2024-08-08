@@ -88,10 +88,19 @@ const EditWodsModal = ({
     setLoad(false);
     if (status === 200) {
       // data.splice(data.length - 1, 1);
+      setMsg({
+        open:true,
+        msg:'Wods actualizados con exito!',
+        type:'success'
+      })
       setWods(data);
       close();
     } else {
-      alert(data.msg);
+      setMsg({
+        open:true,
+        msg:data.msg,
+        type:'error'
+      })
     }
   };
 

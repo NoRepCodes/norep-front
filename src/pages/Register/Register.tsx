@@ -112,7 +112,7 @@ const Register = () => {
         <FormCage oc={ocEmail} label="CORREO:" />
         <FormCage secure oc={ocPass} label="CONTRASEÑA:" />
         <FormCage secure oc={ocConf} label="CONFIRMAR CONTRASEÑA:" />
-        <FormCageDate oc={ocBirth} label="FECHA DE NACIMIENTO:" />
+        <FormCageDate oc={ocBirth} label="FECHA DE NACIMIENTO:" defaultValue="2000-01-01" />
         {/* <FormCage oc={ocGenre} label="GENERO:" /> */}
         <div className="form_cage">
           <label>GÉNERO</label>
@@ -192,15 +192,17 @@ const FormCage = ({
 const FormCageDate = ({
   label,
   oc,
+  defaultValue
 }: {
   label: string;
+  defaultValue?: string;
   oc: (e: any) => void;
   secure?: boolean;
 }) => {
   return (
     <div className="form_cage">
       <label htmlFor="">{label}</label>
-      <input type="date" onChange={oc} />
+      <input type="date" onChange={oc} defaultValue={defaultValue} />
       <div className="line" />
     </div>
   );

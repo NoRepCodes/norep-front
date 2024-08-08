@@ -7,7 +7,7 @@ import Table from "./Table";
 import moment from "moment";
 import { CategoryType, EventType, WodType } from "../../types/event.t";
 
-const convertDate = (date: number) => moment.unix(date).format("DD, MMM");
+const convertDate = (date: string) => moment(date).format("DD, MMM");
 
 type ResultInfoT = {
   input: string;
@@ -60,16 +60,15 @@ const ResultInfo = ({
           <div className="rhb_left">
             <h1>{event?.place}</h1>
             <h1 className="ri_date">
-              {typeof event.since === "number" &&
-              typeof event.until === "number"
-                ? `${convertDate(event?.since)} - ${convertDate(event?.since)}`
-                : ""}
+              {convertDate(event?.since)} - {convertDate(event?.since)}
             </h1>
           </div>
         </div>
       </div>
 
-      <>  {/** THIS IS RESPONSIVE */}
+      <>
+        {" "}
+        {/** THIS IS RESPONSIVE */}
         <div className="user_input">
           <input
             type="text"
