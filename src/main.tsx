@@ -68,7 +68,7 @@ const router = createBrowserRouter([
 
 const App = () => {
   // const [first, setFirst] = useState(false);
-  const [admin, setAdmin] = useState(true);
+  const [admin, setAdmin] = useState(false);
   const [events, setEvents] = useState<EventType[] | undefined>(undefined);
   const [user, setUser] = useState<UserType | undefined>(undefined);
   const [msg, setMsg] = useState<MsgT>({
