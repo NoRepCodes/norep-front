@@ -78,8 +78,6 @@ const CategForm = ({
   const navigate = useNavigate();
   const toggle = () => {
     if (!user) navigate("/login");
-    // else if (category?.filter?.limit && category.slots < category.filter.limit)
-    // setOpen(!open);
     else setOpen(!open);
   };
   const toggle2 = () => {

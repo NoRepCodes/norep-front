@@ -25,6 +25,8 @@ import { getEventPlusWods, getWods } from "../../api/guest.api";
 import EventModal from "../../components/modals/CreateEventModal";
 import CategForm from "../../components/results/CategForm";
 import { toggleUpdating } from "../../api/event.api";
+//@ts-ignore
+import moment from 'moment'
 
 const Results = () => {
   const { _id } = useParams();
@@ -72,7 +74,7 @@ const Results = () => {
   }, [events]);
 
   const click = () => {
-    // console.log(event);
+    console.log(wods);
     // toggleWodsM()
   };
 
@@ -180,8 +182,8 @@ const Results = () => {
           <ResultAside
             {...{ input, setInput, event, category, setCategory, kg, setKg }}
           />
-          {/* {new Date(event.since) <= new Date() ? ( */}
-          {admin ? (
+          {/* {admin ? ( */}
+          {admin || event.register_time.until < moment().format("YYYY-MM-DD") ?(
             <ResultInfo
               {...{
                 input,

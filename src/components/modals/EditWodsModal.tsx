@@ -84,7 +84,8 @@ const EditWodsModal = ({
       open:true,
     });
     setLoad(true);
-    const { status, data } = await updateWods({ wods: nw, toDelete });
+    const categories = event.categories.map((c) => c._id);
+    const { status, data } = await updateWods({ wods: nw, toDelete,categories });
     setLoad(false);
     if (status === 200) {
       // data.splice(data.length - 1, 1);
@@ -161,7 +162,7 @@ const EditWodsModal = ({
   };
 
   return (
-    <Modal title="EDITAR WODS" close={close}>
+    <Modal title="EDITAR RESULTADOS" close={close}>
       {category && <CategoriesSelect {...{ category, setCategory, event }} />}
 
       <div className="modal_form">

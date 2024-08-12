@@ -33,7 +33,8 @@ type updateWodsDataT = {
         category_id: string
         // index: number,
     }[],
-    toDelete: string[]
+    toDelete: string[],
+    categories: any
 }
 export const updateWods = async (data: updateWodsDataT) => {
     return await axios.post(`${url}updateWods`, data).then(res => {
@@ -42,8 +43,8 @@ export const updateWods = async (data: updateWodsDataT) => {
         return catchError(err)
     })
 }
-export const updateResults = async (results:any,wod_id:string) => {
-    return await axios.post(`${url}updateResults`, {results,wod_id}).then(res => {
+export const updateResults = async (results:any,wod_id:string,categories:string[]) => {
+    return await axios.post(`${url}updateResults`, {results,wod_id,categories}).then(res => {
         return res
     }).catch(err => {
         return catchError(err)

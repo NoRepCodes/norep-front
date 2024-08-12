@@ -82,7 +82,8 @@ const EditResultsModal = ({
     }));
 
     setLoad(true);
-    const { status, data } = await updateResults(newList, w_id);
+    const categories = event.categories.map((c) => c._id);
+    const { status, data } = await updateResults(newList, w_id,categories);
     setLoad(false);
     if (status === 200) {
       // console.log(data);

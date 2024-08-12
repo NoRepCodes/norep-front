@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CategoryType, EventType, TeamType } from "../../types/event.t";
 import { CategoriesSelect, CrossIcon, Modal } from "./ModalTools";
 import { updateTeams } from "../../api/event.api";
@@ -20,6 +20,11 @@ const EditTeamsModal = ({
   const { setEvents } = useContext(Context);
   const [teams, setTeams] = useState<TeamType[]>(category?.teams ?? []);
   const [load, setLoad] = useState(false);
+
+  useEffect(() => {
+    setTeams(category?.teams??[])
+  }, [category])
+  
 
   const updateName = (index: number, value: string) => {
     let aux = [...teams];
