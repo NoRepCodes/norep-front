@@ -203,6 +203,11 @@ const CategForm = ({
       }
     }
   };
+
+  const [open3, setOpen3] = useState(false);
+  const toggle3 = () => {
+    setOpen3(!open3)
+  };
   return (
     <div className="categ_form">
       <div>
@@ -213,6 +218,41 @@ const CategForm = ({
         <DateBox date={event.since} />
         <DateBox date={event.until} />
       </div>
+      <div style={{ position: "relative",width:280 }}>
+          <div className="resp_categories_ctn" onClick={toggle3}>
+            {event ? (
+              <p>
+                {event.categories.find((c) => c._id === category?._id)?.name}
+              </p>
+            ) : (
+              <p>Selecciona una categoria</p>
+            )}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 21l-12-18h24z" />
+            </svg>
+          </div>
+          {open3 && (
+            <div className="abs_resp_categ_dropdown">
+              {event &&
+                event.categories.map((categ) => (
+                  <p
+                    key={categ._id}
+                    onClick={() => {
+                      setCategory(categ);
+                      toggle3();
+                    }}
+                  >
+                    {categ.name}
+                  </p>
+                ))}
+            </div>
+          )}
+        </div>
 
       {open2 ? null : (
         <button className="inscription_btn" onClick={toggle}>
