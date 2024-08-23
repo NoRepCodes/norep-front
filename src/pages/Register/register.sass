@@ -1,7 +1,6 @@
 @use '../../sass/var' as v
 
 .register_page
-  // position: absolute
   width: 100%
   min-height: 90vh
   background-color: #fff
@@ -12,18 +11,17 @@
   display: flex
   flex-direction: column
   justify-content: center
-  // z-index: 2000
 
   .form
+    position: relative
     display: flex
     flex-direction: column
-    // align-items: center
-    // justify-content: center
     width: 35vw
     min-width: 600px
     margin-left: 5vw
     height: auto
     max-height: 80vh
+    // min-height: 720px
     background-color: #fff
     border-radius: 12px
     overflow: auto
@@ -75,7 +73,41 @@
     margin: .5em 0px
     padding: .5em
 
+.counter
+  position: absolute
+  background-color: v.$primary
+  right: 24px
+  padding: .5em 1em
+  border-radius: 6px
+  display: flex
+  flex-direction: column
+  align-items: center
+  gap: .5em
+  top: 24px
+
+.counter_title
+  font-weight: bold
+  font-family: 'Anton'
+  letter-spacing: 1px
+
+.counter_num
+  font-weight: bold
+  font-family: 'Anton'
+  font-size: 2em
+  
+.step_1,.step_2
+  display: flex
+  flex-direction: column
+  gap: .5em
+
+.arrow_back
+  position: absolute
+  // left: 24px
+  cursor: pointer
+
 @media screen and (width < 1000px)
+  .counter
+    display: none
   .register_page
     .form
       align-self: center

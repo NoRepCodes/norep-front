@@ -6,6 +6,7 @@ import { CategoryType, EventType } from "../../types/event.t";
 import { checkUsers, pushTicket, registerTicket } from "../../api/user.api";
 //@ts-ignore
 import moment from "moment";
+import { IconWarningFilled } from "../Icons";
 // const cardrex = /^[0-9]{5,9}$/gm;
 type ConvertBase64T = (file: Blob) => Promise<string | ArrayBuffer | null>;
 const convertBase64: ConvertBase64T = (file) => {
@@ -512,6 +513,15 @@ const CategInfo = ({
 
   return (
     <div className="cf_info">
+      <div className="cf_warning">
+        <div className="cf_warning_top">
+          <IconWarningFilled/>
+          <p>AVISO</p>
+        </div>
+        <div className="cf_warning_bottom">
+          <p>Todos los usuarios deberán estar registrados antes de crear el equipo.</p>
+        </div>
+      </div>
       <div className="label_info">
         <p className="p_label idk02">MODALIDAD</p>
         <div className="idk01">

@@ -141,26 +141,6 @@ export const EventCard = ({ event }: { event: EventType }) => {
   );
 };
 
-const getMonths = () => {
-  return [
-    moment().add(-3, "M").format("MM-YYYY"),
-    moment().add(-2, "M").format("MM-YYYY"),
-    moment().add(-1, "M").format("MM-YYYY"),
-    moment().format("MM-YYYY"),
-    moment().add(1, "M").format("MM-YYYY"),
-    moment().add(2, "M").format("MM-YYYY"),
-  ];
-};
-const getMonthsNames = () => {
-  return [
-    moment().add(-3, "M").format("MMM").replace(".", "").toUpperCase(),
-    moment().add(-2, "M").format("MMM").replace(".", "").toUpperCase(),
-    moment().add(-1, "M").format("MMM").replace(".", "").toUpperCase(),
-    moment().format("MMM").replace(".", "").toUpperCase(),
-    moment().add(1, "M").format("MMM").replace(".", "").toUpperCase(),
-    moment().add(2, "M").format("MMM").replace(".", "").toUpperCase(),
-  ];
-};
 
 const Calendar = ({ events }: { events?: EventType[] }) => {
   const [months, setMonths] = useState<string[]>([]);
@@ -209,7 +189,6 @@ const CalendarRow = ({ day, children }: CalendarRowT) => {
   );
 };
 
-const convertDateIM = (date: string) => moment(date).format("DD");
 const CalendarCard = ({ event }: { event: EventType }) => {
   const { admin } = useContext(Context);
   const CalendarCardInfo = () => {
@@ -251,4 +230,26 @@ const CalendarCard = ({ event }: { event: EventType }) => {
       )}
     </>
   );
+};
+
+const convertDateIM = (date: string) => moment(date).format("DD");
+const getMonths = () => {
+  return [
+    moment().add(-3, "M").format("MM-YYYY"),
+    moment().add(-2, "M").format("MM-YYYY"),
+    moment().add(-1, "M").format("MM-YYYY"),
+    moment().format("MM-YYYY"),
+    moment().add(1, "M").format("MM-YYYY"),
+    moment().add(2, "M").format("MM-YYYY"),
+  ];
+};
+const getMonthsNames = () => {
+  return [
+    moment().add(-3, "M").format("MMM").replace(".", "").toUpperCase(),
+    moment().add(-2, "M").format("MMM").replace(".", "").toUpperCase(),
+    moment().add(-1, "M").format("MMM").replace(".", "").toUpperCase(),
+    moment().format("MMM").replace(".", "").toUpperCase(),
+    moment().add(1, "M").format("MMM").replace(".", "").toUpperCase(),
+    moment().add(2, "M").format("MMM").replace(".", "").toUpperCase(),
+  ];
 };
