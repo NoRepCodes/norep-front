@@ -67,6 +67,7 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
+  //test for testing
   // const [first, setFirst] = useState(false);
   const [admin, setAdmin] = useState(false);
   const [events, setEvents] = useState<EventType[] | undefined>(undefined);
