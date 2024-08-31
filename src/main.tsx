@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 // import { getEventsHome } from "./api/events.api";
 import { Context,  MsgT } from "./components/Context";
@@ -78,7 +78,7 @@ const App = () => {
     type: "none",
   });
 
-  // useEffect(() => {
+  useEffect(() => {
   //   (async () => {
   //     const { status, data } = await getEventsHome();
   //     if (status === 200) {
@@ -86,14 +86,17 @@ const App = () => {
   //       setEvents(data[0]);
   //       setTime(data[1]);
   //     }
-  //     const adm = JSON.parse(localStorage.getItem("adm"));
-  //     if (adm) {
-  //       setAdmin(adm);
-  //     }
-
+      
   //     setFirst(true);
   //   })();
-  // }, []);
+  let ifAdm = localStorage.getItem("adm")
+  if(ifAdm){
+    const adm = JSON.parse(ifAdm);
+    if (adm) {
+      setAdmin(adm);
+    }
+  }
+  }, []);
 
   // // if(true){
   // if (!first && time !== 0) {

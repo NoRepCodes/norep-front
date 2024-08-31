@@ -255,7 +255,8 @@ const UpdateEventModal = ({
   };
 
   const plusCateg = () => {
-    console.log({...emptyCateg});
+    // console.log({...emptyCateg});
+    // console.log([...categories, { ...emptyCateg }]);
     setCategories([...categories, { ...emptyCateg }]);
   };
   const minusCateg = (index: number) => {

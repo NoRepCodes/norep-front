@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 //@ts-ignore
 import moment from "moment";
-import { useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import {
   CategoryType,
   EventType,
@@ -10,6 +10,7 @@ import {
   WodType,
 } from "../../types/event.t";
 import { mergeTeams, pos } from "../../components/TableLogic";
+// import { Context } from "../Context";
 
 const convSeconds = (s: number) => moment.utc(s * 1000).format("HH:mm:ss");
 
@@ -55,6 +56,7 @@ const Table = ({ input, event, category, admin, kg, wods }: TableT) => {
                     user={team}
                     {...{ index, kg }}
                     last={index === teams.length - 1 ? true : false}
+                    wl={wods?.length ?? 0}
                   />
                 );
               }
@@ -65,6 +67,7 @@ const Table = ({ input, event, category, admin, kg, wods }: TableT) => {
                   user={team}
                   {...{ index, kg }}
                   last={index === teams.length - 1 ? true : false}
+                  wl={wods?.length ?? 0}
                 />
               );
             }
@@ -77,6 +80,15 @@ const Table = ({ input, event, category, admin, kg, wods }: TableT) => {
 type TableHeaderT = { wods: WodType[] | undefined; category: CategoryType };
 
 const TableHeader = ({ wods, category }: TableHeaderT) => {
+  // const { setMsg } = useContext(Context);
+  // const wodInfo = (w: WodType) => {
+  //   // let aux = `
+  //   // \n ${w.name}
+  //   // ${w.wod_type}
+  //   // ${w.amount_cap ?? ""}
+  //   // ${w.time_cap ?? ""}
+  //   // `;
+  // };
   return (
     <div className="table_header">
       <div className="header_names">
@@ -89,7 +101,13 @@ const TableHeader = ({ wods, category }: TableHeaderT) => {
         {wods?.map((w) => {
           if (category._id === w.category_id) {
             return (
-              <div className="th_cell" key={w._id}>
+              <div
+                className="th_cell"
+                key={w._id}
+                // onClick={() => {
+                //   wodInfo(w);
+                // }}
+              >
                 <h1>{w.name}</h1>
               </div>
             );
@@ -117,8 +135,9 @@ type TableUserT = {
   last: boolean;
   index: number;
   kg: boolean;
+  wl: number;
 };
-const TableUser = ({ user, last = false, index, kg }: TableUserT) => {
+const TableUser = ({ user, last = false, index, kg, wl }: TableUserT) => {
   const [open, setOpen] = useState(false);
   const toggleOpen = () => {
     setOpen(!open);
@@ -176,6 +195,19 @@ const TableUser = ({ user, last = false, index, kg }: TableUserT) => {
               </div>
             );
           })}
+          <EmptySlots
+            wl={wl ?? 0}
+            res={user._results ? user._results.length : 0}
+          />
+          {/* {Array.from(
+            Array(
+              wl && user._results && wl > user._results.length
+                ? wl - user._results.length
+                : 0
+            ).keys()
+          ).map((_) => (
+            <EmptySpace />
+          ))}*/}
         </div>
         <div className={`tu_points ${last && "no_b"}`}>
           <h1>{user._points}</h1>
@@ -205,6 +237,14 @@ const TableUser = ({ user, last = false, index, kg }: TableUserT) => {
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  );
+};
+
+const EmptySpace = () => {
+  return (
+    <div className="tu_cell">
+      <p></p>
     </div>
   );
 };
@@ -291,3 +331,29 @@ const lbOrKg = (amount: number, isKg: boolean) => {
 };
 
 export default Table;
+
+const EmptySlots = ({ wl, res }: { wl: number; res: number }) => {
+  const [amount, setAmount] = useState([]);
+  useEffect(() => {
+    let aux: any = [];
+    for (let i = 0; i < wl - res; i++) {
+      aux.push(i);
+    }
+    setAmount(aux);
+  }, [wl, res]);
+
+  return (
+    <>
+      {amount.map((v) => (
+        <EmptySpace key={v} />
+      ))}
+    </>
+  );
+};
+// const returnEmpty = (left: number) => {
+//   let aux = [];
+//   for (let i = 0; i < left; i++) {
+//     aux.push(EmptySpace);
+//   }
+//   return aux;
+// };
