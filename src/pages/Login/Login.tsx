@@ -28,8 +28,10 @@ const Login = () => {
     const { status, data } = await login(input);
     setLoad(false);
     if (status === 200) {
-      if (input.email[0] === "@") setAdmin(true);
-      else setUser(data);
+      if (input.email[0] === "@") {
+        localStorage.setItem("adm", JSON.stringify(data));
+        setAdmin(true);
+      } else setUser(data);
       navigate("/");
     } else {
       setMsg({
