@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 //@ts-ignore
 import moment from "moment";
-import { useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import {
   CategoryType,
   EventType,
@@ -10,6 +10,7 @@ import {
   WodType,
 } from "../../types/event.t";
 import { mergeTeams, pos } from "../../components/TableLogic";
+// import { Context } from "../Context";
 
 const convSeconds = (s: number) => moment.utc(s * 1000).format("HH:mm:ss");
 
@@ -79,6 +80,15 @@ const Table = ({ input, event, category, admin, kg, wods }: TableT) => {
 type TableHeaderT = { wods: WodType[] | undefined; category: CategoryType };
 
 const TableHeader = ({ wods, category }: TableHeaderT) => {
+  // const { setMsg } = useContext(Context);
+  // const wodInfo = (w: WodType) => {
+  //   // let aux = `
+  //   // \n ${w.name}
+  //   // ${w.wod_type}
+  //   // ${w.amount_cap ?? ""}
+  //   // ${w.time_cap ?? ""}
+  //   // `;
+  // };
   return (
     <div className="table_header">
       <div className="header_names">
@@ -91,7 +101,13 @@ const TableHeader = ({ wods, category }: TableHeaderT) => {
         {wods?.map((w) => {
           if (category._id === w.category_id) {
             return (
-              <div className="th_cell" key={w._id}>
+              <div
+                className="th_cell"
+                key={w._id}
+                // onClick={() => {
+                //   wodInfo(w);
+                // }}
+              >
                 <h1>{w.name}</h1>
               </div>
             );
@@ -325,7 +341,6 @@ const EmptySlots = ({ wl, res }: { wl: number; res: number }) => {
     }
     setAmount(aux);
   }, [wl, res]);
-
 
   return (
     <>

@@ -15,7 +15,7 @@ type ContextT = {
 
 
 export type MsgT = {
-  type: "none"|"success"|"error"|"warning";
+  type: "none"|"success"|"error"|"warning"|"text";
   open?: boolean;
   msg: string;
 };
