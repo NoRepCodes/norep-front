@@ -191,7 +191,7 @@ const TableUser = ({ user, last = false, index, kg, wl }: TableUserT) => {
             ).keys()
           ).map((_) => (
             <EmptySpace />
-          ))} */}
+          ))}*/}
         </div>
         <div className={`tu_points ${last && "no_b"}`}>
           <h1>{user._points}</h1>
