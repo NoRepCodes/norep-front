@@ -60,6 +60,15 @@ const MsgModal = ({
       </>
     );
   };
+  const MM_Text = () => {
+    return (
+      <>
+        {/* <IconWarningHex size={48} /> */}
+        <p>{msg.msg}</p>
+        <button onClick={close}>Regresar</button>
+      </>
+    );
+  };
 
   return (
     <motion.div
@@ -77,6 +86,7 @@ const MsgModal = ({
         {msg.type === "success" && <MM_Sucess />}
         {msg.type === "error" && <MM_Error />}
         {msg.type === "warning" && <MM_Warning />}
+        {msg.type === "text" && <MM_Text />}
       </motion.div>
     </motion.div>
   );

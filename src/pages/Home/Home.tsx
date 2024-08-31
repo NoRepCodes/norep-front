@@ -24,7 +24,7 @@ const Home = () => {
 
   const click = () => {
     // console.log(moment.unix(1715460797).diff(new Date(), "days"))
-    console.log(events);
+    // console.log(events);
   };
 
   useEffect(() => {
@@ -211,6 +211,7 @@ const CalendarCard = ({ event }: { event: EventType }) => {
       </>
     );
   };
+  
 
   return (
     <>
