@@ -23,7 +23,8 @@ const Home = () => {
   const { events, setEvents } = useContext(Context);
 
   const click = () => {
-    // console.log(moment.unix(1715460797).diff(new Date(), "days"))
+    console.log(moment('2024-08-31').diff(new Date(), "days"));
+    // console.log(moment('2024-08-21').diff(new Date(), "days"))
     // console.log(events);
   };
 
@@ -63,7 +64,7 @@ const Home = () => {
         <div className="event_cell cards_cells">
           <EventTimeText text="EN CURSO" />
           {events?.map((event) => {
-            let days = moment.unix(event.until).diff(new Date(), "days");
+            let days = moment(event.until).diff(new Date(), "days");
             if (days <= 7 && days >= 0) {
               return <EventCard key={event._id} event={event} />;
             }
@@ -73,7 +74,7 @@ const Home = () => {
         <div className="event_cell cards_cells">
           <EventTimeText text="PRÓXIMAS" />
           {events?.map((event) => {
-            let days = moment.unix(event.until).diff(new Date(), "days");
+            let days = moment(event.until).diff(new Date(), "days");
             if (days > 7) {
               return <EventCard key={event._id} event={event} />;
             }

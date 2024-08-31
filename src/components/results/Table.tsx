@@ -56,7 +56,7 @@ const Table = ({ input, event, category, admin, kg, wods }: TableT) => {
                     user={team}
                     {...{ index, kg }}
                     last={index === teams.length - 1 ? true : false}
-                    wl={wods?.length ?? 0}
+                    wl={wods?.filter((w) => w.category_id === category?._id)?.length ?? 0}
                   />
                 );
               }
@@ -67,7 +67,7 @@ const Table = ({ input, event, category, admin, kg, wods }: TableT) => {
                   user={team}
                   {...{ index, kg }}
                   last={index === teams.length - 1 ? true : false}
-                  wl={wods?.length ?? 0}
+                  wl={wods?.filter((w) => w.category_id === category?._id)?.length ?? 0}
                 />
               );
             }
@@ -243,7 +243,7 @@ const TableUser = ({ user, last = false, index, kg, wl }: TableUserT) => {
 
 const EmptySpace = () => {
   return (
-    <div className="tu_cell">
+    <div className="tu_cell empty_slot">
       <p></p>
     </div>
   );
@@ -336,9 +336,12 @@ const EmptySlots = ({ wl, res }: { wl: number; res: number }) => {
   const [amount, setAmount] = useState([]);
   useEffect(() => {
     let aux: any = [];
+    console.log(wl - res);
+    // console.log(res);
     for (let i = 0; i < wl - res; i++) {
       aux.push(i);
     }
+    // console.log(aux);
     setAmount(aux);
   }, [wl, res]);
 
