@@ -1,28 +1,23 @@
 import { AnimatePresence, motion } from "framer-motion";
 //@ts-ignore
 import moment from "moment";
-import {  useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   CategoryType,
-  EventType,
   ResultType,
   TeamType,
   WodType,
 } from "../../types/event.t";
 import { mergeTeams, pos } from "../../components/TableLogic";
+import { ResultContext } from "./ResultContx";
+import { Context } from "../Context";
 // import { Context } from "../Context";
 
 const convSeconds = (s: number) => moment.utc(s * 1000).format("HH:mm:ss");
 
-type TableT = {
-  input: string;
-  event: EventType;
-  category: CategoryType | undefined;
-  admin: any;
-  kg: boolean;
-  wods: WodType[] | undefined;
-};
-const Table = ({ input, event, category, admin, kg, wods }: TableT) => {
+const Table = () => {
+  const { event, category, input, kg, wods } = useContext(ResultContext);
+  const { admin } = useContext(Context);
   const [teams, setTeams] = useState<TeamType[] | undefined>(undefined);
 
   useEffect(() => {
@@ -56,7 +51,10 @@ const Table = ({ input, event, category, admin, kg, wods }: TableT) => {
                     user={team}
                     {...{ index, kg }}
                     last={index === teams.length - 1 ? true : false}
-                    wl={wods?.filter((w) => w.category_id === category?._id)?.length ?? 0}
+                    wl={
+                      wods?.filter((w) => w.category_id === category?._id)
+                        ?.length ?? 0
+                    }
                   />
                 );
               }
@@ -67,7 +65,10 @@ const Table = ({ input, event, category, admin, kg, wods }: TableT) => {
                   user={team}
                   {...{ index, kg }}
                   last={index === teams.length - 1 ? true : false}
-                  wl={wods?.filter((w) => w.category_id === category?._id)?.length ?? 0}
+                  wl={
+                    wods?.filter((w) => w.category_id === category?._id)
+                      ?.length ?? 0
+                  }
                 />
               );
             }
@@ -80,7 +81,7 @@ const Table = ({ input, event, category, admin, kg, wods }: TableT) => {
 type TableHeaderT = { wods: WodType[] | undefined; category: CategoryType };
 
 const TableHeader = ({ wods, category }: TableHeaderT) => {
-  // const { setMsg } = useContext(Context);
+  const { setWodInfo } = useContext(ResultContext);
   // const wodInfo = (w: WodType) => {
   //   // let aux = `
   //   // \n ${w.name}
@@ -102,8 +103,9 @@ const TableHeader = ({ wods, category }: TableHeaderT) => {
           if (category._id === w.category_id) {
             return (
               <div
-                className="th_cell"
+                className="th_cell wod_info_cell"
                 key={w._id}
+                onClick={()=>{setWodInfo(w)}}
                 // onClick={() => {
                 //   wodInfo(w);
                 // }}
@@ -134,7 +136,7 @@ type TableUserT = {
   user: TeamType;
   last: boolean;
   index: number;
-  kg: boolean;
+  kg?: boolean;
   wl: number;
 };
 const TableUser = ({ user, last = false, index, kg, wl }: TableUserT) => {
@@ -262,7 +264,7 @@ const IIcon = () => {
   );
 };
 
-type ResultCardT = { result: ResultType; kg: boolean };
+type ResultCardT = { result: ResultType; kg?: boolean };
 const ResultCard = ({ result, kg }: ResultCardT) => {
   return (
     <>
@@ -316,7 +318,7 @@ const Values_FORTIME = ({ result }: ValuesT) => {
   );
 };
 
-const Values_RM = ({ result, kg }: { result: ResultType; kg: boolean }) => {
+const Values_RM = ({ result, kg }: { result: ResultType; kg?: boolean }) => {
   if (result._amount_type === "Reps") {
     return <h1>({result.amount} Reps)</h1>;
   } else return <h1>({lbOrKg(result.amount, kg)})</h1>;
@@ -325,7 +327,7 @@ const Values_CIRCUIT = ({ result }: ValuesT) => {
   return <h1>({result?.amount - result?.penalty})</h1>;
 };
 
-const lbOrKg = (amount: number, isKg: boolean) => {
+const lbOrKg = (amount: number, isKg?: boolean) => {
   if (isKg) return `${(amount * 0.453592).toFixed(2)} Kgs`;
   else return `${amount.toFixed(2)} Lbs`;
 };

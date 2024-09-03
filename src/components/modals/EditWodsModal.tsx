@@ -1,6 +1,5 @@
 //@ts-ignore
 import moment from "moment";
-import { CategoryType, EventType, WodType } from "../../types/event.t";
 import { useContext, useEffect, useState } from "react";
 import { updateWods } from "../../api/event.api";
 //@ts-ignore
@@ -13,6 +12,7 @@ import {
   InputWodT,
 } from "./ModalTools";
 import { Context } from "../Context";
+import { ResultContext } from "../results/ResultContx";
 
 const blankwod: InputWodT = {
   amount_cap: "0",
@@ -30,31 +30,15 @@ const rType = (wt: string) => {
   else if (wt === "CIRCUITO") return "AMRAP";
 };
 
-type EditWodsModalT = {
-  close: () => void;
-  event: EventType;
-  category?: CategoryType;
-  setCategory: React.Dispatch<React.SetStateAction<CategoryType | undefined>>;
-  setEvent: React.Dispatch<React.SetStateAction<EventType | undefined>>;
-  wods?: WodType[];
-  setWods: React.Dispatch<React.SetStateAction<WodType[] | undefined>>;
-};
-
 const transformTimecap = (wds: any) =>
   wds.map((w: any) => ({
     ...w,
     time_cap: moment.utc(w.time_cap * 1000).format("HH:mm:ss"),
     results: [],
   }));
-const EditWodsModal = ({
-  event,
-  category,
-  setCategory,
-  wods,
-  setWods,
-  close,
-}: EditWodsModalT) => {
-  const {setMsg} = useContext(Context)
+const EditWodsModal = ({ close }: { close: () => void }) => {
+  const { event, category, wods, setWods } = useContext(ResultContext);
+  const { setMsg } = useContext(Context);
   const [load, setLoad] = useState(false);
   const [newWods, setNewWods] = useState<InputWodT[]>([]);
   // const [newWods, setNewWods] = useState<InputWodT[]>(wods ? transformTimecap(wods) : []);
@@ -67,7 +51,7 @@ const EditWodsModal = ({
   // if (!wods) return <div className="blackscreen"></div>;
 
   const click = async () => {
-    let nw:ValidateWodT[] = newWods.map((item) => {
+    let nw: ValidateWodT[] = newWods.map((item) => {
       return {
         ...item,
         amount_cap:
@@ -78,30 +62,35 @@ const EditWodsModal = ({
       };
     });
     const validation = validate(nw);
-    if (typeof validation === "string") return setMsg({
-      msg:validation,
-      type:'warning',
-      open:true,
-    });
+    if (typeof validation === "string")
+      return setMsg({
+        msg: validation,
+        type: "warning",
+        open: true,
+      });
     setLoad(true);
-    const categories = event.categories.map((c) => c._id);
-    const { status, data } = await updateWods({ wods: nw, toDelete,categories });
+    const categories = event?.categories.map((c) => c._id);
+    const { status, data } = await updateWods({
+      wods: nw,
+      toDelete,
+      categories,
+    });
     setLoad(false);
     if (status === 200) {
       // data.splice(data.length - 1, 1);
       setMsg({
-        open:true,
-        msg:'Wods actualizados con exito!',
-        type:'success'
-      })
+        open: true,
+        msg: "Wods actualizados con exito!",
+        type: "success",
+      });
       setWods(data);
       close();
     } else {
       setMsg({
-        open:true,
-        msg:data.msg,
-        type:'error'
-      })
+        open: true,
+        msg: data.msg,
+        type: "error",
+      });
     }
   };
 
@@ -141,7 +130,7 @@ const EditWodsModal = ({
           name: w.name,
           amount_type: at,
           category_id: category?._id,
-          _id: w._id
+          _id: w._id,
         };
       } else return w;
     });
@@ -163,25 +152,27 @@ const EditWodsModal = ({
 
   return (
     <Modal title="EDITAR RESULTADOS" close={close}>
-      {category && <CategoriesSelect {...{ category, setCategory, event }} />}
+      {category && <CategoriesSelect />}
 
       <div className="modal_form">
         {newWods?.map((item, index) => {
-          return (
-            <InputsWOD
-              key={index}
-              wod={item}
-              {...{
-                index,
-                handleName,
-                handleTime,
-                handleType,
-                handleReps,
-                handleAmountType,
-                minusWod,
-              }}
-            />
-          );
+          if (category?._id === item.category_id) {
+            return (
+              <InputsWOD
+                key={index}
+                wod={item}
+                {...{
+                  index,
+                  handleName,
+                  handleTime,
+                  handleType,
+                  handleReps,
+                  handleAmountType,
+                  minusWod,
+                }}
+              />
+            );
+          }
         })}
       </div>
       <div className="mt_auto"></div>
@@ -202,8 +193,7 @@ const EditWodsModal = ({
 
 export default EditWodsModal;
 
-
-type ValidateWodT={
+type ValidateWodT = {
   amount_cap: number | undefined;
   time_cap: number;
   name: string;
@@ -212,7 +202,7 @@ type ValidateWodT={
   category_id: string;
   _id?: string;
   time?: string;
-}
+};
 
 const validate = (wods: ValidateWodT[]) => {
   let error: string | undefined = undefined;
