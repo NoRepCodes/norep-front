@@ -112,7 +112,7 @@
     img
       background-color: #181818
       width: 100%
-      height: calc( fs(12)  - 2px )
+      height: calc( fs(12) - 2px )
       box-sizing: border-box
 
     .categ_ctn
@@ -202,6 +202,7 @@
     bottom: fs(1)
     right: fs(1.5)
     gap: .5em
+    z-index: 100
 
     .p_img_ctn
       width: 120px
@@ -313,6 +314,7 @@
       .results_info
         width: 100%
         .user_input
+          display: flex
           position: relative
           width: 100%
           border: 1px solid v.$fourth
@@ -364,10 +366,10 @@
         top: 0px
         display: flex
 
-    .resp_categories_ctn
+    .resp_categories_ctn,.resp_kg
       display: flex
       height: 36px
-      width: 100%
+      width: calc(100% - 100px)
       background-color: v.$primary
       border: 1px solid #181818
       box-sizing: border-box
@@ -380,7 +382,16 @@
       position: relative
       p
         text-decoration: underline
+        font-size: .5em
+    .resp_kg
+      width: 102px
+      h6
         font-size: .7em
+        color: #191919
+      svg
+        transform: scale(.8)
+        height: 24px
+        width: 24px
 
     .abs_resp_categ_dropdown
       position: absolute
@@ -463,7 +474,19 @@
   100%
     margin-left: 0
 
+.resp_kg
+  display: none
 
+@media screen and (width < 1000px)
+  .resp_kg
+    display: flex
+    margin-left: -1px
+  .kg_btn
+    background-color: #191919 !important
+    h6
+      color: v.$primary !important
+    path
+      fill: v.$primary
 @media screen and (width < 450px)
   .corner
     display: none !important

@@ -26,7 +26,9 @@ import EventModal from "../../components/modals/CreateEventModal";
 import CategForm from "../../components/results/CategForm";
 import { toggleUpdating } from "../../api/event.api";
 //@ts-ignore
-import moment from 'moment'
+import moment from "moment";
+import { ResultContext } from "../../components/results/ResultContx";
+import { WodInfoModal } from "../../components/modals/WodInfoModal";
 
 const Results = () => {
   const { _id } = useParams();
@@ -36,6 +38,8 @@ const Results = () => {
   const [resM, toggleResM] = useModal();
   const [updateEvtM, toggleUpdateEvtM] = useModal();
   const [wodsM, toggleWodsM] = useModal();
+  const [wodInfo, setWodInfo] = useState<WodType|undefined>()
+
   // EVENT STATES
   const [event, setEvent] = useState<EventType | undefined>(undefined);
   const [category, setCategory] = useState<CategoryType | undefined>(undefined);
@@ -105,10 +109,10 @@ const Results = () => {
         resolve(true);
       } else {
         setMsg({
-          open:true,
-          msg:data.msg,
-          type:'error'
-        })
+          open: true,
+          msg: data.msg,
+          type: "error",
+        });
         reject(false);
       }
     });
@@ -124,18 +128,29 @@ const Results = () => {
     updating: category ? category.updating : null,
   };
 
+  const contextValues = {
+    event,
+    setEvent,
+    category,
+    setCategory,
+    input,
+    setInput,
+    kg,
+    setKg,
+    wods,
+    setWods,
+    wodInfo,
+    setWodInfo
+  };
+
   return (
-    <>
+    <ResultContext.Provider value={contextValues}>
+      <WodInfoModal />
       {updateEvtM && <EventModal close={toggleUpdateEvtM} {...{ event }} />}
       {wodsM && (
         <EditWodsModal
           close={toggleWodsM}
           {...{
-            event,
-            setEvent,
-            category,
-            setCategory,
-            setWods,
             wods: wods?.filter((w) => w.category_id === category?._id),
           }}
         />
@@ -145,20 +160,11 @@ const Results = () => {
           close={toggleResM}
           {...{
             wods: wods?.filter((w) => w.category_id === category?._id),
-            category,
-            setCategory,
-            event,
-            setWods,
           }}
         />
       )}
 
-      {teamM && (
-        <EditTeamsModal
-          close={toggleTeamM}
-          {...{ event, category, setCategory }}
-        />
-      )}
+      {teamM && <EditTeamsModal close={toggleTeamM} />}
 
       <div className="results" onClick={click} id="top">
         <div className="btns_ctn">
@@ -179,25 +185,13 @@ const Results = () => {
           )}
         </div>
         <div className="results_ctn">
-          <ResultAside
-            {...{ input, setInput, event, category, setCategory, kg, setKg }}
-          />
+          <ResultAside />
           {/* {admin ? ( */}
-          {admin || event.register_time.until < moment().format("YYYY-MM-DD") ?(
-            <ResultInfo
-              {...{
-                input,
-                event,
-                category,
-                setCategory,
-                setInput,
-                admin,
-                kg,
-                wods,
-              }}
-            />
+          {admin ||
+          event.register_time.until < moment().format("YYYY-MM-DD") ? (
+            <ResultInfo />
           ) : (
-            <CategForm {...{ category, event,setCategory }} />
+            <CategForm {...{ category, event, setCategory }} />
           )}
         </div>
         <div className="partners_resposive">
@@ -210,7 +204,7 @@ const Results = () => {
         </div>
       </div>
       <Banner />
-    </>
+    </ResultContext.Provider>
   );
 };
 
@@ -218,7 +212,7 @@ type HambBtnType = {
   toggleWodsM: () => void;
   toggleTeamM: () => void;
   toggleResM: () => void;
-  toggleUpdate: () => Promise<unknown>,
+  toggleUpdate: () => Promise<unknown>;
   toggleUpdateEvtM: () => void;
   updating?: boolean;
   manual_teams?: boolean;
