@@ -1,36 +1,24 @@
-import { useAnimate, motion } from 'framer-motion';
-import { Dispatch, useEffect, useState } from 'react'
+import { useAnimate, motion } from "framer-motion";
+import { useContext, useEffect, useState } from "react";
 import pf1 from "../../images/arw.png";
-import { CategoryType, EventType } from '../../types/event.t';
+import { ResultContext } from "./ResultContx";
+import { SwitchLeftIcon, SwitchRightIcon } from "../Icons";
 
 const ww = window.innerWidth;
 const wh = window.innerHeight;
 const fs = (num: number) => num * (ww / 100) + num * (wh / 100);
 
-type ResAsideType = {
-  event?: EventType,
-  category: CategoryType | undefined,
-  setCategory: Dispatch<CategoryType>,
-  input: string,
-  setInput: Dispatch<string>,
-  kg: boolean,
-  setKg: Dispatch<boolean>
-}
-const ResultAside = ({
-  event,
-  category,
-  setCategory,
-  input,
-  setInput,
-  kg,
-  setKg,
-}: ResAsideType) => {
+const ResultAside = () => {
+  const { event, category, setCategory, input, setInput, kg, setKg } =
+    useContext(ResultContext);
   const [open, setOpen] = useState(false);
   const [cope, animate] = useAnimate();
 
   useEffect(() => {
     const ml_fs = fs(12);
-    const pamount = (event && event.partners.length ? event.partners.length : 1) * ml_fs - ml_fs;
+    const pamount =
+      (event && event.partners.length ? event.partners.length : 1) * ml_fs -
+      ml_fs;
     // const pamount = event.partners.length * ml_fs - ml_fs;
     const si = setInterval(() => {
       const aux_ml =
@@ -117,7 +105,8 @@ const ResultAside = ({
             width:
               event && event.partners.length < 2
                 ? fs(12)
-                : fs(12) * (event && event.partners.length ? event.partners.length : 1)
+                : fs(12) *
+                  (event && event.partners.length ? event.partners.length : 1),
           }}
         >
           {event && event.partners.length > 0 ? (
@@ -133,36 +122,10 @@ const ResultAside = ({
           ) : (
             <img src={pf1} alt="patrocinanteA" />
           )}
-
         </motion.div>
       </div>
     </div>
   );
 };
 
-export default ResultAside
-
-
-
-const SwitchLeftIcon = () => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fillRule="evenodd"
-      clipRule="evenodd"
-    >
-      <path d="M6 18h12c3.311 0 6-2.689 6-6s-2.689-6-6-6h-12.039c-3.293.021-5.961 2.701-5.961 6 0 3.311 2.688 6 6 6zm12-10c-2.208 0-4 1.792-4 4s1.792 4 4 4 4-1.792 4-4-1.792-4-4-4z" />
-    </svg>
-  );
-};
-const SwitchRightIcon = () => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fillRule="evenodd"
-      clipRule="evenodd"
-    >
-      <path d="M18 18h-12c-3.311 0-6-2.689-6-6s2.689-6 6-6h12.039c3.293.021 5.961 2.701 5.961 6 0 3.311-2.688 6-6 6zm-12-10c2.208 0 4 1.792 4 4s-1.792 4-4 4-4-1.792-4-4 1.792-4 4-4z" />
-    </svg>
-  );
-};
+export default ResultAside;

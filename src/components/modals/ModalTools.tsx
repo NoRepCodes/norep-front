@@ -1,14 +1,14 @@
 //@ts-ignore
 import moment from "moment";
 import {
-  Dispatch,
   PropsWithChildren,
-  SetStateAction,
+  useContext,
   useRef,
   useState,
 } from "react";
 import "../../sass/modals/modalTools.sass";
-import { CategoryType, EventType, WodType } from "../../types/event.t";
+import { WodType } from "../../types/event.t";
+import { ResultContext } from "../results/ResultContx";
 // export const ArrayInput = ({ label, ocArr, value, index }) => {
 
 const splitTime = (time: string) => {
@@ -18,7 +18,7 @@ const splitTime = (time: string) => {
   });
   return `${val[0]}:${val[1]}:${val[2]}`;
 };
-export const convTime = (s:string) : number =>
+export const convTime = (s: string): number =>
   moment.duration(splitTime(s), "HH:mm:ss").asSeconds();
 
 //   const text = (e) => {
@@ -85,20 +85,19 @@ export const InputDate = ({
   label,
   value,
   set,
-  custom
+  custom,
 }: {
   name: string;
   label: string;
   value: string;
   set?: any;
-  custom?:any
+  custom?: any;
 }) => {
   const onChangeText = (e: any) => {
     const att = e.target.getAttribute("name");
     const value = e.target.value;
-    if(custom) custom(e.target.value)
-    else if(set)set((prev: any) => ({ ...prev, [att]: value }));
-    
+    if (custom) custom(e.target.value);
+    else if (set) set((prev: any) => ({ ...prev, [att]: value }));
   };
   return (
     <div>
@@ -276,12 +275,15 @@ export const Modal = ({ children, title, close }: ModalP) => {
   );
 };
 
-export type InputWodT = Omit<WodType, '_id' | 'results' | 'time_cap'|"amount_cap"> & {
-  _id?: string,
-  time_cap?: string,
-  time?: string,
-  amount_cap?:string,
-}
+export type InputWodT = Omit<
+  WodType,
+  "_id" | "results" | "time_cap" | "amount_cap"
+> & {
+  _id?: string;
+  time_cap?: string;
+  time?: string;
+  amount_cap?: string;
+};
 type InputWODT = {
   wod: InputWodT;
   index: number;
@@ -290,7 +292,7 @@ type InputWODT = {
   handleType: (z: string, i: number) => void;
   handleReps: (z: string, i: number) => void;
   handleAmountType: (z: string, i: number) => void;
-  minusWod: (i:number) => void;
+  minusWod: (i: number) => void;
 };
 export const InputsWOD = ({
   wod,
@@ -332,14 +334,14 @@ export const InputsWOD = ({
           label="TIEMPO LIMITE"
           update={handleTime}
           index={index}
-          value={wod.time_cap??""}
+          value={wod.time_cap ?? ""}
         />
         {wod.wod_type === "FORTIME" && (
           <InputArray
             label={`${wod.amount_type.toUpperCase()} LIMITE`}
             update={handleReps}
             index={index}
-            value={wod.amount_cap??""}
+            value={wod.amount_cap ?? ""}
             onlyNum
           />
         )}
@@ -357,21 +359,14 @@ export const InputsWOD = ({
   );
 };
 
-export const CategoriesSelect = ({
-  category,
-  setCategory,
-  event,
-}: {
-  category: CategoryType;
-  setCategory: Dispatch<SetStateAction<CategoryType|undefined>>;
-  event: EventType;
-}) => {
+export const CategoriesSelect = () => {
+  const { category, setCategory, event } = useContext(ResultContext);
   const [open, setOpen] = useState(false);
   const toggle = () => setOpen(!open);
   return (
     <div className="categories_select">
       <div className="categories_select_btn" onClick={toggle}>
-        {event && <h6>{category.name}</h6>}
+        {category && <h6>{category.name}</h6>}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"
@@ -400,4 +395,3 @@ export const CategoriesSelect = ({
     </div>
   );
 };
-

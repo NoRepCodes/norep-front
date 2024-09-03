@@ -21,7 +21,7 @@
     z-index: 1000
 
     .header_names
-      flex:1
+      flex: 1
       height: 100%
       display: flex
       flex-direction: row
@@ -52,7 +52,11 @@
         box-sizing: border-box
         border: 1px solid v.$fourth
         background-color: #fff
-
+.wod_info_cell
+  cursor: pointer
+  &:hover
+    background-color: v.$fourth
+    color: v.$primary
 .th_cell,.tu_cell
   // width: 120px
   min-width: 135px
@@ -104,7 +108,7 @@
   cursor: pointer
   z-index: 100
   .tu_ctn
-    flex:1
+    flex: 1
     gap: 2em
     position: relative
     height: 100%
@@ -177,7 +181,7 @@
   max-width: 200%
   height: 100%
   bottom: -12px
-  z-index: 500
+  z-index: 400
   box-sizing: border-box
 
   &:hover
@@ -264,7 +268,7 @@
   .wods_display
     width: calc(100% + 187px + 1.2em)
     margin-left: .3em
-    
+
     .wods_display_item
       min-width: 50px
       h1

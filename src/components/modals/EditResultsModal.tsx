@@ -1,14 +1,8 @@
 //@ts-ignore
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { updateResults } from "../../api/event.api";
-import {
-  CategoryType,
-  EventType,
-  // TeamType,
-  WodType,
-  ResultType,
-} from "../../types/event.t";
+import { WodType, ResultType } from "../../types/event.t";
 import { InputArrObj } from "./CreateEventModal";
 
 import {
@@ -18,6 +12,7 @@ import {
   Modal,
   CategoriesSelect,
 } from "./ModalTools";
+import { ResultContext } from "../results/ResultContx";
 
 const convSeconds = (s: number) => moment.utc(s * 1000).format("HH:mm:ss");
 
@@ -41,22 +36,9 @@ type CustomResT = Omit<ResultType, "_id" | "time" | "tiebrake"> & {
 //   tiebrake: number | string;
 // };
 
-type EditResultsModalT = {
-  close: () => void;
-  wods?: WodType[];
-  event: EventType;
-  category?: CategoryType;
-  setCategory: React.Dispatch<React.SetStateAction<CategoryType | undefined>>;
-  setWods: React.Dispatch<React.SetStateAction<WodType[] | undefined>>;
-};
-const EditResultsModal = ({
-  close,
-  wods,
-  category,
-  setCategory,
-  event,
-  setWods,
-}: EditResultsModalT) => {
+const EditResultsModal = ({ close }: { close: () => void }) => {
+  const { event, category, wods, setWods } = useContext(ResultContext);
+
   // const [searchbar, setSearchbar] = useState("");
   const [w_id, setW_id] = useState<string | undefined>(undefined);
   const [newResults, setNewResults] = useState<CustomResT[]>([]);
@@ -72,7 +54,7 @@ const EditResultsModal = ({
     console.log(newResults);
     let newList = newResults.map((res) => ({
       ...res,
-      time: typeof res.time ==="number" ?res.time:convTime(res.time),
+      time: typeof res.time === "number" ? res.time : convTime(res.time),
       tiebrake:
         res._wod_type === "RM"
           ? parseInt(res.penalty.toString())
@@ -82,12 +64,13 @@ const EditResultsModal = ({
     }));
 
     setLoad(true);
-    const categories = event.categories.map((c) => c._id);
-    const { status, data } = await updateResults(newList, w_id,categories);
+    const categories = event?.categories.map((c) => c._id);
+    if (!categories) return 0;
+    const { status, data } = await updateResults(newList, w_id, categories);
     setLoad(false);
     if (status === 200) {
       // console.log(data);
-      setWods(data)
+      setWods(data);
       // setWods((prev) => {
       //   const aux = prev ? [...prev] : [];
       //   aux.forEach((w,i) => {
@@ -177,7 +160,7 @@ const EditResultsModal = ({
 
   return (
     <Modal close={close} title="EDITAR RESULTADOS">
-      {category && <CategoriesSelect {...{ category, setCategory, event }} />}
+      {category && <CategoriesSelect />}
       {w_id === undefined ? (
         <SelectWod wods={wods} chooseWod={chooseWod} />
       ) : (
@@ -206,8 +189,6 @@ const EditResultsModal = ({
   );
 };
 type UserList = {
-  event: EventType;
-  category?: CategoryType;
   wod?: WodType;
   newResults: CustomResT[];
   setNewResults: React.Dispatch<React.SetStateAction<CustomResT[]>>;

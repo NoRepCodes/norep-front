@@ -1,23 +1,17 @@
 import { useContext, useEffect, useState } from "react";
-import { CategoryType, EventType, TeamType } from "../../types/event.t";
+import { TeamType } from "../../types/event.t";
 import { CategoriesSelect, CrossIcon, Modal } from "./ModalTools";
 import { updateTeams } from "../../api/event.api";
 import { Context } from "../Context";
+import { ResultContext } from "../results/ResultContx";
 
 type EditTeamsModal = {
   close: () => void;
-  category?: CategoryType;
-  setCategory: React.Dispatch<React.SetStateAction<CategoryType | undefined>>;
-  event: EventType;
 };
 
-const EditTeamsModal = ({
-  category,
-  setCategory,
-  event,
-  close,
-}: EditTeamsModal) => {
+const EditTeamsModal = ({  close}: EditTeamsModal) => {
   const { setEvents } = useContext(Context);
+  const { category } = useContext(ResultContext);
   const [teams, setTeams] = useState<TeamType[]>(category?.teams ?? []);
   const [load, setLoad] = useState(false);
 
@@ -55,7 +49,7 @@ const EditTeamsModal = ({
 
   return (
     <Modal title="EDITAR WODS" close={close}>
-      {category && <CategoriesSelect {...{ category, setCategory, event }} />}
+      {category && <CategoriesSelect />}
       <div className="plus_teams_ctn">
         {teams.map((t, i) => {
           return (
