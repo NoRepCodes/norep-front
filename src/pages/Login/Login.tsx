@@ -31,7 +31,10 @@ const Login = () => {
       if (input.email[0] === "@") {
         localStorage.setItem("adm", JSON.stringify(data));
         setAdmin(true);
-      } else setUser(data);
+      } else {
+        localStorage.setItem("@user", JSON.stringify(data));
+        setUser(data);
+      }
       navigate("/");
     } else {
       setMsg({

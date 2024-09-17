@@ -105,7 +105,9 @@ const TableHeader = ({ wods, category }: TableHeaderT) => {
               <div
                 className="th_cell wod_info_cell"
                 key={w._id}
-                onClick={()=>{setWodInfo(w)}}
+                onClick={() => {
+                  setWodInfo(w);
+                }}
                 // onClick={() => {
                 //   wodInfo(w);
                 // }}
@@ -191,6 +193,9 @@ const TableUser = ({ user, last = false, index, kg, wl }: TableUserT) => {
                     )}
                     {result._wod_type === "CIRCUITO" && (
                       <Values_CIRCUIT {...{ result }} />
+                    )}
+                    {result._wod_type === "NADO" && (
+                      <Values_SWIM {...{ result }} />
                     )}
                   </>
                 )}
@@ -279,6 +284,9 @@ const ResultCard = ({ result, kg }: ResultCardT) => {
           {result.amount - result.penalty} {result._amount_type}
         </h1>
       )}
+      {result._wod_type === "NADO" && (
+        <h1 className="amounts">{result.amount} Mts</h1>
+      )}
       {result._wod_type === "RM" && (
         <h1 className="amounts">{lbOrKg(result.amount, kg)}</h1>
       )}
@@ -313,6 +321,19 @@ const Values_FORTIME = ({ result }: ValuesT) => {
       ) : (
         // <h1>(CAP+ 0)</h1>
         <h1>({convSeconds(result?.time)})</h1>
+      )}
+    </>
+  );
+};
+const Values_SWIM = ({ result }: ValuesT) => {
+  return (
+    <>
+      {result._amount_type === "CAP+" ? (
+        <h1>({convSeconds(result?.time)})</h1>
+      ) : (
+        <h1>
+          ({result.amount} {result._amount_type})
+        </h1>
       )}
     </>
   );
