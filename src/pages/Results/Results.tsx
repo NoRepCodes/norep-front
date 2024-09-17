@@ -32,13 +32,13 @@ import { WodInfoModal } from "../../components/modals/WodInfoModal";
 
 const Results = () => {
   const { _id } = useParams();
-  const { events, admin, setMsg } = useContext(Context);
+  const { events, admin, setMsg,user } = useContext(Context);
   // MODALS WITH HOOKS
   const [teamM, toggleTeamM] = useModal();
   const [resM, toggleResM] = useModal();
   const [updateEvtM, toggleUpdateEvtM] = useModal();
   const [wodsM, toggleWodsM] = useModal();
-  const [wodInfo, setWodInfo] = useState<WodType|undefined>()
+  const [wodInfo, setWodInfo] = useState<WodType | undefined>();
 
   // EVENT STATES
   const [event, setEvent] = useState<EventType | undefined>(undefined);
@@ -46,8 +46,10 @@ const Results = () => {
   const [input, setInput] = useState("");
   const [kg, setKg] = useState<boolean | undefined>(false);
   const [wods, setWods] = useState<WodType[] | undefined>(undefined);
+  const [allUsers, setAllUsers] = useState<string[]>([]);
 
   // const [teams, setTeams] = useState<TeamType|undefined>(undefined);
+
 
   useEffect(() => {
     if (!_id) return setKg(undefined);
@@ -61,7 +63,18 @@ const Results = () => {
           if (wods !== undefined) return; // <== this to remove
           const categories = aux.categories.map((c) => c._id);
           const { status, data } = await getWods(categories);
-          if (status === 200) setWods(data);
+          if (status === 200) {
+            setWods(data);
+            let aux2: string[] = [];
+            aux?.categories.forEach((c) => {
+              c.teams.forEach((ct) => {
+                ct.users.forEach((ctu) => {
+                  aux2.push(ctu);
+                });
+              });
+            });
+            setAllUsers([...aux2]);
+          }
         })();
       } else setKg(undefined);
     } else if (events === undefined) {
@@ -72,13 +85,25 @@ const Results = () => {
           setCategory(thisEvent.categories[0]);
           setWods(data.wods);
           setEvent(thisEvent);
+          let aux2: string[] = [];
+          thisEvent.categories.forEach((c:any) => {
+            c.teams.forEach((ct:any) => {
+              ct.users.forEach((ctu:any) => {
+                aux2.push(ctu);
+              });
+            });
+          });
+          setAllUsers([...aux2]);
         } else setKg(undefined);
       })();
     }
   }, [events]);
 
   const click = () => {
-    console.log(wods);
+    // console.log(wods);
+    console.log(event);
+    console.log(user);
+    console.log(allUsers.includes(user?._id??""));
     // toggleWodsM()
   };
 
@@ -140,7 +165,7 @@ const Results = () => {
     wods,
     setWods,
     wodInfo,
-    setWodInfo
+    setWodInfo,
   };
 
   return (
@@ -188,7 +213,7 @@ const Results = () => {
           <ResultAside />
           {/* {admin ? ( */}
           {admin ||
-          event.register_time.until < moment().format("YYYY-MM-DD") ? (
+          event.register_time.until < moment().format("YYYY-MM-DD") || allUsers.includes(user?._id??"") ? (
             <ResultInfo />
           ) : (
             <CategForm {...{ category, event, setCategory }} />

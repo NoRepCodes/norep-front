@@ -133,7 +133,8 @@ const EditResultsModal = ({ close }: { close: () => void }) => {
                 : convSeconds(res?.tiebrake ?? 0),
             time:
               copyWod?.wod_type === "FORTIME" ||
-              copyWod?.wod_type === "CIRCUITO"
+              copyWod?.wod_type === "CIRCUITO" || 
+              copyWod?.wod_type === "NADO" 
                 ? convSeconds(res?.time ?? 0)
                 : copyWod?.time_cap,
           };
@@ -148,7 +149,8 @@ const EditResultsModal = ({ close }: { close: () => void }) => {
             tiebrake: copyWod?.wod_type === "RM" ? "0" : "00:00:00",
             time:
               copyWod?.wod_type === "FORTIME" ||
-              copyWod?.wod_type === "CIRCUITO"
+              copyWod?.wod_type === "CIRCUITO" ||
+              copyWod?.wod_type === "NADO" 
                 ? "00:00:00"
                 : convSeconds(copyWod?.time_cap ?? 0),
           };
@@ -287,7 +289,7 @@ const RU_Input = ({
           value={result.amount}
         />
         {(result._wod_type === "FORTIME" ||
-          result._wod_type === "CIRCUITO") && (
+          result._wod_type === "CIRCUITO" || result._wod_type === "NADO") && (
           <InputTime
             index={index}
             update={hTime}
@@ -330,21 +332,26 @@ type SelectWodT = {
   chooseWod: (_id: string) => void;
 };
 const SelectWod = ({ wods, chooseWod }: SelectWodT) => {
+  const { category } = useContext(ResultContext);
   return (
     <div className="select_wod">
       <h6>Selecciona un WOD</h6>
       <div className="wod_list">
-        {wods?.map((w, i) => (
-          <div
-            className="select_wod_item"
-            key={i}
-            onClick={() => {
-              chooseWod(w._id);
-            }}
-          >
-            <h6>{w.name}</h6>
-          </div>
-        ))}
+        {wods?.map((w, i) => {
+          if (w.category_id === category?._id) {
+            return (
+              <div
+                className="select_wod_item"
+                key={i}
+                onClick={() => {
+                  chooseWod(w._id);
+                }}
+              >
+                <h6>{w.name}</h6>
+              </div>
+            );
+          }
+        })}
       </div>
     </div>
   );

@@ -67,6 +67,12 @@ const applyPoints = (tr: ResultType, index: number, wod: WodType, category: Cate
       }
     }
 
+    if(wod.wod_type === 'NADO') {
+      if(tr.amount === wod.amount_cap){
+         tr._amount_type = 'CAP+'
+      }
+    }
+
 
     // if the team_result is the first one, put him 100% and points
     if (index === 0) {

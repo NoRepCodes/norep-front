@@ -1,4 +1,4 @@
-import { TeamType } from "../types/event.t"
+import { TeamType, Wod_T, WodAmount_T } from "../types/event.t"
 import { catchError, url } from "./url"
 import axios from 'axios'
 
@@ -28,8 +28,8 @@ type updateWodsDataT = {
         name: string,
         time_cap?: number,
         amount_cap?: number,
-        amount_type: "Lbs" | "Puntos" | "Reps",
-        wod_type: "AMRAP" | 'FORTIME' | "RM" | "CIRCUITO",
+        amount_type: WodAmount_T,
+        wod_type: Wod_T,
         category_id: string
         // index: number,
     }[],
