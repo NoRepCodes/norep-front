@@ -311,6 +311,15 @@ export const InputsWOD = ({
     handleAmountType(wod.amount_type, index);
   };
 
+  // useEffect(() => {
+  //   if(wod.wod_type === 'NADO'){
+  //     console.log('tes?');
+  //     console.log(wod);
+  //     handleAmountType(wod.wod_type,index)
+  //   }
+  // }, [wod])
+  
+
   // const hTime = (e) => {};
 
   return (
@@ -336,7 +345,7 @@ export const InputsWOD = ({
           index={index}
           value={wod.time_cap ?? ""}
         />
-        {wod.wod_type === "FORTIME" && (
+        {(wod.wod_type === "FORTIME" || wod.wod_type === "NADO" ) && (
           <InputArray
             label={`${wod.amount_type.toUpperCase()} LIMITE`}
             update={handleReps}
@@ -345,7 +354,8 @@ export const InputsWOD = ({
             onlyNum
           />
         )}
-        {(wod.wod_type === "FORTIME" || wod.wod_type === "RM") && (
+        {/* {(wod.wod_type === "FORTIME" || wod.wod_type === "RM") && ( */}
+        {wod.wod_type === "RM" && (
           <button style={{ width: "auto" }}>
             <h5 className="wat_btn" onClick={haType}>
               {wod.amount_type.toUpperCase()}

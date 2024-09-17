@@ -13,6 +13,7 @@ import {
 } from "./ModalTools";
 import { Context } from "../Context";
 import { ResultContext } from "../results/ResultContx";
+import { Wod_T, WodAmount_T } from "../../types/event.t";
 
 const blankwod: InputWodT = {
   amount_cap: "0",
@@ -27,7 +28,8 @@ const rType = (wt: string) => {
   if (wt === "AMRAP") return "FORTIME";
   else if (wt === "FORTIME") return "RM";
   else if (wt === "RM") return "CIRCUITO";
-  else if (wt === "CIRCUITO") return "AMRAP";
+  else if (wt === "CIRCUITO") return "NADO";
+  else if (wt === "NADO") return "AMRAP";
 };
 
 const transformTimecap = (wds: any) =>
@@ -120,13 +122,19 @@ const EditWodsModal = ({ close }: { close: () => void }) => {
     });
     setNewWods(aux);
   };
-  const handleType = async (value: any, index: number) => {
+  const handleType = async (wt_val: string, index: number) => {
     let aux: any = newWods.map((w, i) => {
       if (i === index) {
-        let at = rType(value) === "RM" ? "Lbs" : "Reps";
+        let wt = rType(wt_val)
+        let at:WodAmount_T= "Reps"
+        if(wt === 'NADO') at = 'Mts'
+        else if (wt === 'RM') at = 'Lbs'
+        else if (wt === 'CIRCUITO') at ='Puntos'
+        // let at = rType(value) === "RM" ? "Lbs" : "Reps";
+        
         return {
           ...blankwod,
-          wod_type: rType(value),
+          wod_type: wt,
           name: w.name,
           amount_type: at,
           category_id: category?._id,
@@ -138,6 +146,9 @@ const EditWodsModal = ({ close }: { close: () => void }) => {
   };
   const handleAmountType = (value: any, index: number) => {
     let aux = [...newWods];
+    // if(aux[index].wod_type === 'NADO') aux[index].amount_type = "Mts" 
+    // else if(aux[index].wod_type === 'RM') aux[index].amount_type = "Lbs"
+    // else aux[index].amount_type = "Reps"
     aux[index].amount_type = value === "Reps" ? "Lbs" : "Reps";
     setNewWods(aux);
   };
@@ -197,8 +208,8 @@ type ValidateWodT = {
   amount_cap: number | undefined;
   time_cap: number;
   name: string;
-  amount_type: "Lbs" | "Puntos" | "Reps";
-  wod_type: "AMRAP" | "FORTIME" | "RM" | "CIRCUITO";
+  amount_type: WodAmount_T;
+  wod_type: Wod_T;
   category_id: string;
   _id?: string;
   time?: string;

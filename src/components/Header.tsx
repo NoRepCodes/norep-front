@@ -32,6 +32,7 @@ export const Header = ({ children }: PropsWithChildren) => {
 
   const closeSession = () => {
     localStorage.removeItem("adm");
+    localStorage.removeItem("@user");
     setUser(undefined);
     setAdmin(false);
   };

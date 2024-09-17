@@ -1,4 +1,7 @@
 
+export type WodAmount_T = "Lbs" | "Puntos" | "Reps" | "CAP+"|"Mts"
+export type Wod_T = "AMRAP" | 'FORTIME' | "RM" | "CIRCUITO"|"NADO"
+
 export type ResultType = {
     _id: string,
     team_id: string,
@@ -11,8 +14,8 @@ export type ResultType = {
     _points?: number,
     _percent?: number,
     _pos?: number,
-    _wod_type?: "AMRAP" | 'FORTIME' | "RM" | "CIRCUITO",
-    _amount_type?: "Lbs" | "Puntos" | "Reps" | "CAP+",
+    _wod_type?: Wod_T,
+    _amount_type?: WodAmount_T,
     _amount_left?: number,
     _wod_name?: string,
 }
@@ -22,8 +25,8 @@ export type WodType = {
     name: string,
     time_cap?: number,
     amount_cap?: number,
-    amount_type: "Lbs" | "Puntos" | "Reps",
-    wod_type: "AMRAP" | 'FORTIME' | "RM" | "CIRCUITO",
+    amount_type: WodAmount_T,
+    wod_type: Wod_T,
     results: ResultType[],
     category_id: string
 }

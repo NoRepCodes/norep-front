@@ -90,10 +90,16 @@ const App = () => {
   //     setFirst(true);
   //   })();
   let ifAdm = localStorage.getItem("adm")
+  let ifUsr = localStorage.getItem("@user")
   if(ifAdm){
     const adm = JSON.parse(ifAdm);
     if (adm) {
       setAdmin(adm);
+    }
+  }else if(ifUsr){
+    const usr = JSON.parse(ifUsr);
+    if (usr) {
+      setUser(usr);
     }
   }
   }, []);
