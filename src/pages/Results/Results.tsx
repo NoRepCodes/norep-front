@@ -101,9 +101,9 @@ const Results = () => {
 
   const click = () => {
     // console.log(wods);
-    console.log(event);
-    console.log(user);
-    console.log(allUsers.includes(user?._id??""));
+    // console.log(event);
+    // console.log(user);
+    // console.log(allUsers.includes(user?._id??""));
     // toggleWodsM()
   };
 

@@ -478,6 +478,19 @@ const CameraIcon = () => {
     </svg>
   );
 };
+
+/**
+- Zelle:  zunfestcab@gmail.com Alejandro Narvaez. 
+
+- Binance: giuliano2411@gmail.com
+
+- Pago Móvil:
+0412-666-9968
+Banco de Venezuela
+C.I V-26.023.940
+Tasa consultable
+ * @returns 
+ */
 // const InfoIcon = () => {
 //   return (
 //     <svg
@@ -556,6 +569,14 @@ const CategInfo = ({
       {age_max ? (
         <LabelInfo label="EDAD MÁXIMA" info={age_max.toString() + " AÑOS"} />
       ) : null}
+      <LabelInfo label="MÉTODOS DE PAGO" info={``} />
+      <p className="p_info" style={{fontSize:14,marginTop:-12}} >Zelle: zunfestcab@gmail.com Alejandro Narvaez.</p>
+      <p className="p_info" style={{fontSize:14,marginTop:-6}} >Binance: giuliano2411@gmail.com</p>
+      <p className="p_info" style={{fontSize:14,marginTop:-6}} >Pago Móvil:</p>
+      <p className="p_info" style={{fontSize:14,marginTop:-6}} >0412-666-9968</p>
+      <p className="p_info" style={{fontSize:14,marginTop:-6}} >Banco de Venezuela</p>
+      <p className="p_info" style={{fontSize:14,marginTop:-6}} >C.I V-26.023.940</p>
+      <p className="p_info" style={{fontSize:14,marginTop:-6}} >Tasa a Consultar</p>
     </div>
   );
 };
