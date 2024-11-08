@@ -205,5 +205,11 @@ createRoot(document.getElementById("root")!).render(<App />);
  * norep.code@yahoo.com
  * Crossfit2024
  *
+ * 
+ * FIX ZUNFEST TIME TO REGISTER ✅
+ * FIX PUSH TICKET ERROR ❓
+ * FIX NO DOUBT TEAM TICKET 
  *
+ * 
+ * 
  * */
