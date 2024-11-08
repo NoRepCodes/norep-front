@@ -81,7 +81,7 @@ const Table = () => {
 type TableHeaderT = { wods: WodType[] | undefined; category: CategoryType };
 
 const TableHeader = ({ wods, category }: TableHeaderT) => {
-  const { setWodInfo } = useContext(ResultContext);
+  // const { setWodInfo } = useContext(ResultContext);
   // const wodInfo = (w: WodType) => {
   //   // let aux = `
   //   // \n ${w.name}
