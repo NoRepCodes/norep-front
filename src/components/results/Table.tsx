@@ -106,7 +106,7 @@ const TableHeader = ({ wods, category }: TableHeaderT) => {
                 className="th_cell wod_info_cell"
                 key={w._id}
                 onClick={() => {
-                  setWodInfo(w);
+                 // setWodInfo(w);
                 }}
                 // onClick={() => {
                 //   wodInfo(w);
