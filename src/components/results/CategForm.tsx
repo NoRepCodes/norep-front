@@ -572,6 +572,7 @@ const CategInfo = ({
       <LabelInfo label="MÉTODOS DE PAGO" info={``} />
       <p className="p_info" style={{fontSize:14,marginTop:-12}} >Zelle: Santacruzboxca@gmail.com Anibal landaeta</p>
       <p className="p_info" style={{fontSize:14,marginTop:-6}} >Binance: bonsam@gmail.com</p>
+      <p className="p_info" style={{fontSize:14,marginTop:-6}} ></p>
       <p className="p_info" style={{fontSize:14,marginTop:-6}} >Pago Móvil - Mercantil</p>
       <p className="p_info" style={{fontSize:14,marginTop:-6}} >0414-6750724</p>
       <p className="p_info" style={{fontSize:14,marginTop:-6}} >C.I: 13.025.527</p>
