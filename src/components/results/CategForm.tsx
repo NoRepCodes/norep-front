@@ -569,9 +569,9 @@ const CategInfo = ({
       {age_max ? (
         <LabelInfo label="EDAD MÁXIMA" info={age_max.toString() + " AÑOS"} />
       ) : null}
-{/*       <LabelInfo label="MÉTODOS DE PAGO" info={``} />
-      <p className="p_info" style={{fontSize:14,marginTop:-12}} >Zelle: zunfestcab@gmail.com Alejandro Narvaez.</p>
-      <p className="p_info" style={{fontSize:14,marginTop:-6}} >Binance: giuliano2411@gmail.com</p>
+      <LabelInfo label="MÉTODOS DE PAGO" info={``} />
+      <p className="p_info" style={{fontSize:14,marginTop:-12}} >Zelle: Santacruzboxca@gmail.com Anibal landaeta</p>
+{/*       <p className="p_info" style={{fontSize:14,marginTop:-6}} >Binance: giuliano2411@gmail.com</p>
       <p className="p_info" style={{fontSize:14,marginTop:-6}} >Para pagos en bolívares, comunicarse al siguiente número:</p>
       <p className="p_info" style={{fontSize:14,marginTop:-6}} >+1(324)385-8077 </p> */}
 {/*       <p className="p_info" style={{fontSize:14,marginTop:-6}} >Banco de Venezuela</p> */}
