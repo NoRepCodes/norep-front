@@ -570,6 +570,7 @@ const CategInfo = ({
         <LabelInfo label="EDAD MÁXIMA" info={age_max.toString() + " AÑOS"} />
       ) : null}
       <LabelInfo label="MÉTODOS DE PAGO" info={``} />
+      <p className="p_info" style={{fontSize:14,marginTop:-12}} >Consultar tasa del día al +58 412-7906632</p>
       <p className="p_info" style={{fontSize:14,marginTop:-12}} >Zelle: Santacruzboxca@gmail.com Anibal landaeta</p>
       <p className="p_info" style={{fontSize:14,marginTop:-6}} >Binance: bonsam@gmail.com</p>
       <p className="p_info" style={{fontSize:14,marginTop:-6}} ></p>
