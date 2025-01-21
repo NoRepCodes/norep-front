@@ -571,12 +571,15 @@ const CategInfo = ({
       ) : null}
       <LabelInfo label="MÉTODOS DE PAGO" info={``} />
       <p className="p_info" style={{fontSize:14,marginTop:-12}} >Zelle: Santacruzboxca@gmail.com Anibal landaeta</p>
-{/*       <p className="p_info" style={{fontSize:14,marginTop:-6}} >Binance: giuliano2411@gmail.com</p>
-      <p className="p_info" style={{fontSize:14,marginTop:-6}} >Para pagos en bolívares, comunicarse al siguiente número:</p>
-      <p className="p_info" style={{fontSize:14,marginTop:-6}} >+1(324)385-8077 </p> */}
-{/*       <p className="p_info" style={{fontSize:14,marginTop:-6}} >Banco de Venezuela</p> */}
-{/*       <p className="p_info" style={{fontSize:14,marginTop:-6}} >C.I V-26.023.940</p> */}
-{/*       <p className="p_info" style={{fontSize:14,marginTop:-6}} >Tasa a Consultar</p> */}
+      <p className="p_info" style={{fontSize:14,marginTop:-6}} >Binance: bonsam@gmail.com</p>
+      <p className="p_info" style={{fontSize:14,marginTop:-6}} >Pago Móvil - Mercantil</p>
+      <p className="p_info" style={{fontSize:14,marginTop:-6}} >0414-6750724</p>
+      <p className="p_info" style={{fontSize:14,marginTop:-6}} >C.I: 13.025.527</p>
+      <p className="p_info" style={{fontSize:14,marginTop:-6}} ></p>
+      <p className="p_info" style={{fontSize:14,marginTop:-6}} >Cuenta Banco Mercantil</p>
+      <p className="p_info" style={{fontSize:14,marginTop:-6}} >01050071111071448331</p>
+      <p className="p_info" style={{fontSize:14,marginTop:-6}} >Marisol Bon Sam</p>
+      <p className="p_info" style={{fontSize:14,marginTop:-6}} >C.I: 13.025.527</p>
     </div>
   );
 };
