@@ -570,7 +570,6 @@ const CategInfo = ({
         <LabelInfo label="EDAD MÁXIMA" info={age_max.toString() + " AÑOS"} />
       ) : null}
       <LabelInfo label="MÉTODOS DE PAGO" info={``} />
-      <p className="p_info" style={{fontSize:14,marginTop:-12}} >Consultar tasa del día al +58 412-7906632</p>
       <p className="p_info" style={{fontSize:14,marginTop:-12}} >Zelle: Santacruzboxca@gmail.com Anibal landaeta</p>
       <p className="p_info" style={{fontSize:14,marginTop:-6}} >Binance: bonsam@gmail.com</p>
       <p className="p_info" style={{fontSize:14,marginTop:-6}} ></p>
@@ -582,6 +581,7 @@ const CategInfo = ({
       <p className="p_info" style={{fontSize:14,marginTop:-6}} >01050071111071448331</p>
       <p className="p_info" style={{fontSize:14,marginTop:-6}} >Marisol Bon Sam</p>
       <p className="p_info" style={{fontSize:14,marginTop:-6}} >C.I: 13.025.527</p>
+      <p className="p_info" style={{fontSize:14,marginTop:-12}} >Consultar tasa del día al +58 412-7906632</p>
     </div>
   );
 };
