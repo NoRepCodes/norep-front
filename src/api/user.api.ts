@@ -46,9 +46,11 @@ export const registerTicket = async (
   image: string,
   phone: string
 ) => {
+  const i = {...inputs}
+  if(users.length < 2) i.name = '@individual'
   console.log(phone);
   return await axios
-    .post(`${url}registerTicket`, { users, category_id, inputs, image, phone })
+    .post(`${url}registerTicket`, { users, category_id, inputs:i, image, phone })
     .then((res) => {
       return res;
     })
