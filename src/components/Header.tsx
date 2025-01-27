@@ -163,6 +163,14 @@ export const Header = ({ children }: PropsWithChildren) => {
               {href === "/" && <div className="link_active" />}
             </div>
           </Link>
+          {admin ? (
+          <Link to="/dashboard">
+            <div className="link">
+              <h6>SOLICITUDES</h6>
+              {href === "/dashboard" && <div className="link_active" />}
+            </div>
+          </Link>
+        ) : null}
           {(admin || user) && (
             <div className="link" onClick={closeSessionMobile}>
               <h6>CERRAR SESION</h6>
