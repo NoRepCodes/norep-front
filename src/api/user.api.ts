@@ -44,10 +44,11 @@ export const registerTicket = async (
   category_id: string,
   inputs: any,
   image: string,
-  phone: string
+  phone: string,
+  username?:string,
 ) => {
   const i = {...inputs}
-  if(users.length < 2) i.name = '@individual'
+  if(users.length < 2) i.name = username
   console.log(phone);
   return await axios
     .post(`${url}registerTicket`, { users, category_id, inputs:i, image, phone })
