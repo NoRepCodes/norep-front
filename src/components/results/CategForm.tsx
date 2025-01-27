@@ -146,7 +146,8 @@ const CategForm = ({
           category._id,
           inputs,
           image,
-          user.phone
+          user.phone,
+          user.name,
         );
         setLoad(false);
         if (status === 200) {
