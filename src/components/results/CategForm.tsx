@@ -536,6 +536,9 @@ const CategInfo = ({
           <p>Todos los usuarios deberán estar registrados antes de crear el equipo.</p>
         </div>
         <div className="cf_warning_bottom">
+          <p> </p>
+        </div>
+        <div className="cf_warning_bottom">
           <p>Si haz estado en el podio en una edición pasada, es obligatorio registrarse en una categoría superior.</p>
         </div>
       </div>
