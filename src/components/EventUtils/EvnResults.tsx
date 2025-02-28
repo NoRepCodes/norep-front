@@ -146,7 +146,6 @@ const WodResults = ({
     handleSubmit,
     reset,
     getValues,
-    setValue,
     formState: { errors },
   } = useForm<rFields>({
     resolver: zodResolver(rSchema),
@@ -174,12 +173,12 @@ const WodResults = ({
         });
         r.users = copyUsers
       });
-      setValue('results',aux)
+      return aux
     }
   };
   const confirm = async () => {
     const results = filterUsers()
-    // console.log(wodSelect._id);
+    console.log(wodSelect._id);
     if (wodSelect._id === undefined)
       return setMsg({ type: "error", text: "El wod...no existe? Error: 404" });
     setLoading(true);
