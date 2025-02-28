@@ -9,10 +9,7 @@ import { useRef, useState } from "react";
 import { ViewFadeStatic } from "./AnimatedLayouts";
 import { AnimatePresence } from "framer-motion";
 import useScreen from "../hooks/useSize";
-import TimePicker from "react-time-picker";
-import "react-time-picker/dist/TimePicker.css";
 import { convSeconds } from "../helpers/date";
-// import 'react-clock/dist/Clock.css';
 
 type KeyS = { [key: string]: any };
 
@@ -60,8 +57,8 @@ const Input = <K extends KeyS>({
             return <InputSelect {...{ ...props, onChange, value, options }} />;
           if (mode === "time")
             return <InputTime {...{ ...props, onChange, value }} />;
-          //   if (mode === "image")
-          //     return <InputImage2 {...{ ...props, onChange, value, options }} />;
+          if (mode === "image")
+            return <InputImage {...{ ...props, onChange, value, options }} />;
           else return <div />;
         }}
       />
@@ -100,6 +97,58 @@ export const InputBase = ({
         {...{ value, onChange }}
         disabled={isDisabled}
         type={hidePass ? "password" : "text"}
+      />
+    </div>
+  );
+};
+
+type ConvertBase64T = (file: Blob) => Promise<string | ArrayBuffer | null>;
+const convertBase64: ConvertBase64T = (file) => {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+    fileReader.onload = () => {
+      resolve(fileReader.result);
+    };
+    fileReader.onerror = (error) => {
+      reject(error);
+    };
+  });
+};
+export const InputImage = ({ label, value, onChange }: InputT) => {
+  const ref = useRef<HTMLInputElement | null>(null);
+  const clickInputImg = () => ref?.current?.click();
+
+  const handleFile = async (e: any) => {
+    if (e.target.files) {
+      const base64 = await convertBase64(e.target.files[0]);
+      if (typeof base64 === "string") {
+        onChange(base64);
+      }
+    }
+  };
+
+  return (
+    <div className="input_item">
+      {label ? <label style={{ width: "100%" }}>{label}</label> : null}
+      <div
+        style={{
+          width: 200,
+          height: 200,
+          cursor: "pointer",
+          border: "1px solid #181818",
+        }}
+        onClick={clickInputImg}
+      >
+        {value ? <img src={value} style={{ width: 200, height: 200 }} /> : null}
+      </div>
+      <input
+        style={{ display: "none" }}
+        ref={ref}
+        type="file"
+        name="img"
+        accept="image/*"
+        onChange={handleFile}
       />
     </div>
   );

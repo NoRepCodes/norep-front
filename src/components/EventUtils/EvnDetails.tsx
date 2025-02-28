@@ -191,14 +191,16 @@ const EvnDetails = ({
           onPress={plusCategory}
         />
       </div>
-      {/* <Line />
+      <Line />
       <Subtitle text="Extras" fs={20} />
-      <Input
-        mode="image"
-        {...{ control, errors }}
-        name="secure_url"
-        label="Imagen del Evento"
-      /> */}
+      <div style={{width:200}} >
+        <Input
+          mode="image"
+          {...{ control, errors }}
+          name="secure_url"
+          label="Imagen del Evento"
+        />
+      </div>
       <Line />
       <p style={{ color: "red" }}>{errors.root?.message}</p>
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 12 }}>
