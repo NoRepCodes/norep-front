@@ -185,7 +185,6 @@ createRoot(document.getElementById("root")!).render(<App />);
  * - - EDIT TEAMS 
  * - - SEE USERS
  * - -
- * - -
  * - PROFILE PAGE 
  * - CATEGORY INFO PAGE 
  * - CATEGORY REGISTER PAGE 
