@@ -74,6 +74,13 @@ const Results = () => {
     })();
   }, []);
 
+  useEffect(() => {
+    
+  // console.log(wodInfo);
+  // console.log(wods);
+  }, [wodInfo])
+  
+
   if (loading)
     return (
       <ViewFadeStatic style={{ paddingTop: 42 }}>
@@ -147,6 +154,7 @@ const WodModal = ({
   wodInfo?: WodFields;
   setWodInfo: React.Dispatch<React.SetStateAction<WodFields | undefined>>;
 }) => {
+  if(wodInfo)
   return (
     <AnimatePresence>
       {!wodInfo ? null : (

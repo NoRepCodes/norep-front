@@ -32,6 +32,7 @@ const AdminEvent = () => {
     if (status === 200) {
       setEvent(data.event);
       setWods(data.wods ?? []);
+      // console.log(data.wods);
     } else {
       setMsg({ type: "error", text: data.msg });
     }
