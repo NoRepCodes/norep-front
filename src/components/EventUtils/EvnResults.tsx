@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { MsgT } from "../../helpers/UserContext";
-import { CategFields, WodFields } from "../../types/event";
+import { CategFields, ResultFields, WodFields } from "../../types/event";
 import Dropdown from "../Dropdown";
 import Input, {
   BtnPrimary,
@@ -145,6 +145,8 @@ const WodResults = ({
     control,
     handleSubmit,
     reset,
+    getValues,
+    setValue,
     formState: { errors },
   } = useForm<rFields>({
     resolver: zodResolver(rSchema),
@@ -159,12 +161,31 @@ const WodResults = ({
     replace(getDefaultResults(wodSelect, categ));
   }, [wodSelect, categ]);
 
-  const confirm = async ({ results }: rFields) => {
+  const filterUsers = () => {
+    const aux: ResultFields[] = JSON.parse(
+      JSON.stringify(getValues("results"))
+    );
+    if (aux) {
+      aux.forEach((r) => {
+        let copyUsers:any = []
+        r.users.forEach((u) => {
+          //@ts-ignore
+          if (typeof u === "object") copyUsers.push(u._id);
+        });
+        r.users = copyUsers
+      });
+      setValue('results',aux)
+    }
+  };
+  const confirm = async () => {
+    const results = filterUsers()
+    // console.log(wodSelect._id);
     if (wodSelect._id === undefined)
       return setMsg({ type: "error", text: "El wod...no existe? Error: 404" });
     setLoading(true);
     const { status, data } = await updateResults(
       wodSelect._id,
+      //@ts-ignore
       results,
       categories
     );
@@ -280,7 +301,7 @@ const WodResults = ({
         <ViewFadeStatic style={{ width: 180 }}>
           <BtnPrimary
             loading={loading}
-            onPress={handleSubmit(confirm)}
+            onPress={confirm}
             text="Confirmar"
           />
         </ViewFadeStatic>
@@ -376,7 +397,13 @@ const CIRCUIT_Fields = ({
 }) => {
   const { ww } = useScreen();
   return (
-    <div style={{ gap: 12, display: "flex",flexDirection:ww<800?"column":'row' }} >
+    <div
+      style={{
+        gap: 12,
+        display: "flex",
+        flexDirection: ww < 800 ? "column" : "row",
+      }}
+    >
       <div
         style={{
           flexDirection: "row",
