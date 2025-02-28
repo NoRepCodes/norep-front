@@ -46,10 +46,6 @@ const router = createBrowserRouter([
         path: "resultados/:_id",
         element: <Results />,
       },
-      // {
-      //   path: "admin",
-      //   element: <AdminLogin />,
-      // },
       {
         path: "login",
         element: <Login />,
