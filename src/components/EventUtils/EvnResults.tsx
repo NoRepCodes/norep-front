@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { MsgT } from "../../helpers/UserContext";
-import { CategFields, WodFields } from "../../types/event";
+import { CategFields,  WodFields } from "../../types/event";
 import Dropdown from "../Dropdown";
 import Input, {
   BtnPrimary,
@@ -157,8 +157,11 @@ const WodResults = ({
     name: "results",
   });
   useEffect(() => {
+    console.log(getDefaultResults(wodSelect, categ));
     replace(getDefaultResults(wodSelect, categ));
   }, [wodSelect, categ]);
+  
+  // console.log(errors);
 
   // const filterUsers = () => {
   //   const aux: ResultFields[] = JSON.parse(
