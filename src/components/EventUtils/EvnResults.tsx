@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { MsgT } from "../../helpers/UserContext";
-import { CategFields, ResultFields, WodFields } from "../../types/event";
+import { CategFields, WodFields } from "../../types/event";
 import Dropdown from "../Dropdown";
 import Input, {
   BtnPrimary,
@@ -143,9 +143,9 @@ const WodResults = ({
 
   const {
     control,
-    // handleSubmit,
+    handleSubmit,
     reset,
-    getValues,
+    // getValues,
     formState: { errors },
   } = useForm<rFields>({
     resolver: zodResolver(rSchema),
@@ -160,25 +160,24 @@ const WodResults = ({
     replace(getDefaultResults(wodSelect, categ));
   }, [wodSelect, categ]);
 
-  const filterUsers = () => {
-    const aux: ResultFields[] = JSON.parse(
-      JSON.stringify(getValues("results"))
-    );
-    if (aux) {
-      aux.forEach((r) => {
-        let copyUsers:any = []
-        r.users.forEach((u) => {
-          //@ts-ignore
-          if (typeof u === "object") copyUsers.push(u._id);
-        });
-        r.users = copyUsers
-      });
-      return aux
-    }
-  };
-  const confirm = async () => {
-    const results = filterUsers()
-    console.log(wodSelect._id);
+  // const filterUsers = () => {
+  //   const aux: ResultFields[] = JSON.parse(
+  //     JSON.stringify(getValues("results"))
+  //   );
+  //   if (aux) {
+  //     aux.forEach((r) => {
+  //       let copyUsers:any = []
+  //       r.users.forEach((u) => {
+  //         //@ts-ignore
+  //         if (typeof u === "object") copyUsers.push(u._id);
+  //       });
+  //       r.users = copyUsers
+  //     });
+  //     return aux
+  //   }
+  // };
+  const confirm = async ({results}:rFields) => {
+    // const results = filterUsers()
     if (wodSelect._id === undefined)
       return setMsg({ type: "error", text: "El wod...no existe? Error: 404" });
     setLoading(true);
@@ -300,7 +299,7 @@ const WodResults = ({
         <ViewFadeStatic style={{ width: 180 }}>
           <BtnPrimary
             loading={loading}
-            onPress={confirm}
+            onPress={handleSubmit(confirm)}
             text="Confirmar"
           />
         </ViewFadeStatic>

@@ -11,7 +11,15 @@ export const getDefaultResults = (wods:WodFields,category:CategFields) =>{
   let aux:ResultFields[] = []
   category.teams.forEach((t)=>{
     let resultExist = wods.results.find((r)=> r.team_id === t._id)
-    if(resultExist) aux.push(resultExist)
+    if(resultExist) {
+      const users:string[] = []
+      resultExist.users.forEach(u => {
+        //@ts-ignore
+        if(typeof u === 'object') users.push(u._id)
+        else users.push(u)
+      });
+      aux.push({...resultExist,users})
+    }
     else aux.push(returnDefaulResult(t))
   })
   return aux
