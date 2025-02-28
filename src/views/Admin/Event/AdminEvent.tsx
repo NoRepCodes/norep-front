@@ -5,7 +5,6 @@ import { TeamType } from "../../../types/table.t";
 import { useParams } from "react-router-dom";
 import { getEventTable } from "../../../api/api_guest";
 import "./adminEvent.sass";
-import Dropdown from "../../../components/Dropdown";
 import EvnDetails from "../../../components/EventUtils/EvnDetails";
 import EvnWods from "../../../components/EventUtils/EvnWods";
 import EvnResults from "../../../components/EventUtils/EvnResults";
@@ -21,6 +20,8 @@ const AdminEvent = () => {
   // MODALS
   const [wodInfo, setWodInfo] = useState<WodFields | undefined>(undefined);
   const [teamInfo, setTeamInfo] = useState<TeamType | undefined>(undefined);
+  if(false) console.log(wodInfo);
+  if(false) console.log(teamInfo);
 
   const { _id } = useParams();
 
