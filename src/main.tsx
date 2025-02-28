@@ -182,11 +182,11 @@ createRoot(document.getElementById("root")!).render(<App />);
  * - LOGIN PAGE ✅
  * - REGISTER PAGE ✅
  * - TABLE PAGE ✅
- * - ADMIN PAGE !!!!
- * - - EDIT EVENT
- * - - EDIT WODS
- * - - EDIT RESULTS
- * - - EDIT TEAMS
+ * - ADMIN PAGE !!!! ✅
+ * - - EDIT EVENT ✅
+ * - - EDIT WODS ✅
+ * - - EDIT RESULTS ✅
+ * - - EDIT TEAMS 
  * - - SEE USERS
  * - -
  * - -
