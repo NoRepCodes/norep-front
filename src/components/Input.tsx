@@ -155,10 +155,8 @@ export const InputImage = ({ label, value, onChange }: InputT) => {
 };
 export const InputTime = ({
   label,
-  ph,
   value,
   onChange,
-  isDisabled,
 }: InputT) => {
   const [open, setOpen] = useState(false);
   const onClick = () => {

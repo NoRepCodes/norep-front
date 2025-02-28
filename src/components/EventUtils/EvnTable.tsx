@@ -7,7 +7,7 @@ import { CheckBox, InputBase, InputSelect, Line } from "../Input";
 import Table from "../results/Table";
 
 const EvnTable = ({
-  defaultOpen,
+  // defaultOpen,
   event,
   wods,
   setWodInfo,

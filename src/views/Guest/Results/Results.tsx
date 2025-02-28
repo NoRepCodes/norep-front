@@ -11,7 +11,6 @@ import Context from "../../../helpers/UserContext";
 import { ViewFadeStatic } from "../../../components/AnimatedLayouts";
 import { getEventTable } from "../../../api/api_guest";
 import { CategFields, EvnFields, WodFields } from "../../../types/event";
-import { TeamType } from "../../../types/table.t";
 import { IconLoad } from "../../../components/Icons";
 import Table from "../../../components/results/Table";
 

@@ -1,6 +1,10 @@
 
-export const url = "http://192.168.1.109:4000/"
+// export const url = "http://192.168.1.109:4000/"
 // export const url = "https://testback.norep.com.ve/"
+
+// @ts-ignore
+export const url = import.meta.env.VITE_APP_API_URL;
+
 
 /// Funcion general para el catch error que se usa en TODAS las peticiones 
 export const catchError = async (err:any) => {

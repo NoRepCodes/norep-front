@@ -10,13 +10,17 @@ export const Footer = () => {
             <img src={logo} alt="logo" />
             <div className="footer_item">
                 <h6>NO REP</h6>
+                {/**@ts-ignore */}
                 <HashLink to="/#NOREP" ><p>Contacto</p></HashLink>
+                {/**@ts-ignore */}
                 <HashLink to="/#NOREP" ><p>Sobre nosotros</p></HashLink>
                 <a href="https://www.instagram.com/team.norep" target="blank" ><p>Instagram</p></a>
             </div>
             <div className="footer_item">
                 <h6>EVENTOS</h6>
+                {/**@ts-ignore */}
                 <HashLink to="/eventos/#eventos" ><p>Eventos recientes</p></HashLink>
+                {/**@ts-ignore */}
                 <HashLink to="/#Calendar" ><p>Calendario</p></HashLink>
             </div>
             {/* <div className="footer_item">

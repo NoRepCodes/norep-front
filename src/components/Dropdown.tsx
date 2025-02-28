@@ -13,7 +13,7 @@ type DropdownP = PropsWithChildren & {
 const Dropdown = ({
   children,
   title,
-  small = false,
+  // small = false,
   onPress,
   isOpen,
   isLoading,

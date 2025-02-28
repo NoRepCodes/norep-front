@@ -1,19 +1,6 @@
 import axios from "axios";
 import { catchError, url } from "./url";
-// import { CategoriesT, EvnInitialT } from "../contexts/EvnDetailsC";
-import {
-  CategFields,
-  EvnFields,
-  ImgT,
-  ResultFields,
-  TeamFields,
-  TicketT,
-  WodFields,
-} from "../types/event";
-import { rFields } from "../types/zod/registerResult.zod";
-import { ManualTeamFields } from "../types/zod/registerManualTeam.zod";
-
-
+import { TeamFields, TicketT } from "../types/event";
 
 export const getTeamInfo = async (_id: string) => {
   return await axios

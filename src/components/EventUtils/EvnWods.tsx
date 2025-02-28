@@ -26,7 +26,6 @@ import Input, {
 import { useState } from "react";
 import { ViewFadeStatic } from "../AnimatedLayouts";
 import { Ionicons } from "../Icons";
-import useScreen from "../../hooks/useSize";
 
 const EvnWods = ({
   wods,
@@ -93,7 +92,6 @@ const EvnWods = ({
       });
     }
   };
-  const { ww } = useScreen();
   return (
     <Dropdown title="WODS" {...{ onPress, isOpen }}>
       <div style={{ maxWidth: 320 }}>

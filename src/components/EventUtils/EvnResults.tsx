@@ -119,7 +119,7 @@ const WodResults = ({
   setWods,
   setMsg,
   categories,
-  closeWindow,
+  // closeWindow,
 }: {
   ogWod: () => WodFields;
   wods: WodFields[];
@@ -144,7 +144,6 @@ const WodResults = ({
     control,
     handleSubmit,
     reset,
-    setValue,
     formState: { errors },
   } = useForm<rFields>({
     resolver: zodResolver(rSchema),
@@ -367,7 +366,7 @@ const OTHER_Fields = ({
 const CIRCUIT_Fields = ({
   control,
   errors,
-  wodSelect,
+  // wodSelect,
   index,
 }: {
   wodSelect: WodFields;

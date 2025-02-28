@@ -28,6 +28,7 @@ export const Banner = () => {
   }
 
   return (
+    //@ts-ignore
     <HashLink className="slider_ctn" to={`/resultados/${latest?._id}#top`}  >
       <div className="slider" onClick={test} >
         {latest && (

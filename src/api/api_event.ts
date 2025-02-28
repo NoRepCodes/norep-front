@@ -70,7 +70,6 @@ export const toggleUpdating = async (category_id: string, state: boolean) => {
 export const updateTeams = async (
   { teams }: ManualTeamFields,
   category_id: string,
-  toDelete: string[]
 ) => {
   return await axios
     .post(`${url}updateTeams`, { teams, category_id })
