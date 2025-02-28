@@ -11,11 +11,13 @@ const Table = ({
   searchBar,
   kg,
   wods,
+  setWodInfo,
 }: {
   category: CategFields;
   searchBar: string;
   kg: boolean;
   wods: WodFields[];
+  setWodInfo: React.Dispatch<React.SetStateAction<WodFields | undefined>>;
 }) => {
   const { adminData } = useContext(Context);
 
@@ -42,7 +44,7 @@ const Table = ({
 
   return (
     <div className="table">
-      {category && <TableHeader {...{ wods, category }} />}
+      {category && <TableHeader {...{ wods, category, setWodInfo }} />}
       {category.updating && !adminData ? (
         <h1 className="updating_text">La tabla se está actualizando...</h1>
       ) : (
@@ -58,9 +60,13 @@ const Table = ({
     </div>
   );
 };
-type TableHeaderT = { wods: WodFields[] | undefined; category: CategFields };
+type TableHeaderT = {
+  wods: WodFields[] | undefined;
+  category: CategFields;
+  setWodInfo: React.Dispatch<React.SetStateAction<WodFields | undefined>>;
+};
 
-const TableHeader = ({ wods, category }: TableHeaderT) => {
+const TableHeader = ({ wods, category, setWodInfo }: TableHeaderT) => {
   // const { setWodInfo } = useContext(ResultContext);
   // const wodInfo = (w: WodType) => {
   //   // let aux = `
@@ -81,16 +87,12 @@ const TableHeader = ({ wods, category }: TableHeaderT) => {
         </div>
         {wods?.map((w) => {
           if (category._id === w.category_id) {
+            const show = w.results.length > 0;
             return (
               <div
-                className="th_cell wod_info_cell"
+                className={`th_cell wod_info_cell ${show?"wod_hover":''}`}
                 key={w._id}
-                onClick={() => {
-                  // setWodInfo(w);
-                }}
-                // onClick={() => {
-                //   wodInfo(w);
-                // }}
+                onClick={() => (show ? setWodInfo(w) : undefined)}
               >
                 <h1>{w.name}</h1>
               </div>
@@ -124,9 +126,9 @@ const TableUser = ({ user, last = false, index, kg, wl }: TableUserT) => {
     <div className="table_user_ctn">
       <motion.div
         className="table_user"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.7 }}
+        // initial={{ opacity: 0 }}
+        // animate={{ opacity: 1 }}
+        // transition={{ duration: 0.7 }}
         onClick={toggleOpen}
       >
         <div className={`tu_ctn ${last && "no_b"}`}>

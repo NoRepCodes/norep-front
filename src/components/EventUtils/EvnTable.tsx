@@ -5,6 +5,7 @@ import { TeamType } from "../../types/table.t";
 import { toggleUpdating } from "../../api/api_event";
 import { CheckBox, InputBase, InputSelect, Line } from "../Input";
 import Table from "../results/Table";
+import useScreen from "../../hooks/useSize";
 
 const EvnTable = ({
   // defaultOpen,
@@ -56,6 +57,7 @@ const EvnTable = ({
       });
     }
   };
+  const {ww} = useScreen()
   return (
     <Dropdown title="TABLA" {...{ onPress, isOpen }}>
       <div
@@ -67,7 +69,7 @@ const EvnTable = ({
           flexWrap: "wrap",
         }}
       >
-        <div style={{ width: "100%", maxWidth: 260 }}>
+        <div style={{ width: "100%", maxWidth: ww<=800?360:240 }}>
           <InputSelect
             value={category.name}
             onChange={ocCateg}
@@ -75,7 +77,7 @@ const EvnTable = ({
             label="Categoria"
           />
         </div>
-        <div style={{ width: "100%", maxWidth: 260 }}>
+        <div style={{ width: "100%", maxWidth: ww<=800?360:240 }}>
           <InputBase
             value={searchBar}
             onChange={oc}

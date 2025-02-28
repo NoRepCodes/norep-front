@@ -193,7 +193,7 @@ const EvnDetails = ({
       </div>
       <Line />
       <Subtitle text="Extras" fs={20} />
-      <div style={{width:200}} >
+      <div style={{ width: 200 }}>
         <Input
           mode="image"
           {...{ control, errors }}
@@ -353,58 +353,44 @@ const Category = ({
         />
       </div>
       <div className="inputs_ctn">
-        {categFields(index).map((itm, i) => (
-          <ViewFadeStatic key={i}>
-            <Input {...{ control, errors, isDisabled }} {...itm} />
-          </ViewFadeStatic>
+        {categFields(index).map((itm) => (
+          <Input {...{ control, errors, isDisabled, width: 320 }} {...itm} />
         ))}
         {checks.age && (
-          <ViewFadeStatic>
-            <Input
-              {...{ control, errors, isDisabled }}
-              {...categFields2(index)[0]}
-            />
-          </ViewFadeStatic>
+          <Input
+            {...{ control, errors, isDisabled, width: 320 }}
+            {...categFields2(index)[0]}
+          />
         )}
         {checks.age && (
-          <ViewFadeStatic>
-            <Input
-              {...{ control, errors, isDisabled }}
-              {...categFields2(index)[1]}
-            />
-          </ViewFadeStatic>
+          <Input
+            {...{ control, errors, isDisabled, width: 320 }}
+            {...categFields2(index)[1]}
+          />
         )}
         {checks.gender && (
-          <ViewFadeStatic>
-            <Input
-              {...{ control, errors, isDisabled }}
-              {...categFields2(index)[2]}
-            />
-          </ViewFadeStatic>
+          <Input
+            {...{ control, errors, isDisabled, width: 320 }}
+            {...categFields2(index)[2]}
+          />
         )}
         {checks.gender && (
-          <ViewFadeStatic>
-            <Input
-              {...{ control, errors, isDisabled }}
-              {...categFields2(index)[3]}
-            />
-          </ViewFadeStatic>
+          <Input
+            {...{ control, errors, isDisabled, width: 320 }}
+            {...categFields2(index)[3]}
+          />
         )}
         {checks.users && (
-          <ViewFadeStatic>
-            <Input
-              {...{ control, errors, isDisabled }}
-              {...categFields2(index)[4]}
-            />
-          </ViewFadeStatic>
+          <Input
+            {...{ control, errors, isDisabled, width: 320 }}
+            {...categFields2(index)[4]}
+          />
         )}
         {checks.teams && (
-          <ViewFadeStatic>
-            <Input
-              {...{ control, errors, isDisabled }}
-              {...categFields2(index)[5]}
-            />
-          </ViewFadeStatic>
+          <Input
+            {...{ control, errors, isDisabled, width: 320 }}
+            {...categFields2(index)[5]}
+          />
         )}
       </div>
     </ViewFadeStatic>

@@ -55,7 +55,7 @@
         border: 1px solid v.$fourth
         background-color: #fff
 // .wod_info_cell
-  cursor: pointer
+        cursor: pointer
   &:hover
     background-color: v.$fourth
     color: v.$primary
@@ -203,6 +203,13 @@
     position: absolute
     right: 6px
     bottom: 16px
+
+.wod_hover
+  cursor: pointer
+  transition-duration: .2s
+  &:hover
+    background-color: #181818
+    color: #fff
 
 @media screen and (width < 1000px)
   .empty_slot

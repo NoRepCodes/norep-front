@@ -20,6 +20,7 @@ import {
 import { updateResults } from "../../api/api_event";
 import { Control, FieldErrors, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import useScreen from "../../hooks/useSize";
 
 const EvnResults = ({
   wods,
@@ -51,10 +52,11 @@ const EvnResults = ({
     setWodSelect(ogWod());
   }, [wods, categ]);
 
+  const { ww } = useScreen();
 
   return (
     <Dropdown title="RESULTADOS" {...{ isOpen, onPress }}>
-      <div style={{ maxWidth: 320 }}>
+      <div style={{ width: "100%", maxWidth: ww < 800 ? 360 : 280 }}>
         <InputSelect
           value={categ.name}
           onChange={ocCateg}
@@ -119,8 +121,8 @@ const WodResults = ({
   setWods,
   setMsg,
   categories,
-  // closeWindow,
-}: {
+}: // closeWindow,
+{
   ogWod: () => WodFields;
   wods: WodFields[];
   wodSelect: WodFields;
@@ -135,7 +137,6 @@ const WodResults = ({
   const [searchBar, setSearchBar] = useState("");
   const oc = (e: any) => setSearchBar(e.target.value);
 
-  
   const getTeamName = (team_id: string) => {
     return categ.teams.find((ct) => ct._id === team_id)?.name ?? "Error";
   };
@@ -155,10 +156,8 @@ const WodResults = ({
     name: "results",
   });
   useEffect(() => {
-    replace(getDefaultResults(wodSelect, categ))
-  }, [wodSelect,categ])
-
-  
+    replace(getDefaultResults(wodSelect, categ));
+  }, [wodSelect, categ]);
 
   const confirm = async ({ results }: rFields) => {
     if (wodSelect._id === undefined)
@@ -195,6 +194,7 @@ const WodResults = ({
       return aux;
     });
   };
+  const { ww } = useScreen();
   return (
     <ViewFadeStatic
       style={{
@@ -204,7 +204,7 @@ const WodResults = ({
         gap: 24,
       }}
     >
-      <div style={{ maxWidth: "100%", minWidth: 240 }}>
+      <div style={{ width: "100%", maxWidth: ww < 800 ? 360 : 280 }}>
         <InputSelect
           value={wodSelect.name}
           onChange={ocWod}
@@ -212,7 +212,7 @@ const WodResults = ({
           label="Wod"
         />
       </div>
-      <div style={{ maxWidth: "100%", minWidth: 240 }}>
+      <div style={{ width: "100%", maxWidth: ww < 800 ? 360 : 280 }}>
         <InputBase
           onChange={oc}
           value={searchBar}
@@ -253,7 +253,8 @@ const WodResults = ({
                 {wodSelect.wod_type === "CIRCUITO" ? (
                   <CIRCUIT_Fields {...{ wodSelect, control, errors, index }} />
                 ) : (
-                  <OTHER_Fields {...{ wodSelect, control, errors, index }} />
+                  <CIRCUIT_Fields {...{ wodSelect, control, errors, index }} />
+                  // <OTHER_Fields {...{ wodSelect, control, errors, index }} />
                 )}
               </ViewFadeStatic>
             );
@@ -374,31 +375,30 @@ const CIRCUIT_Fields = ({
   errors: FieldErrors<rFields>;
   index: number;
 }) => {
+  const { ww } = useScreen();
   return (
-    <>
+    <div style={{ gap: 12, display: "flex",flexDirection:ww<800?"column":'row' }} >
       <div
         style={{
           flexDirection: "row",
           width: "100%",
           justifyContent: "space-between",
           gap: 12,
-          flexWrap: "wrap",
+          display: "flex",
         }}
       >
-        <div style={{ width: 140 }}>
-          <Input
-            {...{ errors, control }}
-            name={`results.${index}.amount`}
-            label="Puntos"
-          />
-        </div>
-        <div style={{ width: 140 }}>
-          <Input
-            {...{ errors, control }}
-            name={`results.${index}.penalty`}
-            label="Penalty"
-          />
-        </div>
+        <Input
+          width={ww < 800 ? "45%" : 140}
+          {...{ errors, control }}
+          name={`results.${index}.amount`}
+          label="Puntos"
+        />
+        <Input
+          width={ww < 800 ? "45%" : 140}
+          {...{ errors, control }}
+          name={`results.${index}.penalty`}
+          label="Penalty"
+        />
       </div>
       <div
         style={{
@@ -406,25 +406,25 @@ const CIRCUIT_Fields = ({
           width: "100%",
           justifyContent: "space-between",
           gap: 12,
+          display: "flex",
         }}
       >
-        <div style={{ flex: 1 }}>
-          <Input
-            {...{ errors, control }}
-            name={`results.${index}.time`}
-            label="Tiempo"
-            mode="time"
-          />
-        </div>
-        <div style={{ flex: 1 }}>
-          <Input
-            {...{ errors, control }}
-            name={`results.${index}.tiebrake`}
-            label="Tiebrake"
-            mode="time"
-          />
-        </div>
+        <Input
+          {...{ errors, control }}
+          width={ww < 800 ? "45%" : 140}
+          name={`results.${index}.time`}
+          label="Tiempo"
+          mode="time"
+        />
+
+        <Input
+          {...{ errors, control }}
+          width={ww < 800 ? "45%" : 140}
+          name={`results.${index}.tiebrake`}
+          label="Tiebrake"
+          mode="time"
+        />
       </div>
-    </>
+    </div>
   );
 };

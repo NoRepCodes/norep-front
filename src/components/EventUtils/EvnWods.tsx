@@ -94,7 +94,7 @@ const EvnWods = ({
   };
   return (
     <Dropdown title="WODS" {...{ onPress, isOpen }}>
-      <div style={{ maxWidth: 320 }}>
+      <div style={{ width: "100%", maxWidth: 320 }}>
         <InputSelect
           value={categ.name}
           onChange={ocCateg}
@@ -194,33 +194,27 @@ const Wod = ({
         </button>
       </div>
       <div className="inputs_ctn">
-        {wodFields(index).map((itm, i) => (
-          <ViewFadeStatic key={i}>
-            <Input {...{ control, errors }} {...itm} />
-          </ViewFadeStatic>
+        {wodFields(index).map((itm) => (
+          <Input {...{ control, errors,width:320 }} {...itm} />
         ))}
         {watch(`wods.${index}.wod_type`) === "FORTIME" ||
         watch(`wods.${index}.wod_type`) === "NADO" ? (
-          <ViewFadeStatic key={10}>
-            <Input
-              {...{ control, errors }}
-              label="Repeticiones Limite"
-              ph="0"
-              name={`wods.${index}.amount_cap`}
-            />
-          </ViewFadeStatic>
+          <Input
+            {...{ control, errors,width:320 }}
+            label="Repeticiones Limite"
+            ph="0"
+            name={`wods.${index}.amount_cap`}
+          />
         ) : null}
         {watch(`wods.${index}.wod_type`) === "RM" ? (
-          <ViewFadeStatic key={11}>
-            <Input
-              {...{ control, errors }}
-              label="Tipo de Cantidad"
-              ph="Ej: Lbs"
-              name={`wods.${index}.amount_type`}
-              mode="select"
-              options={["Lbs", "Reps"]}
-            />
-          </ViewFadeStatic>
+          <Input
+            {...{ control, errors,width:320 }}
+            label="Tipo de Cantidad"
+            ph="Ej: Lbs"
+            name={`wods.${index}.amount_type`}
+            mode="select"
+            options={["Lbs", "Reps"]}
+          />
         ) : null}
       </div>
     </ViewFadeStatic>
