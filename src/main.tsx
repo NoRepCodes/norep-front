@@ -82,8 +82,8 @@ const App = () => {
   const [userData, setUserData] = useState<UserDataT|undefined>(undefined);
   const [adminData, setAdminData] = useState<
     { username: string; _id: string } | undefined
-    >({username:'',_id:''});
-  // >(undefined);
+    >(undefined);
+    // >({username:'',_id:''});
   const [msg, setMsg] = useState<MsgT|undefined>(undefined);
 
   useEffect(() => {
