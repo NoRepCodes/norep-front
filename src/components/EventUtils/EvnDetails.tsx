@@ -77,30 +77,29 @@ const EvnDetails = ({
   });
 
   const confirm = async (dta: EvnFields) => {
-    console.log('fr?');
-    // let edit = event._id;
-    // setLoading(true);
-    // const { data, status } = edit
-    //   ? await updateEvent(dta)
-    //   : await createEvent(dta);
-    // setLoading(false);
-    // if (status === 200) {
-    //   setMsg({
-    //     type: "success",
-    //     text: edit ? "Evento Actualizado!" : "Evento Creado con éxito!",
-    //     onClose: () => {
-    //       if (setEvent && edit) {
-    //         setEvent(data);
-    //         setIsOpen(false);
-    //       } else navigate(-1);
-    //     },
-    //   });
-    // } else {
-    //   setMsg({
-    //     type: "error",
-    //     text: data.msg,
-    //   });
-    // }
+    let edit = event._id;
+    setLoading(true);
+    const { data, status } = edit
+      ? await updateEvent(dta)
+      : await createEvent(dta);
+    setLoading(false);
+    if (status === 200) {
+      setMsg({
+        type: "success",
+        text: edit ? "Evento Actualizado!" : "Evento Creado con éxito!",
+        onClose: () => {
+          if (setEvent && edit) {
+            setEvent(data);
+            setIsOpen(false);
+          } else navigate(-1);
+        },
+      });
+    } else {
+      setMsg({
+        type: "error",
+        text: data.msg,
+      });
+    }
   };
 
   const plusCategory = () => append(newCateg());
