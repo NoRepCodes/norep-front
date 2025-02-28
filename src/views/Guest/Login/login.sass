@@ -1,0 +1,89 @@
+@use '../../../sass/var' as v
+
+.login_page
+  width: 100%
+  min-height: calc( 100vh - 88px)
+  background-color: #fff
+  background-image: url("../../../images/inicio.jpg")
+  background-repeat: no-repeat
+  background-size: cover
+  background-position: top
+  display: flex
+  flex-direction: column
+  justify-content: center
+  .form
+    z-index: 300
+    display: flex
+    flex-direction: column
+    gap: 1em
+    align-items: center
+    margin-left: auto
+    width: 460px
+    padding: 5vh 70px
+    flex: 1
+    max-height: 700px
+    box-sizing: border-box
+    img
+      width: 200px
+      height: 200px
+      margin-bottom: -1em
+    .forgotten_pass
+      cursor: pointer
+      text-align: center
+      align-content: center
+      justify-content: center
+      font-size: 14px
+      color: v.$primary
+      &:hover
+        text-decoration: underline v.$primary
+
+  .checkbox_input_ctn
+    display: flex
+    flex-direction: row-reverse
+    align-items: center
+    gap: 12px
+    width: auto
+    label
+      font-family: 'Roboto'
+      color: #fff
+      font-size: 14px
+      text-shadow: 0px 3px 6px black
+
+  .register_text
+    cursor: pointer
+    color: #fff
+    font-size: 14px
+    text-align: center
+
+    span
+      margin-left: 6px
+      color: v.$primary
+      &:hover
+        text-decoration: underline v.$primary
+
+  .gradient
+    right: 0
+    width: 50%
+    height: calc( 100vh - 88px )
+    position: absolute
+    background: linear-gradient(0.25turn,#00000000, #181818)
+
+@media screen and (width < 700px)
+  .login_page
+    min-height: calc( 100vh - 72px )
+    .form
+      margin-left: 0
+      max-width: 320px
+      padding: 5vh 20px
+      align-self: center
+    .gradient
+      height: calc( 100vh )
+      left: 0
+      background: linear-gradient(-0.25turn,#00000000, #181818)
+
+@media screen and (width < 400px)
+  .login_page
+    .form
+      img
+        width: 200px
+        height: 200px

@@ -1,0 +1,31 @@
+@use '../../../sass/var' as v
+
+.adminEvent_page
+    min-height: v.minHeigth()
+    padding: 3em
+    box-sizing: border-box
+
+    h6
+        color: #181818
+
+.inputs_ctn
+    display: flex
+    gap: 2em
+    flex-wrap: wrap
+
+    .input_item
+        width: 320px
+
+.btn_hover_white
+    width: 320px
+    button
+        transition-duration: .2s
+        &:hover
+            background-color: #181818 !important
+            color: #fff
+
+@media screen and (width < 1000px)
+    .adminEvent_page
+        padding: 3em 1em
+    .btn_hover_white
+        width: 100%

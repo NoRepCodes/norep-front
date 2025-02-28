@@ -1,82 +1,75 @@
 import { AnimatePresence, motion } from "framer-motion";
-//@ts-ignore
-import moment from "moment";
-import { useEffect, useState } from "react";
-import {
-  CategoryType,
-  EventType,
-  ResultType,
-  TeamType,
-  WodType,
-} from "../../types/event.t";
-import { mergeTeams, pos } from "../../components/TableLogic";
+import { useContext, useEffect, useState } from "react";
+import { CategFields, WodFields } from "../../types/event";
+import { mergeTeams, pos } from "../../helpers/TableLogic";
+import Context from "../../helpers/UserContext";
+import { ResultType, TeamType } from "../../types/table.t";
+import { convSeconds } from "../../helpers/date";
 
-const convSeconds = (s: number) => moment.utc(s * 1000).format("HH:mm:ss");
-
-type TableT = {
-  input: string;
-  event: EventType;
-  category: CategoryType | undefined;
-  admin: any;
+const Table = ({
+  category,
+  searchBar,
+  kg,
+  wods,
+}: {
+  category: CategFields;
+  searchBar: string;
   kg: boolean;
-  wods: WodType[] | undefined;
-};
-const Table = ({ input, event, category, admin, kg, wods }: TableT) => {
+  wods: WodFields[];
+}) => {
+  const { adminData } = useContext(Context);
+
   const [teams, setTeams] = useState<TeamType[] | undefined>(undefined);
 
   useEffect(() => {
-    if (event !== undefined && category !== undefined && wods !== undefined) {
-      let aux = wods?.filter((w) => w.category_id === category?._id);
-      setTeams(mergeTeams(category, aux));
+    if (category !== undefined && wods !== undefined) {
+      let filteredWods = wods?.filter((w) => w.category_id === category?._id);
+      setTeams(mergeTeams(category, filteredWods));
     }
-  }, [event, category, wods]);
+  }, [category, wods]);
+  if (!teams) return null;
 
-  const clickTable = () => {
-    // console.log(teams)
-    // console.log(wods);
-    // console.log(category);
+  const TU = ({ team, index }: { team: TeamType; index: number }) => {
+    return (
+      <TableUser
+        user={team}
+        {...{ index, kg }}
+        last={index === teams.length - 1 ? true : false}
+        wl={wods?.filter((w) => w.category_id === category?._id)?.length ?? 0}
+      />
+    );
   };
 
   return (
-    <div className="table" onClick={clickTable}>
+    <div className="table">
       {category && <TableHeader {...{ wods, category }} />}
-      {event?.categories.find((c) => c._id === category?._id)?.updating &&
-      !admin ? (
+      {category.updating && !adminData ? (
         <h1 className="updating_text">La tabla se está actualizando...</h1>
       ) : (
         <>
           {teams?.map((team, index) => {
-            if (input.length > 0) {
-              let regex = new RegExp(input, "i");
-              if (regex.test(team.name)) {
-                return (
-                  <TableUser
-                    key={team._id}
-                    user={team}
-                    {...{ index, kg }}
-                    last={index === teams.length - 1 ? true : false}
-                  />
-                );
-              }
-            } else {
-              return (
-                <TableUser
-                  key={team._id}
-                  user={team}
-                  {...{ index, kg }}
-                  last={index === teams.length - 1 ? true : false}
-                />
-              );
-            }
+            if (searchBar.length > 0) {
+              const bool = new RegExp(searchBar, "i").test(team.name);
+              if (bool) return <TU {...{ team, index }} key={team._id} />;
+            } else return <TU {...{ team, index }} key={team._id} />;
           })}
         </>
       )}
     </div>
   );
 };
-type TableHeaderT = { wods: WodType[] | undefined; category: CategoryType };
+type TableHeaderT = { wods: WodFields[] | undefined; category: CategFields };
 
 const TableHeader = ({ wods, category }: TableHeaderT) => {
+  // const { setWodInfo } = useContext(ResultContext);
+  // const wodInfo = (w: WodType) => {
+  //   // let aux = `
+  //   // \n ${w.name}
+  //   // ${w.wod_type}
+  //   // ${w.amount_cap ?? ""}
+  //   // ${w.time_cap ?? ""}
+  //   // `;
+  // };
   return (
     <div className="table_header">
       <div className="header_names">
@@ -89,19 +82,21 @@ const TableHeader = ({ wods, category }: TableHeaderT) => {
         {wods?.map((w) => {
           if (category._id === w.category_id) {
             return (
-              <div className="th_cell" key={w._id}>
+              <div
+                className="th_cell wod_info_cell"
+                key={w._id}
+                onClick={() => {
+                  // setWodInfo(w);
+                }}
+                // onClick={() => {
+                //   wodInfo(w);
+                // }}
+              >
                 <h1>{w.name}</h1>
               </div>
             );
           }
         })}
-        {/* {wods?.map((w) => {
-          if (w.category_id === category) return (
-            <div className="th_cell" key={w._id}>
-              <h1>{w.name}</h1>
-            </div>
-          )
-        })} */}
       </div>
       <div className="header_points">
         <h1>Puntos</h1>
@@ -116,9 +111,10 @@ type TableUserT = {
   user: TeamType;
   last: boolean;
   index: number;
-  kg: boolean;
+  kg?: boolean;
+  wl: number;
 };
-const TableUser = ({ user, last = false, index, kg }: TableUserT) => {
+const TableUser = ({ user, last = false, index, kg, wl }: TableUserT) => {
   const [open, setOpen] = useState(false);
   const toggleOpen = () => {
     setOpen(!open);
@@ -171,11 +167,27 @@ const TableUser = ({ user, last = false, index, kg }: TableUserT) => {
                     {result._wod_type === "CIRCUITO" && (
                       <Values_CIRCUIT {...{ result }} />
                     )}
+                    {result._wod_type === "NADO" && (
+                      <Values_SWIM {...{ result }} />
+                    )}
                   </>
                 )}
               </div>
             );
           })}
+          <EmptySlots
+            wl={wl ?? 0}
+            res={user._results ? user._results.length : 0}
+          />
+          {/* {Array.from(
+            Array(
+              wl && user._results && wl > user._results.length
+                ? wl - user._results.length
+                : 0
+            ).keys()
+          ).map((_) => (
+            <EmptySpace />
+          ))}*/}
         </div>
         <div className={`tu_points ${last && "no_b"}`}>
           <h1>{user._points}</h1>
@@ -209,6 +221,14 @@ const TableUser = ({ user, last = false, index, kg }: TableUserT) => {
   );
 };
 
+const EmptySpace = () => {
+  return (
+    <div className="tu_cell empty_slot">
+      <p></p>
+    </div>
+  );
+};
+
 const IIcon = () => {
   return (
     <svg
@@ -222,7 +242,7 @@ const IIcon = () => {
   );
 };
 
-type ResultCardT = { result: ResultType; kg: boolean };
+type ResultCardT = { result: ResultType; kg?: boolean };
 const ResultCard = ({ result, kg }: ResultCardT) => {
   return (
     <>
@@ -237,23 +257,26 @@ const ResultCard = ({ result, kg }: ResultCardT) => {
           {result.amount - result.penalty} {result._amount_type}
         </h1>
       )}
+      {result._wod_type === "NADO" && (
+        <h1 className="amounts">{result.amount} Mts</h1>
+      )}
       {result._wod_type === "RM" && (
         <h1 className="amounts">{lbOrKg(result.amount, kg)}</h1>
       )}
       {result.time !== 0 && (
-        <h1 className="amounts">Tiempo: {resTime(result.time)} min</h1>
+        <h1 className="amounts">Tiempo: {convSeconds(result.time)} min</h1>
       )}
       {result._wod_type === "CIRCUITO" && result.penalty !== 0 && (
         <h1 className="amounts">Penalty: {result.penalty}</h1>
       )}
       {result.tiebrake !== 0 && (
-        <h1 className="amounts">Tiebrake: {resTime(result.tiebrake)} min</h1>
+        <h1 className="amounts">
+          Tiebrake: {convSeconds(result.tiebrake)} min
+        </h1>
       )}
     </>
   );
 };
-
-const resTime = (time: number) => moment.utc(time * 1000).format("mm:ss");
 
 type ValuesT = { result: ResultType };
 const Values_AMRAP = ({ result }: ValuesT) => {
@@ -275,8 +298,21 @@ const Values_FORTIME = ({ result }: ValuesT) => {
     </>
   );
 };
+const Values_SWIM = ({ result }: ValuesT) => {
+  return (
+    <>
+      {result._amount_type === "CAP+" ? (
+        <h1>({convSeconds(result?.time)})</h1>
+      ) : (
+        <h1>
+          ({result.amount} {result._amount_type})
+        </h1>
+      )}
+    </>
+  );
+};
 
-const Values_RM = ({ result, kg }: { result: ResultType; kg: boolean }) => {
+const Values_RM = ({ result, kg }: { result: ResultType; kg?: boolean }) => {
   if (result._amount_type === "Reps") {
     return <h1>({result.amount} Reps)</h1>;
   } else return <h1>({lbOrKg(result.amount, kg)})</h1>;
@@ -285,9 +321,35 @@ const Values_CIRCUIT = ({ result }: ValuesT) => {
   return <h1>({result?.amount - result?.penalty})</h1>;
 };
 
-const lbOrKg = (amount: number, isKg: boolean) => {
+const lbOrKg = (amount: number, isKg?: boolean) => {
   if (isKg) return `${(amount * 0.453592).toFixed(2)} Kgs`;
   else return `${amount.toFixed(2)} Lbs`;
 };
 
 export default Table;
+
+const EmptySlots = ({ wl, res }: { wl: number; res: number }) => {
+  const [amount, setAmount] = useState([]);
+  useEffect(() => {
+    let aux: any = [];
+    for (let i = 0; i < wl - res; i++) {
+      aux.push(i);
+    }
+    setAmount(aux);
+  }, [wl, res]);
+
+  return (
+    <>
+      {amount.map((v) => (
+        <EmptySpace key={v} />
+      ))}
+    </>
+  );
+};
+// const returnEmpty = (left: number) => {
+//   let aux = [];
+//   for (let i = 0; i < left; i++) {
+//     aux.push(EmptySpace);
+//   }
+//   return aux;
+// };

@@ -1,0 +1,56 @@
+
+.modal_ctn
+    position: relative
+
+.mm_btn_cross
+    position: absolute
+    cursor: pointer
+    right: 24px
+    top: 24px
+    svg
+        width: 16px
+        height: 16px
+
+.blackscreen
+    position: fixed
+    z-index: 3500 !important
+    width: 100%
+    height: 100%
+    background-color: #18181899
+    justify-content: center
+    align-items: center
+    display: flex
+
+.blackscreen .msg_modal_ctn
+    min-width: 300px
+    max-width: 340px
+    // min-height: 200px
+    padding: 1.5em 1em 0px
+    display: flex
+    flex-direction: column
+    gap: 1em
+    align-items: center
+    background-color: #fff
+    border-radius: 6px
+    justify-content: space-between
+    overflow: hidden
+    border-bottom: 1px solid #181818
+    box-sizing: border-box
+    .modal_btns_ctn
+        display: flex
+        flex-direction: row
+        width: 115%
+        button
+            font-weight: 400
+            width: 100%
+            border-radius: 0px
+            margin-top: .5em
+            height: 3em
+            font-size: 1em
+            font-family: 'Roboto'
+
+    svg
+        width: 48px
+        height: 48px
+    p
+        text-align: center

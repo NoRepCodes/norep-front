@@ -7,6 +7,21 @@
   font-family: 'Roboto'
   src: url('./fonts/Roboto-Regular.ttf')
   font-weight: 400
+
+@font-face
+  font-family: 'Roboto'
+  src: url('./fonts/Roboto-Medium.ttf')
+  font-weight: 500
+@font-face
+  font-family: 'Roboto'
+  src: url('./fonts/Roboto-Bold.ttf')
+  font-weight: 600
+
+@font-face
+  font-family: 'RobotoMedium'
+  src: url('./fonts/Roboto-Medium.ttf')
+  font-weight: 400
+
 @font-face
   font-family: 'RobotoMono'
   src: url('./fonts/RobotoMono-Regular.ttf')
@@ -24,67 +39,9 @@ $dark: #191919
 
   @return calc($num *1vw + $num*1vh)
 
-// .ErrorPage
-//   background-color: $fourth
-//   &p
-//     color: #eee
+@function minHeigth()
+  @return calc( 100vh - 88px)
 
-// .dark
-//   background-color: #181818
-//   ::-webkit-calendar-picker-indicator
-//     background-color: #eee
-//   p
-//     color: #eee
-//   path
-//     fill: #eee
-//   div
-//     border-color: #eee
-//   .modal
-//     background-color: #181818
-//   input
-//     color: #eee
-//     background-color: #181818
-//     border-color: #eee
-//   .btn
-//     background-color: #eee
-//     p
-//       color: #181818
-//   .categ_active
-//     background-color: #eee
-//     p
-//       color: #181818
+@function minHeigthResponsive()
+  @return calc( 100vh - 72px)
 
-// .light
-//   background-color: #eee
-//   p
-//     color: #181818
-//   path
-//     fill: #181818
-//   div
-//     border-color: #181818
-//   .modal
-//     background-color: #eee
-//   input
-//     color: #181818
-//     background-color: #eee
-//     border-color: #181818
-//   .btn
-//     background-color: #181818
-//     p
-//       color: #eee
-//   .categ_active
-//     background-color: #181818
-//     p
-//       color: #eee
-
-// h6
-//   font-family: 'Anton'
-//   color: #eee
-// h5
-//   font-family: 'Anton'
-
-// p
-//   font-family: 'Roboto'
-
-// h1
-//   font-family: 'RobotoMono'

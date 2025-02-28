@@ -1,21 +1,21 @@
 import { createRoot } from "react-dom/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-// import { getEventsHome } from "./api/events.api";
-import { Context } from "./components/Context";
 import { Header } from "./components/Header";
-// import LoadingPage from "./components/LoadingPage";
-import AdminLogin from "./pages/Admin/AdminLogin";
-import Events from "./pages/Events/Events";
-import Home from "./pages/Home/Home";
-import Results from "./pages/Results/Results";
+import Home from "./views/Guest/Home/Home";
+import EventsList from "./views/Guest/EventList/EventList";
+import Results from "./views/Guest/Results/Results";
+// import Login from "./views/Guest/Login/Login";
+import Context, { MsgT, UserDataT } from "./helpers/UserContext";
 import "./index.css";
 import "./sass/index.sass";
-import { EventType } from "./types/event.t";
-import Login from "./pages/Login/Login";
-import Register from "./pages/Register/Register";
-import { UserType } from "./types/user.t";
-import Dashboard from "./pages/Dashboard/Dashboard";
+import { getVersion } from "./api/api_guest";
+import Login from "./views/Guest/Login/Login";
+import Register from "./views/Guest/Register/Register";
+import RecoverPassword from "./views/User/RecoverPassword/RecoverPassword";
+import Dashboard from "./views/Admin/Dashboard/Dashboard";
+import AdminEvent from "./views/Admin/Event/AdminEvent";
+import CreateEvent from "./views/Admin/CreateEvent/CreateEvent";
 
 const ErrorElement = () => {
   return (
@@ -40,7 +40,7 @@ const router = createBrowserRouter([
       },
       {
         path: "eventos",
-        element: <Events />,
+        element: <EventsList />,
       },
       {
         path: "resultados/:_id",
@@ -59,45 +59,57 @@ const router = createBrowserRouter([
         element: <Register />,
       },
       {
+        path: "recuperarContraseña",
+        element: <RecoverPassword />,
+      },
+      {
         path: "dashboard",
         element: <Dashboard />,
+      },
+      {
+        path: "dashboard/:_id",
+        element: <AdminEvent />,
+      },
+      {
+        path: "crearEvento",
+        element: <CreateEvent />,
       },
     ],
   },
 ]);
 
 const App = () => {
-  // const [first, setFirst] = useState(false);
-  const [admin, setAdmin] = useState(true);
-  const [events, setEvents] = useState<EventType[] | undefined>(undefined);
-  const [user, setUser] = useState<UserType|undefined>(undefined);
-  // useEffect(() => {
-  //   (async () => {
-  //     const { status, data } = await getEventsHome();
-  //     if (status === 200) {
-  //     //setEvents();
-  //       setEvents(data[0]);
-  //       setTime(data[1]);
-  //     }
-  //     const adm = JSON.parse(localStorage.getItem("adm"));
-  //     if (adm) {
-  //       setAdmin(adm);
-  //     }
+  const [userData, setUserData] = useState<UserDataT|undefined>(undefined);
+  const [adminData, setAdminData] = useState<
+    { username: string; _id: string } | undefined
+    >({username:'',_id:''});
+  // >(undefined);
+  const [msg, setMsg] = useState<MsgT|undefined>(undefined);
 
-  //     setFirst(true);
-  //   })();
-  // }, []);
-
-  // // if(true){
-  // if (!first && time !== 0) {
-  //   return <LoadingPage />;
-  // }
+  useEffect(() => {
+    (async () => {
+      const cacheUser = localStorage.getItem("@user_session");
+      const cacheAdmin = localStorage.getItem("@admin_session");
+      if (cacheAdmin || cacheUser) {
+        const { status, data } = await getVersion({
+          cacheAdmin,
+          cacheUser,
+        });
+        if (status === 200) {
+          if (data.admin) setAdminData(data.admin);
+          if (data.user) setUserData(data.user);
+        }
+      }
+    })();
+  }, []);
 
   return (
     // <StrictMode>
-      <Context.Provider value={{ events, admin, setAdmin, setEvents,user, setUser }}>
-        <RouterProvider router={router} />
-      </Context.Provider>
+    <Context.Provider
+      value={{ userData, setUserData, adminData, setAdminData, msg, setMsg }}
+    >
+      <RouterProvider router={router} />
+    </Context.Provider>
     // </StrictMode>
   );
 };
@@ -107,22 +119,22 @@ createRoot(document.getElementById("root")!).render(<App />);
 // TO DO ✅ ❌ ⏳ ❓
 
 /**
- * PAGES: 
+ * PAGES:
  * - HOME
  * - - TS MIGRATION ✅
  * - - FETCH EVENTS ✅
  * - - LOGIC OF UPDATED ⏳ - Option: Search for most updated wod and retrieve Event_name + category_name
- *  
+ *
  * - ADMIN LOGIN
  * - - TS MIGRATION ✅
  * - - SET ADMIN IN REGULAR LOGIN ❓
- * 
- * - EVENTS 
+ *
+ * - EVENTS
  * - - TS MIGRATION ✅
  * - - FETCH EVENTS ✅
  * - - SEARCH FOR TEAM_NAME ✅
  * - - SEARCH FOR USER_NAME ⏳
- * 
+ *
  * - RESULTS
  * - - TS MIGRATION ✅
  * - - FETCH EVENTS ✅
@@ -132,51 +144,62 @@ createRoot(document.getElementById("root")!).render(<App />);
  * - - UPDATE EVENT ✅
  * - - - VERIFY THAT CATEGORY HAS EMPTY TEAMS BEFORE UPDATE & MANTAIN CATEGORY_ID's ✅
  * - - - MIX UPDATE AND CREATE EVENT MODAL INTO ONE ✅
- * 
+ *
  * - - UPDATE WODS ✅
  * - - - - CLEAN INPUTS ❓
  * - - - - VALIDATE INPUTS ✅
  * - - - - TO_DELETE VARIABLE ✅
  * - - - - SEND INFO AND UPDATE ✅
  * - - - - RESET RESULTS AFTER UPDATE ✅
- * - - - - 
- * 
+ * - - - -
+ *
  * - - UPDATE TEAMS (JUST WHEN NEEDED) ✅
  * - - UPDATE RESULTS ✅
- * - - 
- * 
+ * - -
+ *
  * - - CREATE USER (BACKEND) ✅
  * - - - - CARD_ID VALIDATION ✅
  * - - - - EMAIL VALIDATION ✅
- * 
+ *
  * - - USER CATEGORY REGISTER (BACKEND) ⏳
- * - - - - CREATE TICKET ⏳
+ * - - - - CREATE TICKET ✅
  * - - - - EMAIL SENDER AT ACCEPTANCE ⏳
- * - - - - REMOVE PAY-PICTURE AT ACCEPTANCE ⏳
- * - - - - VERIFY CARDS_ID ⏳
- * - - - - 
- * - - - - 
- * - - - - 
- * 
+ * - - - - REMOVE PAY-PICTURE AT ACCEPTANCE ✅
+ * - - - - VERIFY CARDS_ID ✅
+ * - - - -
+ *
+ * - - DO TICKET LOGIC ASAP
+ * - - - - CREATE/UPDATE TICKET DUE
+ * - - - - CREATE TICKET DUE
+ *
+ * - - MOUSE DISSAPEAR ON INPUT ❓
+ * - - WITH ONE USER, DISSAPEAR TEAM NAME INPUT ✅
+ * - - CLEAR INPUT AFTER CATEG FORM ✅
+ * - - MESSAGE TO LET USERS KNOW THAT THEY SHOULD BE IN THE APP FIRST
+ * - - WHEN THE TEAM PAY COMPLETELY, SHOW TABLE
+ * - -
+ *
  * - LOGIN PAGE ✅
- * - - LOGIC ✅
- * - - DESIGN ✅
- * 
  * - REGISTER PAGE ✅
- * - - LOGIC ✅
- * - - DESIGN ✅
- * 
- * - TICKET DASHBOARD ❓
- * 
- * - TICKET DISPLAY ❓
- * - - 
- * 
+ * - TABLE PAGE ✅
+ * - ADMIN PAGE !!!!
+ * - - EDIT EVENT
+ * - - EDIT WODS
+ * - - EDIT RESULTS
+ * - - EDIT TEAMS
+ * - - SEE USERS
+ * - -
+ * - -
+ * - PROFILE PAGE 
+ * - CATEGORY INFO PAGE 
+ * - CATEGORY REGISTER PAGE 
+ *
  * new pass yahoo Crossfit2024
- * 
+ *
  * sender
  * NoRep
  * norep.code@yahoo.com
  * Crossfit2024
- * 
- * 
+ *
+ *
  * */

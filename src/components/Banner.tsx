@@ -1,49 +1,28 @@
 
 //@ts-ignore
-import moment from "moment";
-import { useContext, useEffect } from "react";
+
+import {  useEffect } from "react";
 import { useState } from "react";
-//@ts-ignore
 import { HashLink } from "react-router-hash-link";
 import "../sass/header.sass";
-import { EventType } from "../types/event.t";
-import { Context } from "./Context";
 import { ArwIcon } from "./PartnersSvg";
-import { getLatestEvent } from "../api/guest.api";
+import { getLatestEvent } from "../api/api_guest";
+import { EvnFields } from "../types/event";
 
 const list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
 
 export const Banner = () => {
-  const { events } = useContext(Context);
-  const [latest, setLatest] = useState<EventType|undefined>(undefined);
+  const [latest, setLatest] = useState<EvnFields|undefined>(undefined);
 
   useEffect(() => {
-    if (events) {
-      (async () => {
-        let aux = [...events];
-        if (events.length > 0) {
-          aux.sort((a, b) => {
-            if (moment(a.updatedAt).unix() > moment(b.updatedAt).unix())
-              return -1;
-            else return 1;
-          });
-          aux[0].categories.sort((a, b) => {
-            if (moment(a.updatedAt).unix() > moment(b.updatedAt).unix())
-              return -1;
-            else return 1;
-          });
-          setLatest(aux[0]);
-        }
-      })();
-    }else{
       (async()=>{
         const {status,data} = await getLatestEvent()
         if(status === 200){
           setLatest(data??undefined)
         }
       })()
-    }
-  }, [events]);
+    
+  }, []);
 
   const test = () => {
   }
@@ -63,7 +42,7 @@ export const Banner = () => {
   );
 };
 
-const Info = ({ latest }:{latest:EventType}) => {
+const Info = ({ latest }:{latest:EvnFields}) => {
   return (
     <div className="slider__slide">
       <StrongIcon />

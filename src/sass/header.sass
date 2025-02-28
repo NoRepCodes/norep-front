@@ -8,7 +8,7 @@
 
 .header_ctn
   background-color: v.$fourth
-  height: 100px
+  height: 88px
   border-bottom: 1px solid #fff
   width: 100%
   display: flex
@@ -17,6 +17,7 @@
   align-items: center
   box-sizing: border-box
   gap: .5em
+  z-index: 10
 
   a
     height: 100%
@@ -44,8 +45,7 @@
       width: 100%
 
 .logo_ctn
-  width: 150px
-  // background-color: #eee
+  width: 120px
   height: 100%
   margin-right: 2em
   display: flex
@@ -199,18 +199,16 @@
     margin-left: auto
     display: flex !important
     height: 100%
-    // width: 64px
-    // background-color: red
+    cursor: pointer
     position: relative
     align-items: center
     justify-content: center
     padding: 0px 1.5em
     box-sizing: border-box
-    // position: relative
 
   .hamb_dropdown
-    position: absolute
-    height: 100%
+    position: sticky
+    height: 100vh
     width: 100%
     background-color: #181818
     top: 72px

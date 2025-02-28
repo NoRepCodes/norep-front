@@ -64,3 +64,151 @@ p
 
 h1
   font-family: 'RobotoMono'
+
+.icon_load
+  display: flex
+  flex-flow: row nowrap
+  align-items: center
+  justify-content: space-between
+  width: 2em
+  span
+    width: 0.3em
+    height: .75em
+    background-color: v.$dark
+  span:nth-of-type(1)
+    animation: grow 1s -0.45s ease-in-out infinite
+
+  span:nth-of-type(2)
+    animation: grow 1s -0.3s ease-in-out infinite
+
+  span:nth-of-type(3)
+    animation: grow 1s -0.15s ease-in-out infinite
+
+  span:nth-of-type(4)
+    animation: grow 1s ease-in-out infinite
+
+@keyframes grow
+  0%,
+  100%
+    transform: scaleY(1)
+
+  50%
+    transform: scaleY(2)
+
+.btn_primary
+  background-color: v.$primary
+  min-height: 42px
+  padding: 12px 0px
+  border-radius: 2px
+  align-items: center
+  justify-content: center
+  text-align: center
+  display: flex
+  font-size: 14px
+  font-family: 'Roboto'
+  font-weight: 600
+  border: 1px solid #181818
+
+.input_item
+  gap: 6px
+  display: flex
+  flex-direction: column
+  align-items: center
+
+.input_item label
+  font-family: 'Roboto'
+  // max-width: 320px
+  font-weight: 500
+
+.input_item input,.input_select,.input_date,.input_time
+  font-family: 'Roboto'
+  border-radius: 2px
+  border: 1px solid #181818CC
+  box-sizing: border-box
+  padding: 0px 16px
+  height: 42px
+  width: 100%
+  font-size: 14px
+  background-color: #fff
+  position: relative
+
+.input_select
+  background-color: #fff
+  justify-content: space-between
+  align-items: baseline
+  flex-direction: row
+  display: flex
+  align-items: center
+
+  &_dropdown
+    position: absolute
+    top: 100%
+    z-index: 1100
+    background-color: #fff
+    width: 100%
+    display: flex
+    flex-direction: column
+
+    option
+      font-family: 'Roboto'
+      cursor: pointer
+      font-size: 14px
+      height: 42px
+      margin-top: -1px
+      padding: 0px 16px
+      border: 1px solid #181818
+      box-sizing: border-box
+      align-content: center
+      &:hover
+        background-color: v.$primary
+
+.input_date
+  cursor: pointer
+  align-items: center
+  display: flex
+
+.input_time_ctn
+  position: relative
+
+  .input_time
+    display: flex
+    align-items: center
+    cursor: pointer
+  .input_time_modal
+    position: absolute
+    background-color: #181818
+    min-width: 100%
+    max-width: 320px
+    padding-right: .5em
+    left: 0
+    // height: 64px
+    top: 99%
+    z-index: 300
+    box-sizing: border-box
+    border: 1px solid #181818
+    display: flex
+    align-items: center
+    input
+      border: 0px
+      width: 42px
+      padding: 0px
+      text-align: center
+      color: #fff
+      background-color: #181818
+    .input_time_modal_btn
+      cursor: pointer
+      width: 24px
+      height: 24px
+      background-color: #181818
+      border-radius: 100%
+      align-items: center
+      justify-content: center
+      display: flex
+      box-sizing: border-box
+      border: 1px solid #181818
+      ion-icon
+        color: #fff
+
+@media screen and (width < 1000px)
+  .input_item ,.input_select,.input_date
+    width: 100% !important

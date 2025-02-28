@@ -124,9 +124,10 @@ table {
 }
 a:visited{
   text-decoration: none;
-  color: inherit;
+  color: #191919;
 }
 a{
+  color: #191919;
   text-decoration: none;
 }
 /* a:hover { text-decoration: none; color:yellow; }
@@ -144,6 +145,7 @@ button{
 input{
 	border: none;
 	outline: none;
+  /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -181,7 +183,28 @@ body {
 .error_page p{
   font-weight: bold;
 }
+.checkbox ion-icon{
+  font-size: 24px;
+  color: #fff;
+  
+}
+.checkbox ion-icon svg{
+  background-color: #fff;
+}
 
 button h6{
   font-size: 1.15em;
+}
+
+option{
+  -webkit-tap-highlight-color: transparent;
+}
+
+input {
+  -webkit-appearance: none;
+}
+input::-webkit-inner-spin-button,
+input::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
 }
