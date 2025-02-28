@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Dropdown from "../Dropdown";
 import { CategFields, EvnFields, WodFields } from "../../types/event";
 import { TeamType } from "../../types/table.t";
-import { toggleUpdating } from "../../api/api_event";
+// import { toggleUpdating } from "../../api/api_event";
 import { CheckBox, InputBase, InputSelect, Line } from "../Input";
 import Table from "../results/Table";
 import useScreen from "../../hooks/useSize";
@@ -13,7 +13,7 @@ const EvnTable = ({
   wods,
   setWodInfo,
   setTeamInfo,
-  setEvent,
+  // setEvent,
 }: {
   defaultOpen?: boolean;
   event: EvnFields;
@@ -40,22 +40,25 @@ const EvnTable = ({
   }, [event]);
 
   const toggleShowTable = async () => {
-    if (!category._id) return null;
-    setLoading(true);
-    const { status, data } = await toggleUpdating(
-      category._id,
-      !category.updating
-    );
-    setLoading(false);
-    if (status === 200) {
-      setEvent(() => {
-        setCategory(
-          data.categories.find((c: any) => c.name === category.name) ??
-            data.categories[0]
-        );
-        return data;
-      });
-    }
+    if(false) console.log(setLoading);
+    // console.log(category._id,category.name,category.updating);
+    // if (!category._id) return null;
+    // setLoading(true);
+    // const { status, data } = await toggleUpdating(
+    //   category._id,
+    //   !category.updating
+    // );
+    // setLoading(false);
+    // if (status === 200) {
+    //   console.log(data);
+    //   setEvent(() => {
+    //     setCategory(
+    //       data.categories.find((c: any) => c.name === category.name) ??
+    //         data.categories[0]
+    //     );
+    //     return data;
+    //   });
+    // }
   };
   const {ww} = useScreen()
   return (

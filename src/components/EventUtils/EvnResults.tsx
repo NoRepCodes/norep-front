@@ -113,7 +113,7 @@ const NoWodInfo = () => {
 };
 
 const WodResults = ({
-  ogWod,
+  // ogWod,
   wods,
   wodSelect,
   categ,
@@ -157,36 +157,15 @@ const WodResults = ({
     name: "results",
   });
   useEffect(() => {
-    console.log(getDefaultResults(wodSelect, categ));
     replace(getDefaultResults(wodSelect, categ));
   }, [wodSelect, categ]);
   
-  // console.log(errors);
-
-  // const filterUsers = () => {
-  //   const aux: ResultFields[] = JSON.parse(
-  //     JSON.stringify(getValues("results"))
-  //   );
-  //   if (aux) {
-  //     aux.forEach((r) => {
-  //       let copyUsers:any = []
-  //       r.users.forEach((u) => {
-  //         //@ts-ignore
-  //         if (typeof u === "object") copyUsers.push(u._id);
-  //       });
-  //       r.users = copyUsers
-  //     });
-  //     return aux
-  //   }
-  // };
   const confirm = async ({results}:rFields) => {
-    // const results = filterUsers()
     if (wodSelect._id === undefined)
       return setMsg({ type: "error", text: "El wod...no existe? Error: 404" });
     setLoading(true);
     const { status, data } = await updateResults(
       wodSelect._id,
-      //@ts-ignore
       results,
       categories
     );
@@ -211,7 +190,8 @@ const WodResults = ({
   };
   const ocWod = (t: any) => {
     setWodSelect(() => {
-      const aux = wods.find((w) => w.name === t) ?? ogWod();
+      const aux = wods.find((w) => categ._id === w.category_id&& w.name === t);
+      if(!aux) return undefined
       replace(getDefaultResults(aux, categ));
       return aux;
     });
