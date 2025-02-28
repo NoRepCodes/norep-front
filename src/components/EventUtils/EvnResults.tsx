@@ -253,8 +253,7 @@ const WodResults = ({
                 {wodSelect.wod_type === "CIRCUITO" ? (
                   <CIRCUIT_Fields {...{ wodSelect, control, errors, index }} />
                 ) : (
-                  <CIRCUIT_Fields {...{ wodSelect, control, errors, index }} />
-                  // <OTHER_Fields {...{ wodSelect, control, errors, index }} />
+                  <OTHER_Fields {...{ wodSelect, control, errors, index }} />
                 )}
               </ViewFadeStatic>
             );
