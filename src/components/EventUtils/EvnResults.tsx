@@ -143,7 +143,7 @@ const WodResults = ({
 
   const {
     control,
-    handleSubmit,
+    // handleSubmit,
     reset,
     getValues,
     formState: { errors },
