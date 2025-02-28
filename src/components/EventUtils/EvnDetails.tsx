@@ -124,29 +124,28 @@ const EvnDetails = ({
       onClose: () => setMsg(undefined),
       onConfirm: async () => {
         const text = "Evento eliminado con Exito";
-        // setDeLoading(true);
-        // const { status, data } = await deleteEvent(
-        //   event._id ?? "",
-        //   event.public_id ?? ""
-        // );
-        // setDeLoading(false);
-        // if (status === 200)
-        if (true)
+        setDeLoading(true);
+        const { status, data } = await deleteEvent(
+          event._id ?? "",
+          event.public_id ?? ""
+        );
+        setDeLoading(false);
+        if (status === 200)
           setMsg({
             type: "success",
             text,
             onClose: () => navigate(-1),
           });
-        // else setMsg({ type: "error", text: data.msg });
+        else setMsg({ type: "error", text: data.msg });
       },
     });
   };
   return (
     <Dropdown title="DETALLES" {...{ isOpen, onPress }}>
-      <div style={{display:'flex',justifyContent:'space-between'}} >
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Subtitle text="Info del Evento" fs={20} />
         {!event._id ? null : (
-          <button onClick={pressDelete} style={{width:24}} >
+          <button onClick={pressDelete} style={{ width: 24 }}>
             {deLoading ? (
               <IconLoad />
             ) : (
