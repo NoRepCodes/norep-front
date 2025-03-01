@@ -112,6 +112,7 @@ const NoWodInfo = () => {
   );
 };
 
+
 const WodResults = ({
   // ogWod,
   wods,
@@ -159,7 +160,7 @@ const WodResults = ({
   useEffect(() => {
     replace(getDefaultResults(wodSelect, categ));
   }, [wodSelect, categ]);
-  
+  console.log(errors);
   const confirm = async ({results}:rFields) => {
     if (wodSelect._id === undefined)
       return setMsg({ type: "error", text: "El wod...no existe? Error: 404" });
