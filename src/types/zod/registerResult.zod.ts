@@ -12,24 +12,23 @@ export const rSchema = z.object({
   results: z.array(ResultSchema).default([]),
 });
 export type rFields = z.infer<typeof rSchema>;
-
-export const getDefaultResults = (wods:WodFields,category:CategFields) =>{
-  let aux:ResultFields[] = []
-  category.teams.forEach((t)=>{
-    let resultExist = wods.results.find((r)=> r.team_id === t._id)
-    if(resultExist) {
-      const users:string[] = []
-      resultExist.users.forEach(u => {
-        //@ts-ignore
-        if(typeof u === 'object') users.push(u._id)
-        else users.push(u)
-      });
-      aux.push({...resultExist,users})
-    }
-    else aux.push(returnDefaulResult(t))
-  })
-  return aux
-}
+export const getDefaultResults = (wods: WodFields, category: CategFields) => {
+  let aux: ResultFields[] = [];
+  category.teams.forEach((t) => {
+    const users: string[] = [];
+    t.users?.forEach((u) => {
+      //@ts-ignore
+      if (typeof u === "object") users.push(u._id);
+      else users.push(u);
+    });
+    t.users = users;
+    let resultExist = wods.results.find((r) => r.team_id === t._id);
+    if (resultExist) {
+      aux.push({ ...resultExist, users });
+    } else aux.push(returnDefaulResult(t));
+  });
+  return aux;
+};
 
 const returnDefaulResult = (team: TeamFields) => {
   return {
