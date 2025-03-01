@@ -54,10 +54,13 @@ const Home = () => {
         <div className="event_cell cards_cells">
           <EventTimeText text="EN CURSO" />
           {events?.map((event) => {
-            const d = today(1,event.until);
-            if (d <= today(7) && d >= today()) {
+            if(event._id === '678f0ae60a3e3d5d3ef56586'){
               return <EventCard key={event._id} event={event} />;
-            }
+            }else return null
+            // const d = today(1,event.until);
+            // if (d <= today(7) && d >= today()) {
+            //   return <EventCard key={event._id} event={event} />;
+            // }
           })}
         </div>
         <div className="event_cell cards_cells">
