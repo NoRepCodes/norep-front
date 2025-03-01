@@ -1,13 +1,10 @@
-// import { useContext } from "react";
+
 import { useContext } from "react";
 import { convertDate, months, todaySplit } from "../../../helpers/date";
 import { EvnFields } from "../../../types/event";
 import "./calendar.sass";
 import Context from "../../../helpers/UserContext";
 import { HashLink } from "react-router-hash-link";
-// import { convertDate, months, todaySplit } from "../../../helpers/date";
-// import Context from "../../../helpers/UserContext";
-// import { HashLink } from "react-router-hash-link";
 
 const thisMonth = new Date().getUTCDate() + 1;
 const thisYear = new Date().getUTCFullYear();
@@ -27,25 +24,9 @@ const monthsArr = [
   minus(2),
   minus(3),
 ];
-// const getMonth = (d: string) => {
-// };
 
 export const Calendar = ({ events }: { events?: EvnFields[] }) => {
   if (!events) return null;
-
-  // monthsArr.map((isDate, index) => {
-  //   events.forEach(e => {
-  //     const eDate = todaySplit(e.since)
-  //     // console.log(isDate);
-  //     // console.log(`${eDate[0]}-${eDate[1]}`,e.name);
-  //     if(isDate === `${eDate[0]}-${eDate[1]}`) console.log('bingo');
-  //   });
-  // });
-
-  events.forEach((e) => {
-    const eDate = todaySplit(e.since);
-    if (eDate[0] === `${thisYear}`) console.log(e.name);
-  });
 
   return (
     <div className="calendar" id="Calendar">

@@ -1,16 +1,28 @@
-export const today = (plus?: number, sDate?: string) => {
+export const todayIso = (plus?: number, sDate?: string) => {
+  const t = new Date().toISOString().split("T")[0]
   const x = sDate
     ? addDays(new Date(sDate), plus ?? 0)
-    : addDays(new Date(), plus ?? 0);
+    : addDays(new Date(t), plus ?? 0);
   return x;
 };
-
 
 function addDays(date: Date, days: number) {
   var result = new Date(date);
   result.setDate(result.getDate() + days);
-  return result;
+  return result.toISOString();
 }
+
+export const today = (plus?: number, sDate?: string) => {
+  const x = sDate
+    ? new Date(sDate).toISOString().split("T")[0]
+    : new Date().toISOString().split("T")[0];
+  if (!plus) return new Date(x);
+
+  const z = x.split("-");
+  const day = (parseInt(z[2]) + plus).toString();
+  return new Date(z[0] + "-" + z[1] + "-" + day);
+};
+
 
 export const convertDate = (date: string) => {
   let d = date.split("-");
@@ -35,9 +47,8 @@ export const convSeconds = (s: number) => {
   return `${hh}:${mm}:${ss}`;
 };
 
-export const todayString = (sDate: string) => {
-  return new Date(sDate).toISOString().split("T")[0];
-};
+
+
 
 export const months = [
   "ene",
