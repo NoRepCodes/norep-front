@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { getEvents } from "../../../api/api_guest";
 import { EvnFields } from "../../../types/event";
-import { convertDate,  today } from "../../../helpers/date";
+import { convertDate } from "../../../helpers/date";
 import { Calendar } from "./Calendar";
 import { HashLink } from "react-router-hash-link";
 import Context from "../../../helpers/UserContext";
@@ -54,20 +54,23 @@ const Home = () => {
         <div className="event_cell cards_cells">
           <EventTimeText text="EN CURSO" />
           {events?.map((event) => {
-            const d = today(1,event.until);
-            if (d <= today(7) && d >= today()) {
+            if(event._id === '678f0ae60a3e3d5d3ef56586'){
               return <EventCard key={event._id} event={event} />;
-            }
+            }else return null
+            // const d = today(1,event.until);
+            // if (d <= today(7) && d >= today()) {
+            //   return <EventCard key={event._id} event={event} />;
+            // }
           })}
         </div>
         <div className="event_cell cards_cells">
           <EventTimeText text="PRÓXIMAS" />
-          {events?.map((event) => {
+          {/* {events?.map((event) => {
             const d = today(1,event.until);
             if (d >= today(8)) {
               return <EventCard key={event._id} event={event} />;
             }
-          })}
+          })} */}
         </div>
       </div>
       <Calendar {...{ events }} />
