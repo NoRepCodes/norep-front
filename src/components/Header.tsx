@@ -63,7 +63,7 @@ export const Header = ({ children }: PropsWithChildren) => {
         {userData && (
           <div className="header_btns">
             <div className="link" style={{ cursor: "default" }}>
-              <h6>{userData.name.toUpperCase()}</h6>
+              <h6>{userData?.name.toUpperCase()??""}</h6>
             </div>
             <div className="btn_closeS" onClick={closeSession}>
               <IconDoor />

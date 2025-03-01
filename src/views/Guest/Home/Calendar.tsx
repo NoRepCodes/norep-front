@@ -54,7 +54,7 @@ const CalendarRow = ({
 }) => {
   return (
     <div className="calendar_row">
-      <h6> {months[month].toUpperCase()}</h6>
+      <h6> {months[month]?.toUpperCase()??""}</h6>
       <hr />
       <div className="calendar_cards_ctn">
         {events.map((e) => (
