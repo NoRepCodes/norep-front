@@ -73,17 +73,11 @@ const Results = () => {
       }
     })();
   }, []);
-
-  useEffect(() => {
-    
-  // console.log(wodInfo);
-  // console.log(wods);
-  }, [wodInfo])
   
 
   if (loading)
     return (
-      <ViewFadeStatic style={{ paddingTop: 42 }}>
+      <ViewFadeStatic style={{ padding: 42,minHeight:'80vh',justifyContent:'center',display:'flex' }}>
         <IconLoad />
       </ViewFadeStatic>
     );

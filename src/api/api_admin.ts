@@ -61,3 +61,9 @@ export const getUserInfo = async (_id: string) => {
     .then((res) => res)
     .catch((err) => catchError(err));
 };
+export const getUserSearch = async (text: string) => {
+  return await axios
+    .get(`${url}getUserSearch?text=${text}`)
+    .then((res) => res)
+    .catch((err) => catchError(err));
+};

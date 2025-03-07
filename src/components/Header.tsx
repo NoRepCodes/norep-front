@@ -1,5 +1,5 @@
 import { PropsWithChildren, useContext } from "react";
-import { Link, Outlet, useHref } from "react-router-dom";
+import { Link, Outlet, useHref, useNavigate } from "react-router-dom";
 import "../sass/header.sass";
 import "../sass/modals.sass";
 import "../sass/msg.sass";
@@ -10,6 +10,7 @@ import Context from "../helpers/UserContext";
 import MsgModal from "./MsgModal";
 import { AnimatePresence } from "framer-motion";
 import { ViewFadeStatic } from "./AnimatedLayouts";
+import { Ionicons } from "./Icons";
 
 export const Header = ({ children }: PropsWithChildren) => {
   const { adminData, setAdminData, userData, setUserData, setMsg } =
@@ -18,6 +19,9 @@ export const Header = ({ children }: PropsWithChildren) => {
   //@ts-ignore
   const href = useHref();
   const [openMenu, toggleMenu] = useModal();
+
+  const navigate = useNavigate()
+  if(false) console.log(navigate);
 
   const closeSession = () => {
     localStorage.removeItem("@admin_session");
@@ -61,9 +65,11 @@ export const Header = ({ children }: PropsWithChildren) => {
           </>
         )}
         {userData && (
-          <div className="header_btns">
-            <div className="link" style={{ cursor: "default" }}>
+          // <div className="header_btns" onClick={()=>{navigate('Profile',{_id:userData._id})}} >
+          <div className="header_btns" >
+            <div className="link" style={{ cursor: "default",gap:12,display:"flex",minWidth:200,justifyContent:'flex-end' }}>
               <h6>{userData?.name.toUpperCase()??""}</h6>
+              <Ionicons name="person-circle-outline" color="#fff" size={32} />
             </div>
             <div className="btn_closeS" onClick={closeSession}>
               <IconDoor />

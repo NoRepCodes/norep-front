@@ -1,4 +1,3 @@
-
 import { useContext } from "react";
 import { convertDate, months, todaySplit } from "../../../helpers/date";
 import { EvnFields } from "../../../types/event";
@@ -6,13 +5,14 @@ import "./calendar.sass";
 import Context from "../../../helpers/UserContext";
 import { HashLink } from "react-router-hash-link";
 
-const thisMonth = new Date().getUTCDate() + 1;
-const thisYear = new Date().getUTCFullYear();
 const minus = (n: number) => {
-  let baseNum = 0;
-  if (thisMonth < 3 && n < 0) baseNum = 12;
-  let result = (baseNum + n + 1).toString();
-  if (result.length < 2) result = `0${result}`;
+  const thisMonth = new Date().getUTCMonth() + 1;
+  const thisYear = new Date().getUTCFullYear();
+  let m = thisMonth + n
+  if(m < 1) m +=12
+  else if (m >12) m -=12
+  let result = m.toString()
+  if(result.length<2) result = '0'+result
   return `${thisYear}-${result}`;
 };
 
