@@ -9,6 +9,8 @@ import EvnDetails from "../../../components/EventUtils/EvnDetails";
 import EvnWods from "../../../components/EventUtils/EvnWods";
 import EvnResults from "../../../components/EventUtils/EvnResults";
 import EvnTable from "../../../components/EventUtils/EvnTable";
+import EvnUsers from "../../../components/EventUtils/EvnUsers";
+import EvnTickets from "../../../components/EventUtils/EvnTickets";
 
 const AdminEvent = () => {
   //   const isFocused = useIsFocused();
@@ -20,8 +22,8 @@ const AdminEvent = () => {
   // MODALS
   const [wodInfo, setWodInfo] = useState<WodFields | undefined>(undefined);
   const [teamInfo, setTeamInfo] = useState<TeamType | undefined>(undefined);
-  if(false) console.log(wodInfo);
-  if(false) console.log(teamInfo);
+  if (false) console.log(wodInfo);
+  if (false) console.log(teamInfo);
 
   const { _id } = useParams();
 
@@ -54,6 +56,12 @@ const AdminEvent = () => {
             {...{ wods, setMsg, setWods, categories: event.categories }}
           />
           <EvnTable {...{ event, wods, setWodInfo, setTeamInfo, setEvent }} />
+          {event.manual_teams ? null : (
+            <EvnUsers event_id={event._id ?? ""} setMsg={setMsg} />
+          )}
+          {event.manual_teams ? null : (
+            <EvnTickets categories_id={event.categories.map((c) => c.name)} />
+          )}
         </>
       ) : null}
     </div>

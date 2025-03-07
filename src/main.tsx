@@ -127,26 +127,26 @@ createRoot(document.getElementById("root")!).render(<App />);
  *
  * - ADMIN LOGIN
  * - - TS MIGRATION ✅
- * - - SET ADMIN IN REGULAR LOGIN ❓
+ * - - SET ADMIN IN REGULAR LOGIN ✅ ❓
  *
  * - EVENTS
  * - - TS MIGRATION ✅
  * - - FETCH EVENTS ✅
  * - - SEARCH FOR TEAM_NAME ✅
- * - - SEARCH FOR USER_NAME ⏳
+ * - - SEARCH FOR USER_NAME ❓
  *
  * - RESULTS
  * - - TS MIGRATION ✅
  * - - FETCH EVENTS ✅
  * - - DISPLAY TABLE RESULTS ✅
  * - - SEARCH TEAM WHEN TEAM_NAME ✅
- * - - SEARCH TEAM WHEN USER_NAME ⏳
+ * - - SEARCH TEAM WHEN USER_NAME ❓
  * - - UPDATE EVENT ✅
  * - - - VERIFY THAT CATEGORY HAS EMPTY TEAMS BEFORE UPDATE & MANTAIN CATEGORY_ID's ✅
  * - - - MIX UPDATE AND CREATE EVENT MODAL INTO ONE ✅
  *
  * - - UPDATE WODS ✅
- * - - - - CLEAN INPUTS ❓
+ * - - - - CLEAN INPUTS ✅
  * - - - - VALIDATE INPUTS ✅
  * - - - - TO_DELETE VARIABLE ✅
  * - - - - SEND INFO AND UPDATE ✅
@@ -166,17 +166,12 @@ createRoot(document.getElementById("root")!).render(<App />);
  * - - - - EMAIL SENDER AT ACCEPTANCE ⏳
  * - - - - REMOVE PAY-PICTURE AT ACCEPTANCE ✅
  * - - - - VERIFY CARDS_ID ✅
- * - - - -
  *
- * - - DO TICKET LOGIC ASAP
- * - - - - CREATE/UPDATE TICKET DUE
- * - - - - CREATE TICKET DUE
- *
- * - - MOUSE DISSAPEAR ON INPUT ❓
+ * - - MOUSE DISSAPEAR ON INPUT ✅
  * - - WITH ONE USER, DISSAPEAR TEAM NAME INPUT ✅
  * - - CLEAR INPUT AFTER CATEG FORM ✅
- * - - MESSAGE TO LET USERS KNOW THAT THEY SHOULD BE IN THE APP FIRST
- * - - WHEN THE TEAM PAY COMPLETELY, SHOW TABLE
+ * - - MESSAGE TO LET USERS KNOW THAT THEY SHOULD BE IN THE APP FIRST ✅
+ * - - WHEN THE TEAM PAY COMPLETELY, SHOW TABLE ✅
  * - -
  *
  * - LOGIN PAGE ✅
@@ -187,12 +182,15 @@ createRoot(document.getElementById("root")!).render(<App />);
  * - - EDIT WODS ✅
  * - - EDIT RESULTS ✅
  * - - EDIT TEAMS 
- * - - SEE USERS
+ * - - SEE USERS 
  * - -
  * - -
  * - PROFILE PAGE 
  * - CATEGORY INFO PAGE 
  * - CATEGORY REGISTER PAGE 
+ * - 
+ * - RE-DESIGN INPUTS
+ * - 
  *
  * new pass yahoo Crossfit2024
  *
