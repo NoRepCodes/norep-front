@@ -7,10 +7,11 @@ const hideScroll = () => { if (body) body.style.overflow = 'hidden' }
 
 // type ModalT = ():[modal:boolean,toggle:()=>void]
 // type ModalT = (boolean | (() => void))[]
-const useModal = ():[boolean,()=>void] => {
+const useModal = ():[boolean,(state?:boolean)=>void] => {
     const [modal, setModal] = useState<boolean>(false)
 
-    const toggle = () => {
+    const toggle = (state?:boolean) => {
+        if(state) return setModal(state)
         if (modal) showScroll()
         else hideScroll()
         setModal(!modal);

@@ -94,7 +94,10 @@ export const InputBase = ({
       <input
         // style={{backgroundColor:'#fff'}}
         placeholder={ph}
-        {...{ value, onChange }}
+        {...{ value }}
+        onChange={(e)=>{
+          onChange(e.target.value)
+        }}
         disabled={isDisabled}
         type={hidePass ? "password" : "text"}
       />

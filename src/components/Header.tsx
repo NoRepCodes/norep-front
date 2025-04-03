@@ -1,4 +1,4 @@
-import { PropsWithChildren, useContext } from "react";
+import { PropsWithChildren, useContext, useEffect } from "react";
 import { Link, Outlet, useHref, useNavigate } from "react-router-dom";
 import "../sass/header.sass";
 import "../sass/modals.sass";
@@ -11,17 +11,52 @@ import MsgModal from "./MsgModal";
 import { AnimatePresence } from "framer-motion";
 import { ViewFadeStatic } from "./AnimatedLayouts";
 import { Ionicons } from "./Icons";
+import { v, View } from "./UI";
+import useScreen from "../hooks/useSize";
 
 export const Header = ({ children }: PropsWithChildren) => {
-  const { adminData, setAdminData, userData, setUserData, setMsg } =
-    useContext(Context);
+  const [openMenu, toggleMenu] = useModal();
+
+  const navigate = useNavigate();
+  if (false) console.log(navigate);
 
   //@ts-ignore
   const href = useHref();
-  const [openMenu, toggleMenu] = useModal();
 
-  const navigate = useNavigate()
-  if(false) console.log(navigate);
+  const { ww } = useScreen();
+
+  return (
+    <div className="page_ctn">
+      <MsgModal />
+      <View className="header_ctn">
+        <Link className="logo_ctn" to="/" viewTransition>
+          <img src={logo} alt="logo" />
+        </Link>
+        {ww > 1000 ? (
+          <Links />
+        ) : (
+          <HamburguerMenu {...{ openMenu, toggleMenu }} />
+        )}
+      </View>
+      <AnimatePresence>
+        {openMenu && ww < 1000 && (
+          <div style={{ backgroundColor: "#181818" }}>
+            <ViewFadeStatic className="hamb_dropdown">
+              <Links {...{ toggleMenu }} />
+            </ViewFadeStatic>
+          </div>
+        )}
+      </AnimatePresence>
+      <Outlet />
+      {children}
+      <Footer />
+    </div>
+  );
+};
+
+const Links = ({ toggleMenu }: { toggleMenu?: (state?: boolean) => void }) => {
+  const { adminData, setAdminData, userData, setUserData, setMsg } =
+    useContext(Context);
 
   const closeSession = () => {
     localStorage.removeItem("@admin_session");
@@ -33,11 +68,182 @@ export const Header = ({ children }: PropsWithChildren) => {
       text: "Sesión cerrada con éxito!",
     });
   };
-
+  //@ts-ignore
+  const href = useHref();
   return (
-    <div className="page_ctn">
-      <MsgModal />
-      <div className="header_ctn">
+    <>
+      <HeaderLink {...{ href, toggleMenu }} to="/" text="NO REP" />
+      <HeaderLink {...{ href, toggleMenu }} to="/eventos" text="EVENTOS" />
+
+      {adminData && (
+        <HeaderLink
+          {...{ href, toggleMenu }}
+          to="/dashboard"
+          text="SOLICITUDES"
+        />
+      )}
+      {!adminData && !userData && (
+        <>
+          <HeaderLink
+            {...{ href, toggleMenu }}
+            to="/registro"
+            text="REGISTRO"
+          />
+          <HeaderLink
+            {...{ href, toggleMenu }}
+            to="/login"
+            text="INICIAR SESION"
+          />
+        </>
+      )}
+      {adminData && (
+        <div>
+          <HeaderLink
+            {...{ href, toggleMenu }}
+            to="/dashboard"
+            text="ADMINISTRACIÓN"
+          />
+          <div className="header_btns">
+            <div className="btn_closeS" onClick={closeSession}>
+              {/* <IconDoor  /> */}
+              <Ionicons name="exit-outline" color="#fff" />
+              <h6>CERRAR SESIÓN</h6>
+            </div>
+          </div>
+        </div>
+      )}
+      {userData && (
+        // <div className="header_btns" onClick={()=>{navigate('Profile',{_id:userData._id})}} >
+        <div className="header_btns">
+          <div className="link">
+            <h6>{userData?.name.toUpperCase() ?? ""}</h6>
+            <Ionicons name="person-circle-outline" color="#fff" size={32} />
+          </div>
+          <div
+            className="link"
+            onClick={() => {
+              closeSession();
+              toggleMenu ? toggleMenu(false) : undefined;
+            }}
+          >
+            <h6>CERRAR SESIÓN</h6>
+            <Ionicons name="exit-outline" color="#fff" />
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+const HeaderLink = ({
+  to,
+  href,
+  text,
+  toggleMenu,
+}: {
+  to: string;
+  href: string;
+  text: string;
+  toggleMenu?: (state?: boolean) => void;
+}) => {
+  return (
+    <Link to={to} viewTransition>
+      <div
+        className="link"
+        onClick={() => {
+          toggleMenu ? toggleMenu(false) : undefined;
+        }}
+      >
+        <h6>{text}</h6>
+        {href === to && <div className="link_active" />}
+      </div>
+    </Link>
+  );
+};
+
+type HambType = {
+  toggleMenu: () => void;
+  openMenu: boolean;
+};
+export const HamburguerMenu = ({ toggleMenu, openMenu }: HambType) => {
+  return (
+    <div
+      style={{ cursor: "pointer" }}
+      onClick={() => {
+        toggleMenu();
+      }}
+    >
+      {openMenu ? (
+        <svg
+          width="24"
+          height="24"
+          clipRule="evenodd"
+          fillRule="evenodd"
+          strokeLinejoin="round"
+          strokeMiterlimit="2"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m12 10.93 5.719-5.72c.146-.146.339-.219.531-.219.404 0 .75.324.75.749 0 .193-.073.385-.219.532l-5.72 5.719 5.719 5.719c.147.147.22.339.22.531 0 .427-.349.75-.75.75-.192 0-.385-.073-.531-.219l-5.719-5.719-5.719 5.719c-.146.146-.339.219-.531.219-.401 0-.75-.323-.75-.75 0-.192.073-.384.22-.531l5.719-5.719-5.72-5.719c-.146-.147-.219-.339-.219-.532 0-.425.346-.749.75-.749.192 0 .385.073.531.219z"
+            fill="#fff"
+          />
+        </svg>
+      ) : (
+        <svg
+          width="24"
+          height="21"
+          viewBox="0 0 24 21"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect x="0.5" y="0.5" width="23" height="4" stroke="#fff" />
+          <rect x="0.5" y="8.5" width="23" height="4" stroke="#fff" />
+          <rect x="0.5" y="16.5" width="23" height="4" stroke="#fff" />
+        </svg>
+      )}
+    </div>
+  );
+};
+
+// const IconPlus = () => {
+//   return (
+//     <svg
+//       clipRule="evenodd"
+//       fillRule="evenodd"
+//       strokeLinejoin="round"
+//       strokeMiterlimit="2"
+//       width={24}
+//       height={24}
+//       viewBox="0 0 24 24"
+//       xmlns="http://www.w3.org/2000/svg"
+//     >
+//       <path
+//         d="m11 11h-7.25c-.414 0-.75.336-.75.75s.336.75.75.75h7.25v7.25c0 .414.336.75.75.75s.75-.336.75-.75v-7.25h7.25c.414 0 .75-.336.75-.75s-.336-.75-.75-.75h-7.25v-7.25c0-.414-.336-.75-.75-.75s-.75.336-.75.75z"
+//         fillRule="nonzero"
+//       />
+//     </svg>
+//   );
+// };
+const IconDoor = () => {
+  return (
+    <svg
+      width="24"
+      height="24"
+      xmlns="http://www.w3.org/2000/svg"
+      fillRule="evenodd"
+      clipRule="evenodd"
+    >
+      <path
+        fill="#fff"
+        d="M13.033 2v-2l10 3v18l-10 3v-2h-9v-7h1v6h8v-18h-8v7h-1v-8h9zm1 20.656l8-2.4v-16.512l-8-2.4v21.312zm-3.947-10.656l-3.293-3.293.707-.707 4.5 4.5-4.5 4.5-.707-.707 3.293-3.293h-9.053v-1h9.053z"
+      />
+    </svg>
+  );
+};
+
+/**
+ <div className="header_ctn">
         <Link className="logo_ctn" to="/" viewTransition>
           <img src={logo} alt="logo" />
         </Link>
@@ -46,7 +252,7 @@ export const Header = ({ children }: PropsWithChildren) => {
 
         {/* {adminData ? (
           <HeaderLink href={href} to="/dashboard" text="SOLICITUDES" />
-        ) : null} */}
+        ) : null} }
         {!adminData && !userData && (
           <>
             <HeaderLink href={href} to="/registro" text="REGISTRO" />
@@ -116,101 +322,4 @@ export const Header = ({ children }: PropsWithChildren) => {
           </div>
         )}
       </AnimatePresence>
-      <Outlet />
-      {children}
-      <Footer />
-    </div>
-  );
-};
-
-const HeaderLink = ({
-  to,
-  href,
-  text,
-}: {
-  to: string;
-  href: string;
-  text: string;
-}) => {
-  return (
-    <Link to={to} viewTransition>
-      <div className="link">
-        <h6>{text}</h6>
-        {href === to && <div className="link_active" />}
-      </div>
-    </Link>
-  );
-};
-
-type HambType = {
-  onClick: () => void;
-  openMenu: boolean;
-};
-export const HamburguerMenu = ({ onClick, openMenu }: HambType) => {
-  return (
-    <div className="hamb_ctn" onClick={onClick}>
-      {openMenu ? (
-        <svg
-          width="24"
-          height="24"
-          clipRule="evenodd"
-          fillRule="evenodd"
-          strokeLinejoin="round"
-          strokeMiterlimit="2"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="m12 10.93 5.719-5.72c.146-.146.339-.219.531-.219.404 0 .75.324.75.749 0 .193-.073.385-.219.532l-5.72 5.719 5.719 5.719c.147.147.22.339.22.531 0 .427-.349.75-.75.75-.192 0-.385-.073-.531-.219l-5.719-5.719-5.719 5.719c-.146.146-.339.219-.531.219-.401 0-.75-.323-.75-.75 0-.192.073-.384.22-.531l5.719-5.719-5.72-5.719c-.146-.147-.219-.339-.219-.532 0-.425.346-.749.75-.749.192 0 .385.073.531.219z"
-            fill="#fff"
-          />
-        </svg>
-      ) : (
-        <svg
-          width="24"
-          height="21"
-          viewBox="0 0 24 21"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <rect x="0.5" y="0.5" width="23" height="4" stroke="#fff" />
-          <rect x="0.5" y="8.5" width="23" height="4" stroke="#fff" />
-          <rect x="0.5" y="16.5" width="23" height="4" stroke="#fff" />
-        </svg>
-      )}
-    </div>
-  );
-};
-
-// const IconPlus = () => {
-//   return (
-//     <svg
-//       clipRule="evenodd"
-//       fillRule="evenodd"
-//       strokeLinejoin="round"
-//       strokeMiterlimit="2"
-//       width={24}
-//       height={24}
-//       viewBox="0 0 24 24"
-//       xmlns="http://www.w3.org/2000/svg"
-//     >
-//       <path
-//         d="m11 11h-7.25c-.414 0-.75.336-.75.75s.336.75.75.75h7.25v7.25c0 .414.336.75.75.75s.75-.336.75-.75v-7.25h7.25c.414 0 .75-.336.75-.75s-.336-.75-.75-.75h-7.25v-7.25c0-.414-.336-.75-.75-.75s-.75.336-.75.75z"
-//         fillRule="nonzero"
-//       />
-//     </svg>
-//   );
-// };
-const IconDoor = () => {
-  return (
-    <svg
-      width="24"
-      height="24"
-      xmlns="http://www.w3.org/2000/svg"
-      fillRule="evenodd"
-      clipRule="evenodd"
-    >
-      <path d="M13.033 2v-2l10 3v18l-10 3v-2h-9v-7h1v6h8v-18h-8v7h-1v-8h9zm1 20.656l8-2.4v-16.512l-8-2.4v21.312zm-3.947-10.656l-3.293-3.293.707-.707 4.5 4.5-4.5 4.5-.707-.707 3.293-3.293h-9.053v-1h9.053z" />
-    </svg>
-  );
-};
+ */

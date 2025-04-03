@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Header } from "./components/Header";
 import Home from "./views/Guest/Home/Home";
 import EventsList from "./views/Guest/EventList/EventList";
-import Results from "./views/Guest/Results/Results";
+import Event from "./views/Event/Event";
 // import Login from "./views/Guest/Login/Login";
 import Context, { MsgT, UserDataT } from "./helpers/UserContext";
 import "./index.css";
@@ -16,6 +16,7 @@ import RecoverPassword from "./views/User/RecoverPassword/RecoverPassword";
 import Dashboard from "./views/Admin/Dashboard/Dashboard";
 import AdminEvent from "./views/Admin/Event/AdminEvent";
 import CreateEvent from "./views/Admin/CreateEvent/CreateEvent";
+// import Test from "./Test";
 
 const ErrorElement = () => {
   return (
@@ -44,11 +45,11 @@ const router = createBrowserRouter([
       },
       {
         path: "resultados/:_id",
-        element: <Results />,
+        element: <Event />,
       },
       // {
-      //   path: "admin",
-      //   element: <AdminLogin />,
+      //   path: "test",
+      //   element: <Test />,
       // },
       {
         path: "login",
@@ -76,6 +77,10 @@ const router = createBrowserRouter([
       },
     ],
   },
+  // {
+  //   path:'/test',
+  //   element:<Test/>
+  // }
 ]);
 
 const App = () => {

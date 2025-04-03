@@ -34,10 +34,6 @@ const Home = () => {
           #<span>TEAM</span> NO REP
         </h6>
         <img src={heroimg} alt="heroimg" className="heroimg" />
-        {/* <p>Conoce acerca del equipo y nuestra mision</p>
-        <div className="more_info">
-          <p>Mas informacion</p>
-        </div> */}
       </div>
 
       <div className="home_content">
