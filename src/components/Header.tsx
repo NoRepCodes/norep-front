@@ -1,4 +1,4 @@
-import { PropsWithChildren, useContext, useEffect } from "react";
+import { PropsWithChildren, useContext } from "react";
 import { Link, Outlet, useHref, useNavigate } from "react-router-dom";
 import "../sass/header.sass";
 import "../sass/modals.sass";
@@ -11,7 +11,7 @@ import MsgModal from "./MsgModal";
 import { AnimatePresence } from "framer-motion";
 import { ViewFadeStatic } from "./AnimatedLayouts";
 import { Ionicons } from "./Icons";
-import { v, View } from "./UI";
+import { View } from "./UI";
 import useScreen from "../hooks/useSize";
 
 export const Header = ({ children }: PropsWithChildren) => {
@@ -97,20 +97,25 @@ const Links = ({ toggleMenu }: { toggleMenu?: (state?: boolean) => void }) => {
         </>
       )}
       {adminData && (
-        <div>
+        <>
           <HeaderLink
             {...{ href, toggleMenu }}
             to="/dashboard"
             text="ADMINISTRACIÓN"
           />
           <div className="header_btns">
-            <div className="btn_closeS" onClick={closeSession}>
-              {/* <IconDoor  /> */}
-              <Ionicons name="exit-outline" color="#fff" />
+            <div
+              className="link"
+              onClick={() => {
+                closeSession();
+                toggleMenu ? toggleMenu(false) : undefined;
+              }}
+            >
               <h6>CERRAR SESIÓN</h6>
+              <Ionicons name="exit-outline" color="#fff" />
             </div>
           </div>
-        </div>
+        </>
       )}
       {userData && (
         // <div className="header_btns" onClick={()=>{navigate('Profile',{_id:userData._id})}} >
@@ -205,121 +210,3 @@ export const HamburguerMenu = ({ toggleMenu, openMenu }: HambType) => {
     </div>
   );
 };
-
-// const IconPlus = () => {
-//   return (
-//     <svg
-//       clipRule="evenodd"
-//       fillRule="evenodd"
-//       strokeLinejoin="round"
-//       strokeMiterlimit="2"
-//       width={24}
-//       height={24}
-//       viewBox="0 0 24 24"
-//       xmlns="http://www.w3.org/2000/svg"
-//     >
-//       <path
-//         d="m11 11h-7.25c-.414 0-.75.336-.75.75s.336.75.75.75h7.25v7.25c0 .414.336.75.75.75s.75-.336.75-.75v-7.25h7.25c.414 0 .75-.336.75-.75s-.336-.75-.75-.75h-7.25v-7.25c0-.414-.336-.75-.75-.75s-.75.336-.75.75z"
-//         fillRule="nonzero"
-//       />
-//     </svg>
-//   );
-// };
-const IconDoor = () => {
-  return (
-    <svg
-      width="24"
-      height="24"
-      xmlns="http://www.w3.org/2000/svg"
-      fillRule="evenodd"
-      clipRule="evenodd"
-    >
-      <path
-        fill="#fff"
-        d="M13.033 2v-2l10 3v18l-10 3v-2h-9v-7h1v6h8v-18h-8v7h-1v-8h9zm1 20.656l8-2.4v-16.512l-8-2.4v21.312zm-3.947-10.656l-3.293-3.293.707-.707 4.5 4.5-4.5 4.5-.707-.707 3.293-3.293h-9.053v-1h9.053z"
-      />
-    </svg>
-  );
-};
-
-/**
- <div className="header_ctn">
-        <Link className="logo_ctn" to="/" viewTransition>
-          <img src={logo} alt="logo" />
-        </Link>
-        <HeaderLink href={href} to="/" text="NO REP" />
-        <HeaderLink href={href} to="/eventos" text="EVENTOS" />
-
-        {/* {adminData ? (
-          <HeaderLink href={href} to="/dashboard" text="SOLICITUDES" />
-        ) : null} }
-        {!adminData && !userData && (
-          <>
-            <HeaderLink href={href} to="/registro" text="REGISTRO" />
-            <HeaderLink href={href} to="/login" text="INICIAR SESION" />
-          </>
-        )}
-        {adminData && (
-          <>
-            <HeaderLink href={href} to="/dashboard" text="ADMINISTRACIÓN" />
-            <div className="header_btns">
-              <div className="btn_closeS" onClick={closeSession}>
-                <IconDoor />
-                <h6>CERRAR SESIÓN</h6>
-              </div>
-            </div>
-          </>
-        )}
-        {userData && (
-          // <div className="header_btns" onClick={()=>{navigate('Profile',{_id:userData._id})}} >
-          <div className="header_btns" >
-            <div className="link" style={{ cursor: "default",gap:12,display:"flex",minWidth:200,justifyContent:'flex-end' }}>
-              <h6>{userData?.name.toUpperCase()??""}</h6>
-              <Ionicons name="person-circle-outline" color="#fff" size={32} />
-            </div>
-            <div className="btn_closeS" onClick={closeSession}>
-              <IconDoor />
-              <h6>CERRAR SESIÓN</h6>
-            </div>
-          </div>
-        )}
-
-        <HamburguerMenu onClick={toggleMenu} openMenu={openMenu} />
-      </div>
-      <AnimatePresence>
-        {openMenu && (
-          <div style={{ backgroundColor: "#181818" }}>
-            <ViewFadeStatic className="hamb_dropdown">
-              <div onClick={toggleMenu}>
-                <HeaderLink href={href} to="/" text="NO REP" />
-              </div>
-              <div onClick={toggleMenu}>
-                <HeaderLink href={href} to="/eventos" text="EVENTOS" />
-              </div>
-
-              {adminData ? (
-                <HeaderLink href={href} to="/dashboard" text="ADMINISTRACIÓN" />
-              ) : null}
-
-              {(adminData || userData) && (
-                <div onClick={toggleMenu}>
-                  <div className="link" onClick={closeSession}>
-                    <h6>CERRAR SESION</h6>
-                  </div>
-                </div>
-              )}
-              {!adminData && !userData && (
-                <>
-                  <div onClick={toggleMenu}>
-                    <HeaderLink href={href} to="/registro" text="REGISTRO" />
-                  </div>
-                  <div onClick={toggleMenu}>
-                    <HeaderLink href={href} to="/login" text="INICIAR SESION" />
-                  </div>
-                </>
-              )}
-            </ViewFadeStatic>
-          </div>
-        )}
-      </AnimatePresence>
- */
