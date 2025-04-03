@@ -1,4 +1,4 @@
-import { PropsWithChildren, useContext } from "react";
+import { PropsWithChildren, useContext, useEffect } from "react";
 import { Link, Outlet, useHref, useNavigate } from "react-router-dom";
 import "../sass/header.sass";
 import "../sass/modals.sass";
@@ -24,6 +24,13 @@ export const Header = ({ children }: PropsWithChildren) => {
   const href = useHref();
 
   const { ww } = useScreen();
+
+  useEffect(() => {
+    if(ww > 1000 && openMenu){
+      toggleMenu(false)
+    }
+  }, [ww])
+  
 
   return (
     <div className="page_ctn">
