@@ -56,10 +56,10 @@ const AdminEvent = () => {
             {...{ wods, setMsg, setWods, categories: event.categories }}
           />
           <EvnTable {...{ event, wods, setWodInfo, setTeamInfo, setEvent }} />
-          {event.manual_teams ? null : (
+          {!event.manual_teams ? null : (
             <EvnUsers event_id={event._id ?? ""} setMsg={setMsg} />
           )}
-          {event.manual_teams ? null : (
+          {!event.manual_teams ? null : (
             <EvnTickets categories_id={event.categories.map((c) => c.name)} />
           )}
         </>
