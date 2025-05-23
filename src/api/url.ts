@@ -1,7 +1,7 @@
 
-export const url = "http://192.168.1.112:4000/"
+// export const url = "http://192.168.1.112:4000/"
 // export const url = "https://testback.norep.com.ve/"
-// export const url = "https://norep-back.vercel.app/"
+export const url = "https://norep-back.vercel.app/"
 
 // @ts-ignore
 // export const url = import.meta.env.VITE_APP_API_URL;

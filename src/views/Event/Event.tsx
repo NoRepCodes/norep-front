@@ -7,11 +7,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ViewFadeStatic } from "../../components/AnimatedLayouts";
 import { IconLoad } from "../../components/Icons";
 import { ReactCSS, Text, v, View, ViewCtn } from "../../components/UI";
-import { months, monthsLarge, todaySplit } from "../../helpers/date";
+import { monthsLarge, todaySplit } from "../../helpers/date";
 import EventTable from "./EventTable";
 import InscriptionDetail from "./InscriptionDetails";
 import InscriptionTeam from "./InscriptionTeam";
 import DuesPayment from "./DuesPayment";
+import useScreen from "../../hooks/useSize";
+import "./tables.sass";
 
 const Event = () => {
   const { _id } = useParams();
@@ -27,51 +29,59 @@ const Event = () => {
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  // useEffect(() => {
-  //   if (!_id) return () => {};
-  //   (async () => {
-  //     setLoading(true);
-  //     const { status, data } = await getEventTable(_id);
-  //     setLoading(false);
-  //     if (status === 200) {
-  //       setEvent(data.event);
-  //       setWods(data.wods);
+  if(false) console.log(wodInfo);
+  if(false) console.log(teamInfo);
 
-  //       const serverToday = new Date(data.date).valueOf();
-  //       const eventUntil = new Date(data.event.register_time.until).valueOf();
-  //       if (serverToday > eventUntil) setPage(1);
-  //       else setPage(2);
-  //       console.log(data.event);
-  //     } else {
-  //       setMsg({
-  //         type: "error",
-  //         text: data.msg,
-  //         onClose: () => navigate(-1),
-  //       });
-  //     }
-  //   })();
-  // }, []);
+  useEffect(() => {
+    if (!_id) return () => {};
+    (async () => {
+      setLoading(true);
+      const { status, data } = await getEventTable(_id);
+      setLoading(false);
+      if (status === 200) {
+        setEvent(data.event);
+        setWods(data.wods);
 
-  const pressBack = () => {
-    if (page <= 2) navigate(-1);
-    else setPage(2);
-  };
+        const serverToday = new Date(data.date).valueOf();
+        const eventUntil = new Date(data.event.register_time.until).valueOf();
+        if (serverToday > eventUntil) setPage(1);
+        else setPage(2);
+        console.log(data.event);
+      } else {
+        setMsg({
+          type: "error",
+          text: data.msg,
+          onClose: () => navigate(-1),
+        });
+      }
+    })();
+  }, []);
+  
+  const {ww} =useScreen()
+
+//   const pressBack = () => {
+//     if (page <= 2) navigate(-1);
+//     else setPage(2);
+//   };
   if (loading)
     return (
-      <ViewFadeStatic style={{ padding: 42 }}>
+      <ViewFadeStatic style={{ height:'85vh',justifyContent:'center',width:'100%',display:'flex' }}>
         <IconLoad />
       </ViewFadeStatic>
     );
   if (!event || !wods || page === 0) return <ViewFadeStatic style={{minHeight:'90vh'}} />;
+
+  
+
   return (
     <>
-      <ViewCtn style={{minHeight:'90vh'}} >
-        <ViewFadeStatic style={st.ctn}>
-          <TopEvent event={event} />
+      <ViewCtn style={{minHeight:'90vh',padding:ww>1000?24:0}} >
+        <ViewFadeStatic style={st.ctn} >
+          <TopEvent {...{event,ww}} />
           {page === 1 ? (
             <EventTable {...{ event, wods, setWodInfo, setTeamInfo }} />
           ) : null}
-          {page === 2 ? <InscriptionDetail {...{ event, setPage }} /> : null}
+          {page === 2 ? <InscriptionDetail {...{ event, setPage,ww }} /> : null}
           {page === 3 ? (
             <InscriptionTeam {...{ event, setPage, setEvent }} />
           ) : null}
@@ -84,10 +94,10 @@ const Event = () => {
 
 export default Event;
 
-const TopEvent = ({ event }: { event: EvnFields }) => {
+const TopEvent = ({ event,ww }: { event: EvnFields,ww:number }) => {
   return (
     <View style={st.top}>
-      <View style={{ width: 140, height: 140, backgroundColor: "#181818" }}>
+      <View style={{ width: ww>1000?240:140, height: ww>1000?240:140, backgroundColor: "#181818" }}>
         <img
           // contentFit="contain"
           // contentPosition="center"

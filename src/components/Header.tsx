@@ -26,11 +26,8 @@ export const Header = ({ children }: PropsWithChildren) => {
   const { ww } = useScreen();
 
   useEffect(() => {
-    if(ww > 1000 && openMenu){
-      toggleMenu(false)
-    }
-  }, [ww])
-  
+    if (ww > 1000 && openMenu) toggleMenu(false);
+  }, [ww]);
 
   return (
     <div className="page_ctn">

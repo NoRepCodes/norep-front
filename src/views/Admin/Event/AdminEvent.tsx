@@ -11,6 +11,7 @@ import EvnResults from "../../../components/EventUtils/EvnResults";
 import EvnTable from "../../../components/EventUtils/EvnTable";
 import EvnUsers from "../../../components/EventUtils/EvnUsers";
 import EvnTickets from "../../../components/EventUtils/EvnTickets";
+import EvnTeams from "../../../components/EventUtils/EvnTeams";
 
 const AdminEvent = () => {
   //   const isFocused = useIsFocused();
@@ -56,6 +57,14 @@ const AdminEvent = () => {
             {...{ wods, setMsg, setWods, categories: event.categories }}
           />
           <EvnTable {...{ event, wods, setWodInfo, setTeamInfo, setEvent }} />
+          <EvnTeams
+            {...{
+              categories: event.categories,
+              manualTeams: event.manual_teams,
+              forceUpdate: update,
+              event,
+            }}
+          />
           {event.manual_teams ? null : (
             <EvnUsers event_id={event._id ?? ""} setMsg={setMsg} />
           )}

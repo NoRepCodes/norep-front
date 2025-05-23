@@ -2,8 +2,9 @@ import { useState } from "react";
 import { CategFields, EvnFields, WodFields } from "../../types/event";
 import { TeamType } from "../../types/table.t";
 import { ReactCSS, View } from "../../components/UI";
-import { InputBase } from "../../components/Input";
+// import { InputBase } from "../../components/Input";
 import { CategLbs } from "./InscriptionDetails";
+import Table from "../../components/results/Table";
 
 const EventTable = ({
   event,
@@ -35,9 +36,9 @@ const EventTable = ({
         {...{ category, setCategory, isKg, setIsKg }}
       />
       <View style={{ marginTop: -1 }} />
-      {/* <Table
-        {...{ category, wods, isKg, searchBar, setWodInfo, setTeamInfo }}
-      /> */}
+      <Table
+        {...{ category, wods, kg:isKg, searchBar, setWodInfo, setTeamInfo }}
+      />
     </>
   );
 };

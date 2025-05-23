@@ -3,18 +3,25 @@ import { CategFields, EvnFields } from "../../types/event";
 import { Btn, ReactCSS, Text, v, View } from "../../components/UI";
 import { ViewFadeStatic } from "../../components/AnimatedLayouts";
 import Context from "../../helpers/UserContext";
-import { Ionicons } from "../../components/Icons";
+import {
+  Ionicons,
+  SwitchLeftIcon,
+  SwitchRightIcon,
+} from "../../components/Icons";
 import { InfoItem, InfoLabel } from "../../components/Info";
 import { BtnSecondary } from "../../components/Input";
+import AsideBanner from "./AsideBanner";
 
 const scale = 1;
 
 const InscriptionDetail = ({
   event,
   setPage,
+  ww,
 }: {
   event: EvnFields;
   setPage: (x: number) => void;
+  ww: number;
 }) => {
   const { userData } = useContext(Context);
   const [category, setCategory] = useState(event.categories[0]);
@@ -22,126 +29,142 @@ const InscriptionDetail = ({
   if (!category) return null;
   const { filter, slots, price } = category;
   const { amount, limit, age_max, age_min, female, male } = filter ?? {};
+
+  const [isKg, setIsKg] = useState(false);
+
   return (
     <View
-      style={{
-        marginTop: -1,
-        border:'1px solid #181818',
-        paddingBottom: 24,
-      }}
+      style={{ flexDirection: ww > 1000 ? "row" : "column", width: "100%" }}
     >
-      <InfoBanner />
-      <View >
-        <CategLbs
+      {ww > 1000 ? (
+        <AsideBanner
           categories={event.categories}
-          {...{ category, setCategory }}
+          {...{ category, setCategory, isKg, setIsKg, ww }}
         />
-      </View>
-      {/** INFO  */}
+      ) : null}
       <View
         style={{
-          width: "100%",
-          padding: "0px 12px",
-          gap: 12,
+          marginTop: -1,
+          border: "1px solid #181818",
+          paddingBottom: 24,
+          flex: "1",
         }}
       >
-        <InfoLabel label="Detalles de Inscripcion" />
-        <InfoItem
-          {...{ scale }}
-          Icon={Ionicons}
-          icon_name="barbell"
-          label="Nombre:"
-          value={category.name}
-        />
-        <InfoItem
-          {...{ scale }}
-          Icon={Ionicons}
-          icon_name="clipboard"
-          label="Modalidad:"
-          value={(amount ?? 1) <= 1 ? "Individual" : "Equipos"}
-        />
-        {!age_min && !age_max ? null : (
+        <InfoBanner />
+        <View style={{ display: ww > 1000 ? "none" : "flex" }}>
+          <CategLbs
+            categories={event.categories}
+            {...{ category, setCategory, isKg, setIsKg }}
+          />
+        </View>
+        {/** INFO  */}
+        <View
+          style={{
+            width: "100%",
+            padding: "0px 12px",
+            gap: 12,
+          }}
+        >
+          <InfoLabel label="Detalles de Inscripcion" />
           <InfoItem
             {...{ scale }}
             Icon={Ionicons}
-            icon_name="body"
-            label="Edades:"
-            value={age_min + " - " + (age_max === 99 ? "Sin límite" : age_max)}
+            icon_name="barbell"
+            label="Nombre:"
+            value={category.name}
           />
-        )}
-        {!male && !female ? null : (
           <InfoItem
             {...{ scale }}
             Icon={Ionicons}
-            icon_name="male-female"
-            label="Participantes Requeridos:"
-            value={getGender(male, female)}
+            icon_name="clipboard"
+            label="Modalidad:"
+            value={(amount ?? 1) <= 1 ? "Individual" : "Equipos"}
           />
-        )}
+          {!age_min && !age_max ? null : (
+            <InfoItem
+              {...{ scale }}
+              Icon={Ionicons}
+              icon_name="body"
+              label="Edades:"
+              value={
+                age_min + " - " + (age_max === 99 ? "Sin límite" : age_max)
+              }
+            />
+          )}
+          {!male && !female ? null : (
+            <InfoItem
+              {...{ scale }}
+              Icon={Ionicons}
+              icon_name="male-female"
+              label="Participantes Requeridos:"
+              value={getGender(male, female)}
+            />
+          )}
 
-        <InfoItem
-          {...{ scale }}
-          Icon={Ionicons}
-          icon_name="ticket"
-          label="Cupos Disponibles:"
-          value={((limit ?? 0) - (slots ?? 0)).toString() + " / " + limit}
-        />
-        <InfoItem
-          {...{ scale }}
-          Icon={Ionicons}
-          icon_name="calendar"
-          label="Inicio de Inscripciones:"
-          value={event.register_time.since}
-        />
-        <InfoItem
-          {...{ scale }}
-          Icon={Ionicons}
-          icon_name="calendar-number"
-          label="Cierre de Inscripciones:"
-          value={event.register_time.until}
-        />
-        <InfoLabel label="Detalles de Pago" />
-        <InfoItem
-          {...{ scale }}
-          Icon={Ionicons}
-          icon_name="card"
-          label="Costo:"
-          value={`$${price}`}
-        />
-        <InfoItem
-          {...{ scale }}
-          Icon={Ionicons}
-          icon_name="pricetags"
-          label="Cuotas:"
-          value={`${event.dues}`}
-        />
-        <InfoItem
-          {...{ scale }}
-          Icon={Ionicons}
-          icon_name="information-circle"
-          label="Detalles:"
-          multiline
-          value={event.details}
-        />
-        <View style={{ marginTop: 24 }} />
-        {userData ? (
-          <>
-            <BtnSecondary
-              bg={v.prime}
-              color="#181818"
-              text="Inscribirse"
-              onPress={() => setPage(3)}
-              // fs={12}
-            />
-            <BtnSecondary
-              bg="#181818"
-              color={v.prime}
-              text="Pagar Couta"
-              onPress={() => setPage(4)}
-              // fs={12}
-            />
-          </>
-        ) : null}
+          <InfoItem
+            {...{ scale }}
+            Icon={Ionicons}
+            icon_name="ticket"
+            label="Cupos Disponibles:"
+            value={((limit ?? 0) - (slots ?? 0)).toString() + " / " + limit}
+          />
+          <InfoItem
+            {...{ scale }}
+            Icon={Ionicons}
+            icon_name="calendar"
+            label="Inicio de Inscripciones:"
+            value={event.register_time.since}
+          />
+          <InfoItem
+            {...{ scale }}
+            Icon={Ionicons}
+            icon_name="calendar-number"
+            label="Cierre de Inscripciones:"
+            value={event.register_time.until}
+          />
+          <InfoLabel label="Detalles de Pago" />
+          <InfoItem
+            {...{ scale }}
+            Icon={Ionicons}
+            icon_name="card"
+            label="Costo:"
+            value={`$${price}`}
+          />
+          <InfoItem
+            {...{ scale }}
+            Icon={Ionicons}
+            icon_name="pricetags"
+            label="Cuotas:"
+            value={`${event.dues}`}
+          />
+          <InfoItem
+            {...{ scale }}
+            Icon={Ionicons}
+            icon_name="information-circle"
+            label="Detalles:"
+            multiline
+            value={event.details}
+          />
+          <View style={{ marginTop: 24 }} />
+          {userData ? (
+            <>
+              <BtnSecondary
+                bg={v.prime}
+                color="#181818"
+                text="Inscribirse"
+                onPress={() => setPage(3)}
+                // fs={12}
+              />
+              <BtnSecondary
+                bg="#181818"
+                color={v.prime}
+                text="Pagar Couta"
+                onPress={() => setPage(4)}
+                // fs={12}
+              />
+            </>
+          ) : null}
+        </View>
       </View>
     </View>
   );
@@ -240,7 +263,6 @@ const BtnKgs = ({
   );
 };
 
-
 export const InfoBanner = () => {
   return (
     <View style={st.infoBanner}>
@@ -261,7 +283,7 @@ const st: ReactCSS = {
     justifyContent: "space-between",
     gap: 6,
     alignItems: "center",
-    borderBottom:'1px solid #181818',
+    borderBottom: "1px solid #181818",
   },
   categ_lbs: {
     // marginLeft:1,
@@ -269,8 +291,8 @@ const st: ReactCSS = {
     backgroundColor: v.prime,
     borderColor: "#181818",
     border: "1px solid #181818",
-    borderRight:0,
-    borderLeft:0,
+    borderRight: 0,
+    borderLeft: 0,
     borderTop: 0,
     height: 42,
   },

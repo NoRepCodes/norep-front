@@ -3,11 +3,11 @@
     "target": "ES2020",
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
+    "module": "Preserve",
     "skipLibCheck": true,
 
     /* Bundler mode */
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
@@ -22,3 +22,12 @@
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
+
+// {
+//   "files": [],
+//   "include": ["src"],
+//   "references": [
+//     { "path": "./tsconfig.app.json" },
+//     { "path": "./tsconfig.node.json" }
+//   ]
+// }

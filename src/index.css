@@ -208,3 +208,15 @@ input::-webkit-calendar-picker-indicator {
   display: none;
   -webkit-appearance: none;
 }
+
+
+@import "tailwindcss";
+
+@theme{
+  --color-primary: #F1FF48;
+  --color-secondary: #7B00FE;
+  --color-third: #ffffff;
+  --color-fourth: #181818;
+  --color-light: #EEEEEE;
+  --color-dark: #191919;
+}

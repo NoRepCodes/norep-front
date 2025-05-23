@@ -332,24 +332,28 @@ const Category = ({
           onChange={changeAge}
           value={checks.age}
           {...{ isDisabled }}
+          key={1}
         />
         <CheckBox
           label="Genero"
           onChange={changeGender}
           value={checks.gender}
           {...{ isDisabled }}
+          key={2}
         />
         <CheckBox
           label="Integrantes por Equipos"
           onChange={changeUsers}
           value={checks.users}
           {...{ isDisabled }}
+          key={3}
         />
         <CheckBox
           label="Limite de equipos"
           onChange={changeTeams}
           value={checks.teams}
           {...{ isDisabled }}
+          key={4}
         />
       </div>
       <div className="inputs_ctn">
