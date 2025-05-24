@@ -1,9 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { CategFields, EvnFields } from "../../types/event";
 import Dropdown from "../Dropdown";
-import Input, { BtnSecondary, InputSelect, Line } from "../Input";
+import Input, { BtnPrimary, BtnSecondary, InputSelect, Line } from "../Input";
 import Context from "../../helpers/UserContext";
-import { ManualTeamFields, manualTeamSchema } from "../../types/zod/registerManualTeam.zod";
+import {
+  ManualTeamFields,
+  manualTeamSchema,
+} from "../../types/zod/registerManualTeam.zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateTeams } from "../../api/api_event";
@@ -16,7 +19,7 @@ const EvnTeams = ({
   event,
   forceUpdate,
 }: {
-  forceUpdate:()=>void,
+  forceUpdate: () => void;
   categories: CategFields[];
   event: EvnFields;
 }) => {
@@ -39,19 +42,17 @@ const EvnTeams = ({
         value={categ.name}
       />
       <Line />
-      {event.manual_teams ? (
-        <TeamInputs {...{ categ, setIsOpen, forceUpdate }} />
-      ) : (
-        null
+      {
+        event.manual_teams ? (
+          <TeamInputs {...{ categ, setIsOpen, forceUpdate }} />
+        ) : null
         // <TeamCards {...{ categ, categories, event_id: event._id }} />
-      )}
+      }
     </Dropdown>
   );
 };
 
-export default EvnTeams
-
-
+export default EvnTeams;
 
 const TeamInputs = ({
   categ,
@@ -133,7 +134,10 @@ const TeamInputs = ({
               ph="Ej:Team Exodus"
             />
           </View>
-          <Btn onPress={() => remove(i)} className="flex justify-center pb-2 px-1.5 cursor-pointer">
+          <Btn
+            onPress={() => remove(i)}
+            className="flex justify-center pb-2 px-1.5 cursor-pointer"
+          >
             <Ionicons name="close-circle-outline" size={24} />
           </Btn>
         </ViewFadeStatic>
@@ -142,25 +146,36 @@ const TeamInputs = ({
         <Text style={{ color: "red" }}>{errors.root.message}</Text>
       )}
       <View style={{ marginTop: "auto" }} />
-      <BtnSecondary
-        onPress={newTeam}
-        text="Añadir Equipo"
-        bg="black"
-        color="white"
-      />
-      <View style={{ flexDirection: "row", gap: 12 }}>
-        <BtnSecondary
-          onPress={() => reset()}
-          text="Cancelar"
-          color="black"
-          bg="white"
-        />
-        <BtnSecondary
-          onPress={handleSubmit(onConfirm)}
-          text="Confirmar"
-          loading={loading}
-        />
-      </View>
+
+      {/* <div style={{ maxWidth: 320, minWidth: 200,aligs }}> */}
+
+      <div className="flex flex-col gap-3 w-full justify-between sm:flex-row">
+        <div className="max-w-70 min-w-45 self-start">
+          <BtnSecondary
+            onPress={newTeam}
+            text="Añadir Equipo"
+            bg="black"
+            color="white"
+          />
+        </div>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <ViewFadeStatic style={{ width: 180 }}>
+            <BtnSecondary
+              onPress={() => reset()}
+              text="Cancelar"
+              color="black"
+              bg="white"
+            />
+          </ViewFadeStatic>
+          <ViewFadeStatic style={{ width: 180 }}>
+            <BtnPrimary
+              onPress={handleSubmit(onConfirm)}
+              text="Confirmar"
+              loading={loading}
+            />
+          </ViewFadeStatic>
+        </div>
+      </div>
     </ViewFadeStatic>
   );
 };
