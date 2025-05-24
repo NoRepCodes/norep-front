@@ -52,7 +52,7 @@ const TicketListDisplay = ({
 }) => {
   return (
     <ViewFadeStatic style={{ alignItems: "center" }}>
-      {tickets.map((t, i) => (
+      {tickets.map((t) => (
         <ViewFadeStatic key={t._id}>
           <Btn onPress={() => setTicketInfo(t)} style={st.teamCard_btn}>
             <View style={st.teamCard_ctn}>

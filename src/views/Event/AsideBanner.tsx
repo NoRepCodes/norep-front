@@ -10,7 +10,7 @@ import { CategFields } from "../../types/event";
 const AsideBanner = ({
   categories,
   category,
-  setCategory,
+  // setCategory,
   isKg,
   setIsKg,
 }: {

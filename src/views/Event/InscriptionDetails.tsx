@@ -5,8 +5,8 @@ import { ViewFadeStatic } from "../../components/AnimatedLayouts";
 import Context from "../../helpers/UserContext";
 import {
   Ionicons,
-  SwitchLeftIcon,
-  SwitchRightIcon,
+  // SwitchLeftIcon,
+  // SwitchRightIcon,
 } from "../../components/Icons";
 import { InfoItem, InfoLabel } from "../../components/Info";
 import { BtnSecondary } from "../../components/Input";
