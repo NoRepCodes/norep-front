@@ -79,13 +79,13 @@ const Links = ({ toggleMenu }: { toggleMenu?: (state?: boolean) => void }) => {
       <HeaderLink {...{ href, toggleMenu }} to="/" text="NO REP" />
       <HeaderLink {...{ href, toggleMenu }} to="/eventos" text="EVENTOS" />
 
-      {adminData && (
+      {/* {adminData && (
         <HeaderLink
           {...{ href, toggleMenu }}
           to="/dashboard"
           text="SOLICITUDES"
         />
-      )}
+      )} */}
       {!adminData && !userData && (
         <>
           <HeaderLink
