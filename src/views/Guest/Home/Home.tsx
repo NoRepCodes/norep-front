@@ -64,7 +64,6 @@ const Home = () => {
             const since = todayIso(-7, event.since);
             const until = todayIso(-7, event.until);
             const t = todayIso();
-            console.log(t,since,until);
             if (t >= since && t <= until) {
               return <EventCard key={event._id} event={event} />;
             } else return null;

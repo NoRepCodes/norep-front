@@ -20,7 +20,6 @@ export const checkUsers = async (
   card_3?: string,
   card_4?: string
 ) => {
-  console.log('wtf?????');
   return await axios
     .post(`${url}checkUsers`, { captain, card_2, card_3, card_4, category })
     .then((res) => res)
