@@ -233,3 +233,14 @@ input::-webkit-calendar-picker-indicator {
   max-width: 100vw;
   box-sizing: border-box;
 }
+
+#root{
+  display: none;
+}
+
+#payment{
+  padding-top: 12px;
+  padding-left: 12px;
+  font-weight: bold;
+  font-family:'Times New Roman', Times, serif ;
+}
