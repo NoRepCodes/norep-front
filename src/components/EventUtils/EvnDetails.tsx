@@ -282,7 +282,7 @@ const Category = ({
     else {
       setChecks(() => {
         setValue(`categories.${index}.filter.amount`, 0);
-        return { ...checks, users: false };
+        return { ...checks, users: false,gender:false };
       });
     }
   };
@@ -335,9 +335,9 @@ const Category = ({
           key={1}
         />
         <CheckBox
-          label="Genero"
-          onChange={changeGender}
-          value={checks.gender}
+          label="Limite de equipos"
+          onChange={changeTeams}
+          value={checks.teams}
           {...{ isDisabled }}
           key={2}
         />
@@ -348,13 +348,15 @@ const Category = ({
           {...{ isDisabled }}
           key={3}
         />
-        <CheckBox
-          label="Limite de equipos"
-          onChange={changeTeams}
-          value={checks.teams}
-          {...{ isDisabled }}
-          key={4}
-        />
+        {checks.users && (
+          <CheckBox
+            label="Genero"
+            onChange={changeGender}
+            value={checks.gender}
+            {...{ isDisabled }}
+            key={4}
+          />
+        )}
       </div>
       <div className="inputs_ctn">
         {categFields(index).map((itm) => (

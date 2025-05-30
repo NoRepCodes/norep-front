@@ -26,7 +26,7 @@ export const Header = ({ children }: PropsWithChildren) => {
   const { ww } = useScreen();
 
   useEffect(() => {
-    if (ww > 1000 && openMenu) toggleMenu(false);
+    if (ww > 768 && openMenu) toggleMenu(false);
   }, [ww]);
 
   return (
@@ -36,14 +36,14 @@ export const Header = ({ children }: PropsWithChildren) => {
         <Link className="logo_ctn" to="/" viewTransition>
           <img src={logo} alt="logo" />
         </Link>
-        {ww > 1000 ? (
+        {ww > 768 ? (
           <Links />
         ) : (
           <HamburguerMenu {...{ openMenu, toggleMenu }} />
         )}
       </View>
       <AnimatePresence>
-        {openMenu && ww < 1000 && (
+        {openMenu && ww < 768 && (
           <div style={{ backgroundColor: "#181818" }}>
             <ViewFadeStatic className="hamb_dropdown">
               <Links {...{ toggleMenu }} />

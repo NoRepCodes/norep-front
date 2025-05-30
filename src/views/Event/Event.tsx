@@ -6,14 +6,15 @@ import { getEventTable } from "../../api/api_guest";
 import { useNavigate, useParams } from "react-router-dom";
 import { ViewFadeStatic } from "../../components/AnimatedLayouts";
 import { IconLoad } from "../../components/Icons";
-import { ReactCSS, Text, v, View, ViewCtn } from "../../components/UI";
 import { monthsLarge, todaySplit } from "../../helpers/date";
 import EventTable from "./EventTable";
 import InscriptionDetail from "./InscriptionDetails";
 import InscriptionTeam from "./InscriptionTeam";
 import DuesPayment from "./DuesPayment";
-import useScreen from "../../hooks/useSize";
+import corner from "../../images/corner.png";
 import "./tables.sass";
+import { ArwIcon, StrongIcon } from "../../components/PartnersSvg";
+
 
 const Event = () => {
   const { _id } = useParams();
@@ -57,22 +58,13 @@ const Event = () => {
     })();
   }, []);
 
-  const { ww } = useScreen();
-
   //   const pressBack = () => {
   //     if (page <= 2) navigate(-1);
   //     else setPage(2);
   //   };
   if (loading)
     return (
-      <ViewFadeStatic
-        style={{
-          height: "85vh",
-          justifyContent: "center",
-          width: "100%",
-          display: "flex",
-        }}
-      >
+      <ViewFadeStatic className="flex justify-center h-[85vh] w-full">
         <IconLoad />
       </ViewFadeStatic>
     );
@@ -81,112 +73,103 @@ const Event = () => {
 
   return (
     <>
-      <ViewCtn style={{ minHeight: "90vh", padding: ww > 1000 ? 24 : 0 }}>
-        <ViewFadeStatic style={st.ctn}>
-          <TopEvent {...{ event, ww }} />
+      <div className="min-h-[90vh] p-3 md:p-6 md:px-12">
+        <ViewFadeStatic className="w-full max-w-[100vw] self-center relative items-center mt-3">
+          <TopEvent {...{ event }} />
           {page === 1 ? (
             <EventTable {...{ event, wods, setWodInfo, setTeamInfo }} />
           ) : null}
           {page === 2 ? (
-            <InscriptionDetail {...{ event, setPage, ww }} />
+            <InscriptionDetail {...{ event, setPage }} />
           ) : null}
           {page === 3 ? (
             <InscriptionTeam {...{ event, setPage, setEvent }} />
           ) : null}
           {page === 4 ? <DuesPayment {...{ event, setPage }} /> : null}
         </ViewFadeStatic>
-      </ViewCtn>
+      </div>
     </>
   );
 };
 
 export default Event;
 
-const TopEvent = ({ event, ww }: { event: EvnFields; ww: number }) => {
+const TopEvent = ({ event }: { event: EvnFields }) => {
   return (
-    <View style={st.top}>
-      <View
-        style={{
-          width: ww > 1000 ? 240 : 140,
-          height: ww > 1000 ? 240 : 140,
-          backgroundColor: "#181818",
-        }}
-      >
-        <img
-          // contentFit="contain"
-          // contentPosition="center"
-          style={{ height: "100%" }}
-          src={event.secure_url}
-        />
-      </View>
-      <View
-        style={{
-          backgroundColor: "white",
-          padding: 12,
-          justifyContent: "space-between",
-        }}
-      >
-        <View>
-          <Text style={{ fontFamily: "Roboto", fontWeight: "bold" }}>
-            {event.name}
-          </Text>
-          <View style={{ height: 5, backgroundColor: v.prime }} />
-        </View>
-        <View style={{ flexDirection: "row", gap: 12 }}>
+    <div className="flex w-full border-neutral-950 border-1 relative">
+      <img
+        src={corner}
+        alt="corner"
+        className="hidden md:flex absolute w-40 h-40 right-6 top-6"
+      />
+      <div className="hidden absolute bottom-4 right-6 gap-3 md:flex">
+        <div className="w-30 h-12  ">
+          <StrongIcon />
+        </div>
+        <div className="w-30 h-12 ">
+          <ArwIcon />
+        </div>
+      </div>
+
+      <div className="View_rn bg-neutral-950 w-[140px] h-[140px] md:w-60 md:h-60">
+        <img className="h-full" src={event.secure_url} />
+      </div>
+      <div className="View_rn bg-white p-3 justify-between md:p-6">
+        <div className="View_rn">
+          <p className="font-[Roboto] font-bold md:text-3xl">{event.name}</p>
+          <div className="h-[5px] bg-primary" />
+          {/* <p className="lg:mt-3 px-1 font-[Roboto]">{event.place}</p> */}
+        </div>
+        <div className="flex flex-row gap-3 md:gap-4">
           <DateBox sDate={event.since} />
           <DateBox sDate={event.until} />
-        </View>
-      </View>
-    </View>
+        </div>
+      </div>
+    </div>
   );
 };
 
 const DateBox = ({ sDate = "" }) => {
   return (
-    <View
-      style={{
-        backgroundColor: v.prime,
-        padding: "12px 8px",
-        borderRadius: 6,
-        minWidth: 52,
-        gap: 4,
-      }}
-    >
-      <Text style={{ fontFamily: "Anton", fontSize: 24, textAlign: "center" }}>
+    <div className="flex flex-col bg-primary py-2 px-3 rounded-md min-h-13 gap-1 md:py-3">
+      <p className="font-[Anton] text-2xl text-center md:text-3xl">
         {todaySplit(sDate)[2]}
-      </Text>
-      <Text
-        style={{
-          fontFamily: "Anton",
-          fontSize: 12,
-          textAlign: "center",
-          marginTop: -2,
-        }}
-      >
-        {/* {(months[parseInt(todaySplit(sDate)[1]) - 1]).toUpperCase()} */}
+      </p>
+      <p className="font-[Anton] text-xs text-center -mt-[2px] md:text-xl">
         {monthsLarge[parseInt(todaySplit(sDate)[1]) - 1]}
-      </Text>
-    </View>
+      </p>
+    </div>
   );
 };
 
-const st: ReactCSS = {
-  ctn: {
-    width: "100%",
-    maxWidth: "100vw",
-    alignSelf: "center",
-    position: "relative",
-    alignItems: "center",
-    marginTop: 12,
-  },
-  top: {
-    flexDirection: "row",
-    // borderBottomColor: "#181818",
-    // borderWidth: 1,
-    border: "1px solid #181818",
-    width: "100%",
-  },
-};
+// const DateBox = ({ sDate = "" }) => {
+//   return (
+//     <View
+//       style={{
+//         backgroundColor: v.prime,
+//         padding: "12px 8px",
+//         borderRadius: 6,
+//         minWidth: 52,
+//         gap: 4,
+//       }}
+//     >
+//       <Text style={{ fontFamily: "Anton", fontSize: 24, textAlign: "center" }}>
+//         {todaySplit(sDate)[2]}
+//       </Text>
+//       <Text
+//         style={{
+//           fontFamily: "Anton",
+//           fontSize: 12,
+//           textAlign: "center",
+//           marginTop: -2,
+//         }}
+//       >
+//         {/* {(months[parseInt(todaySplit(sDate)[1]) - 1]).toUpperCase()} */}
+//         {monthsLarge[parseInt(todaySplit(sDate)[1]) - 1]}
+//       </Text>
+//     </View>
+//   );
+// };
 
 // const wtf = {
 //   register_time: {

@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CategFields, EvnFields } from "../../types/event";
 import { Btn, ReactCSS, Text, v, View } from "../../components/UI";
 import { ViewFadeStatic } from "../../components/AnimatedLayouts";
@@ -11,17 +11,16 @@ import {
 import { InfoItem, InfoLabel } from "../../components/Info";
 import { BtnSecondary } from "../../components/Input";
 import AsideBanner from "./AsideBanner";
+import useScreen from "../../hooks/useSize";
 
-const scale = 1;
+// const scale = 1;
 
 const InscriptionDetail = ({
   event,
   setPage,
-  ww,
 }: {
   event: EvnFields;
   setPage: (x: number) => void;
-  ww: number;
 }) => {
   const { userData } = useContext(Context);
   const [category, setCategory] = useState(event.categories[0]);
@@ -31,120 +30,113 @@ const InscriptionDetail = ({
   const { amount, limit, age_max, age_min, female, male } = filter ?? {};
 
   const [isKg, setIsKg] = useState(false);
+  const { ww } = useScreen();
+  const [scale, setScale] = useState(1);
+  useEffect(() => {
+    if (ww > 1024 && scale === 1) setScale(1.2);
+    else if (ww < 1024 && scale == 1.2) setScale(1);
+  }, [ww]);
 
   return (
-    <View
-      style={{ flexDirection: ww > 1000 ? "row" : "column", width: "100%" }}
-    >
-      {ww > 1000 ? (
-        <AsideBanner
-          categories={event.categories}
-          {...{ category, setCategory, isKg, setIsKg, ww }}
-        />
-      ) : null}
-      <View
-        style={{
-          marginTop: -1,
-          border: "1px solid #181818",
-          paddingBottom: 24,
-          flex: "1",
-        }}
-      >
+    <div className="flex-col flex w-full md:flex-row">
+      <AsideBanner
+        categories={event.categories}
+        {...{ category, setCategory, isKg, setIsKg, ww }}
+      />
+      <div className="flex flex-col flex-1 -mt-[1px] border-black border-[1px] pb-6">
         <InfoBanner />
-        <View style={{ display: ww > 1000 ? "none" : "flex" }}>
+        <div className="flex flex-col md:hidden">
           <CategLbs
             categories={event.categories}
             {...{ category, setCategory, isKg, setIsKg }}
           />
-        </View>
+        </div>
         {/** INFO  */}
-        <View
-          style={{
-            width: "100%",
-            padding: "0px 12px",
-            gap: 12,
-          }}
-        >
-          <InfoLabel label="Detalles de Inscripcion" />
-          <InfoItem
-            {...{ scale }}
-            Icon={Ionicons}
-            icon_name="barbell"
-            label="Nombre:"
-            value={category.name}
-          />
-          <InfoItem
-            {...{ scale }}
-            Icon={Ionicons}
-            icon_name="clipboard"
-            label="Modalidad:"
-            value={(amount ?? 1) <= 1 ? "Individual" : "Equipos"}
-          />
-          {!age_min && !age_max ? null : (
+        <div className="flex flex-col w-full px-4 gap-3 lg:flex-row lg:gap-6 lg:px-10">
+          <div className="flex flex-col gap-3 flex-1">
+            <InfoLabel label="Detalles de Inscripcion" />
             <InfoItem
               {...{ scale }}
               Icon={Ionicons}
-              icon_name="body"
-              label="Edades:"
-              value={
-                age_min + " - " + (age_max === 99 ? "Sin límite" : age_max)
-              }
+              icon_name="barbell"
+              label="Nombre:"
+              value={category.name}
             />
-          )}
-          {!male && !female ? null : (
             <InfoItem
               {...{ scale }}
               Icon={Ionicons}
-              icon_name="male-female"
-              label="Participantes Requeridos:"
-              value={getGender(male, female)}
+              icon_name="clipboard"
+              label="Modalidad:"
+              value={(amount ?? 1) <= 1 ? "Individual" : "Equipos"}
             />
-          )}
+            {!age_min && !age_max ? null : (
+              <InfoItem
+                {...{ scale }}
+                Icon={Ionicons}
+                icon_name="body"
+                label="Edades:"
+                value={
+                  age_min + " - " + (age_max === 99 ? "Sin límite" : age_max)
+                }
+              />
+            )}
+            {!male && !female ? null : (
+              <InfoItem
+                {...{ scale }}
+                Icon={Ionicons}
+                icon_name="male-female"
+                label="Participantes Requeridos:"
+                value={getGender(male, female)}
+              />
+            )}
 
-          <InfoItem
-            {...{ scale }}
-            Icon={Ionicons}
-            icon_name="ticket"
-            label="Cupos Disponibles:"
-            value={((limit ?? 0) - (slots ?? 0)).toString() + " / " + limit}
-          />
-          <InfoItem
-            {...{ scale }}
-            Icon={Ionicons}
-            icon_name="calendar"
-            label="Inicio de Inscripciones:"
-            value={event.register_time.since}
-          />
-          <InfoItem
-            {...{ scale }}
-            Icon={Ionicons}
-            icon_name="calendar-number"
-            label="Cierre de Inscripciones:"
-            value={event.register_time.until}
-          />
-          <InfoLabel label="Detalles de Pago" />
-          <InfoItem
-            {...{ scale }}
-            Icon={Ionicons}
-            icon_name="card"
-            label="Costo:"
-            value={`$${price}`}
-          />
-          <InfoItem
-            {...{ scale }}
-            Icon={Ionicons}
-            icon_name="pricetags"
-            label="Cuotas:"
-            value={`${event.dues}`}
-          />
-          <InfoItem
-            {...{ scale }}
-            Icon={Ionicons}
-            icon_name="information-circle"
-            label="Detalles:"
-            multiline
-            value={event.details}
-          />
+            <InfoItem
+              {...{ scale }}
+              Icon={Ionicons}
+              icon_name="ticket"
+              label="Cupos Disponibles:"
+              value={((limit ?? 0) - (slots ?? 0)).toString() + " / " + limit}
+            />
+            <InfoItem
+              {...{ scale }}
+              Icon={Ionicons}
+              icon_name="calendar"
+              label="Inicio de Inscripciones:"
+              value={event.register_time.since}
+            />
+            <InfoItem
+              {...{ scale }}
+              Icon={Ionicons}
+              icon_name="calendar-number"
+              label="Cierre de Inscripciones:"
+              value={event.register_time.until}
+            />
+          </div>
+          <div className="flex flex-col gap-3 flex-1">
+            <InfoLabel label="Detalles de Pago" />
+            <InfoItem
+              {...{ scale }}
+              Icon={Ionicons}
+              icon_name="card"
+              label="Costo:"
+              value={`$${price}`}
+            />
+            <InfoItem
+              {...{ scale }}
+              Icon={Ionicons}
+              icon_name="pricetags"
+              label="Cuotas:"
+              value={`${event.dues}`}
+            />
+            <InfoItem
+              {...{ scale }}
+              Icon={Ionicons}
+              icon_name="information-circle"
+              label="Detalles:"
+              multiline
+              value={event.details}
+            />
+          </div>
           <View style={{ marginTop: 24 }} />
           {userData ? (
             <>
@@ -164,9 +156,9 @@ const InscriptionDetail = ({
               />
             </>
           ) : null}
-        </View>
-      </View>
-    </View>
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -265,26 +257,16 @@ const BtnKgs = ({
 
 export const InfoBanner = () => {
   return (
-    <View style={st.infoBanner}>
+    <div className="flex flex-row bg-primary px-4 py-2 w-full gap-1.5 items-center border-b-1 border-black">
       <Ionicons name="information-circle-outline" size={18} color="black" />
-      <Text style={{ fontSize: 10, flex: 1, flexWrap: "wrap" }}>
+      <p className="text-[10px] flex-1 flex-wrap lg:text-xs ">
         Todos los usuarios deberán estar registrados antes de crear el equipo
-      </Text>
-    </View>
+      </p>
+    </div>
   );
 };
 
 const st: ReactCSS = {
-  infoBanner: {
-    backgroundColor: v.prime,
-    padding: "6px 12px",
-    flexDirection: "row",
-    width: "100%",
-    justifyContent: "space-between",
-    gap: 6,
-    alignItems: "center",
-    borderBottom: "1px solid #181818",
-  },
   categ_lbs: {
     // marginLeft:1,
     flexDirection: "row",

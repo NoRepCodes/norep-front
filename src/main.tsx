@@ -17,6 +17,7 @@ import Dashboard from "./views/Admin/Dashboard/Dashboard";
 import AdminEvent from "./views/Admin/Event/AdminEvent";
 import CreateEvent from "./views/Admin/CreateEvent/CreateEvent";
 import Results from "./views/Event/Event2";
+// import Event from "./views/Event/Event";
 // import Test from "./Test";
 
 const ErrorElement = () => {
@@ -47,6 +48,7 @@ const router = createBrowserRouter([
       {
         path: "resultados/:_id",
         element: <Results />,
+        // element: <Event />,
       },
       // {
       //   path: "test",
@@ -187,13 +189,18 @@ createRoot(document.getElementById("root")!).render(<App />);
  * - - EDIT EVENT ✅
  * - - EDIT WODS ✅
  * - - EDIT RESULTS ✅
+ * 
+ * - - - CHECKS OF TEAMS LIMITS - ONLY ALLOW TEAMS GENRE IF LIMIT TEAMS IS SELECTED ✅
+ * 
+ * - CATEGORY INFO PAGE ✅
+ * 
  * - - EDIT TEAMS 
  * - - SEE USERS 
  * - -
  * - -
  * - PROFILE PAGE 
- * - CATEGORY INFO PAGE 
  * - CATEGORY REGISTER PAGE 
+ * - Fix Table
  * - 
  * - RE-DESIGN INPUTS
  * - 

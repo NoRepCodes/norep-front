@@ -79,11 +79,11 @@ time,
 mark,
 audio,
 video {
-  margin: 0;
+  /* margin: 0;
   padding: 0;
   border: 0;
   font-size: 100%;
-  font: inherit;
+  font: inherit; */
   vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
@@ -122,11 +122,11 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
-a:visited{
+a:visited {
   text-decoration: none;
   color: #191919;
 }
-a{
+a {
   color: #191919;
   text-decoration: none;
 }
@@ -134,35 +134,35 @@ a{
 a:focus { text-decoration: none; color:orange; }
 a:active { text-decoration: none; color:teal; } */
 
-button{
+button {
   border: none;
   outline: none;
   background-color: #ffffff00;
-  width:100%;
+  width: 100%;
   cursor: pointer;
 }
 
-input{
-	border: none;
-	outline: none;
+input {
+  border: none;
+  outline: none;
   /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
   display: flex;
   position: relative;
   /* background-color: #181818; */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   /* width: 100%;
   height: 100%; */
 }
 
-#root{
+#root {
   display: flex;
   position: relative;
   /* background-color: #181818; */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   width: 100%;
   height: 100%;
 }
@@ -175,28 +175,27 @@ body {
   height: 70vh;
   gap: 2em;
 }
-.error_page h6{
+.error_page h6 {
   font-size: 5em;
   color: #181818;
 }
 
-.error_page p{
+.error_page p {
   font-weight: bold;
 }
-.checkbox ion-icon{
+.checkbox ion-icon {
   font-size: 24px;
   color: #fff;
-  
 }
-.checkbox ion-icon svg{
+.checkbox ion-icon svg {
   background-color: #fff;
 }
 
-button h6{
+button h6 {
   font-size: 1.15em;
 }
 
-option{
+option {
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -209,14 +208,28 @@ input::-webkit-calendar-picker-indicator {
   -webkit-appearance: none;
 }
 
-
 @import "tailwindcss";
 
-@theme{
-  --color-primary: #F1FF48;
-  --color-secondary: #7B00FE;
+@theme {
+  --color-primary: #f1ff48;
+  --color-secondary: #7b00fe;
   --color-third: #ffffff;
   --color-fourth: #181818;
-  --color-light: #EEEEEE;
+  --color-light: #eeeeee;
   --color-dark: #191919;
+}
+
+.View_rn {
+  flex-direction: column;
+  align-content: flex-start;
+  flex-shrink: 0;
+  display: flex;
+  box-sizing: border-box;
+}
+
+.View_ctn {
+  display: flex;
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
 }
