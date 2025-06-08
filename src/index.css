@@ -234,10 +234,6 @@ input::-webkit-calendar-picker-indicator {
   box-sizing: border-box;
 }
 
-#root{
-  display: none;
-}
-
 #payment{
   padding-top: 12px;
   padding-left: 12px;
