@@ -134,6 +134,8 @@ export type TicketT = {
   users: {
     name: string;
     card_id: string;
+    _id:string,
+    phone:string,
   }[];
   phone: string;
   name: string;

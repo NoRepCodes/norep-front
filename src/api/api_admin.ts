@@ -10,10 +10,11 @@ export const getTeamInfo = async (_id: string) => {
 };
 export const updateTeamInfo = async (
   team: TeamFields,
-  categoryIdToPush?: string
+  categoryIdToPush?: string,
+  cards?:string[]
 ) => {
   return await axios
-    .post(`${url}updateTeamInfo`, { team, categoryIdToPush })
+    .post(`${url}updateTeamInfo`, { team, categoryIdToPush,cards })
     .then((res) => res)
     .catch((err) => catchError(err));
 };
@@ -64,6 +65,12 @@ export const getUserInfo = async (_id: string) => {
 export const getUserSearch = async (text: string) => {
   return await axios
     .get(`${url}getUserSearch?text=${text}`)
+    .then((res) => res)
+    .catch((err) => catchError(err));
+};
+export const userSearchDB = async (text: string,page:number,pageSize?:number) => {
+  return await axios
+    .post(`${url}userSearchDB`,{text,page,pageSize})
     .then((res) => res)
     .catch((err) => catchError(err));
 };

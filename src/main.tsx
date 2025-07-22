@@ -7,8 +7,8 @@ import EventsList from "./views/Guest/EventList/EventList";
 // import Event from "./views/Event/Event";
 // import Login from "./views/Guest/Login/Login";
 import Context, { MsgT, UserDataT } from "./helpers/UserContext";
-import "./index.css";
 import "./sass/index.sass";
+import "./index.css";
 import { getVersion } from "./api/api_guest";
 import Login from "./views/Guest/Login/Login";
 import Register from "./views/Guest/Register/Register";
@@ -16,8 +16,10 @@ import RecoverPassword from "./views/User/RecoverPassword/RecoverPassword";
 import Dashboard from "./views/Admin/Dashboard/Dashboard";
 import AdminEvent from "./views/Admin/Event/AdminEvent";
 import CreateEvent from "./views/Admin/CreateEvent/CreateEvent";
-import Results from "./views/Event/Event2";
-// import Event from "./views/Event/Event";
+// import Results from "./views/Event/Event2";
+import Event from "./views/Event/Event";
+import Profile from "./views/User/Profile/Profile";
+import { UsersDB } from "./views/Admin/UsersDB";
 // import Test from "./Test";
 
 const ErrorElement = () => {
@@ -47,8 +49,8 @@ const router = createBrowserRouter([
       },
       {
         path: "resultados/:_id",
-        element: <Results />,
-        // element: <Event />,
+        // element: <Results />,
+        element: <Event />,
       },
       // {
       //   path: "test",
@@ -75,8 +77,16 @@ const router = createBrowserRouter([
         element: <AdminEvent />,
       },
       {
+        path: "dashboard/usersdb",
+        element: <UsersDB />,
+      },
+      {
         path: "crearEvento",
         element: <CreateEvent />,
+      },
+      {
+        path: "profile/:_id",
+        element: <Profile />,
       },
     ],
   },
@@ -87,6 +97,7 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
+  const [first, setFirst] = useState(true)
   const [userData, setUserData] = useState<UserDataT|undefined>(undefined);
   const [adminData, setAdminData] = useState<
     { username: string; _id: string } | undefined
@@ -108,9 +119,10 @@ const App = () => {
           if (data.user) setUserData(data.user);
         }
       }
+      setFirst(false)
     })();
   }, []);
-
+  if (first) return undefined 
   return (
     // <StrictMode>
     <Context.Provider
@@ -169,9 +181,9 @@ createRoot(document.getElementById("root")!).render(<App />);
  * - - - - CARD_ID VALIDATION ✅
  * - - - - EMAIL VALIDATION ✅
  *
- * - - USER CATEGORY REGISTER (BACKEND) ⏳
+ * - - USER CATEGORY REGISTER (BACKEND) ✅
  * - - - - CREATE TICKET ✅
- * - - - - EMAIL SENDER AT ACCEPTANCE ⏳
+ * - - - - EMAIL SENDER AT ACCEPTANCE ✅
  * - - - - REMOVE PAY-PICTURE AT ACCEPTANCE ✅
  * - - - - VERIFY CARDS_ID ✅
  *
@@ -193,15 +205,23 @@ createRoot(document.getElementById("root")!).render(<App />);
  * - - - CHECKS OF TEAMS LIMITS - ONLY ALLOW TEAMS GENRE IF LIMIT TEAMS IS SELECTED ✅
  * 
  * - CATEGORY INFO PAGE ✅
+ * - CATEGORY REGISTER PAGE ✅ 
  * 
- * - - EDIT TEAMS 
- * - - SEE USERS 
+ * - Fix Table ✅ 
+ * - Fix lbs ✅ 
+ * 
+ * - PROFILE PAGE ✅ 
+ * - FIXED WOD INFO ✅ 
+ * 
+ * - - SEE USERS /  pagination ✅ 
+ * 
+ * - - EDIT TEAMS / ✅ 
+ * - - - FIX ERROR WHERE TEAMS + USERS DONT LOAD [EVENTO NO ENCONTRADO] ✅ 
  * - -
- * - -
- * - PROFILE PAGE 
- * - CATEGORY REGISTER PAGE 
- * - Fix Table
+ * - - FIX EMAIL SENDER ✅ 
  * - 
+ * - FIX TICKETS ✅
+ * - - TEST IT 
  * - RE-DESIGN INPUTS
  * - 
  *
@@ -212,5 +232,5 @@ createRoot(document.getElementById("root")!).render(<App />);
  * norep.code@yahoo.com
  * Crossfit2024
  *
- *
+ * vite.config.ts.timestamp-1751549702289-cbcc070299057
  * */

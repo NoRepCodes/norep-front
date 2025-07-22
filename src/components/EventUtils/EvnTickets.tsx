@@ -1,12 +1,18 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Dropdown from "../Dropdown";
-import { getTickets } from "../../api/api_admin";
+import { approveTicket, getTickets, rejectTicket } from "../../api/api_admin";
 import { TicketT } from "../../types/event";
 import { ViewFadeStatic } from "../AnimatedLayouts";
-import { Btn, ReactCSS, Text, v, View } from "../UI";
+import { Btn, v } from "../UI";
 import { Ionicons } from "../Icons";
+import { InfoLabel } from "../Info";
+import { BtnSecondary, Line } from "../Input";
+import { UserCard } from "./EvnUsers";
+import { todayString } from "../../helpers/date";
+import Context from "../../helpers/UserContext";
 
 const EvnTickets = ({ categories_id }: { categories_id: string[] }) => {
+  if (false) console.log(categories_id);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [tickets, setTickets] = useState<TicketT[] | undefined>(undefined);
@@ -15,8 +21,6 @@ const EvnTickets = ({ categories_id }: { categories_id: string[] }) => {
   const cleanTicket = () => {
     setTicketInfo(undefined);
   };
-
-  if (false) console.log(tickets, ticketInfo, cleanTicket, categories_id);
 
   const onPress = async () => {
     if (isOpen) return setIsOpen(false);
@@ -35,9 +39,9 @@ const EvnTickets = ({ categories_id }: { categories_id: string[] }) => {
       {tickets && !ticketInfo ? (
         <TicketListDisplay {...{ tickets, setTicketInfo }} />
       ) : null}
-      {/* {ticketInfo ? (
+      {ticketInfo ? (
         <TicketInfoDisplay {...{ ticketInfo, setTickets, cleanTicket }} />
-      ) : null} */}
+      ) : null}
     </Dropdown>
   );
 };
@@ -54,15 +58,18 @@ const TicketListDisplay = ({
     <ViewFadeStatic style={{ alignItems: "center" }}>
       {tickets.map((t) => (
         <ViewFadeStatic key={t._id}>
-          <Btn onPress={() => setTicketInfo(t)} style={st.teamCard_btn}>
-            <View style={st.teamCard_ctn}>
-              <Text style={st.teamCard_name}>{t.name}</Text>
+          <Btn
+            onPress={() => setTicketInfo(t)}
+            className="-mx-3 -mt-[1px] cursor-pointer "
+          >
+            <div className="w-full min-h-13 border-1 px-6 py-3 flex flex-row justify-between gap-3 items-center">
+              <p className="font-RobotoMono text-sm">{t.name}</p>
               <Ionicons
                 name={isDone(t) ? "checkmark-circle" : "hourglass-outline"}
                 size={24}
                 color={isDone(t) ? v.second : "black"}
               />
-            </View>
+            </div>
           </Btn>
         </ViewFadeStatic>
       ))}
@@ -70,46 +77,93 @@ const TicketListDisplay = ({
   );
 };
 
-// const TicketInfoDisplay = ({
-//   ticketInfo,
-//   setTickets,
-//   cleanTicket,
-// }: {
-//   ticketInfo: TicketT;
-//   setTickets: React.Dispatch<React.SetStateAction<TicketT[] | undefined>>;
-//   cleanTicket: () => void;
-// }) => {
-//   return()
-// }
+const TicketInfoDisplay = ({
+  ticketInfo,
+  setTickets,
+  cleanTicket,
+}: {
+  ticketInfo: TicketT;
+  setTickets: React.Dispatch<React.SetStateAction<TicketT[] | undefined>>;
+  cleanTicket: () => void;
+}) => {
+  if (false) console.log(ticketInfo);
 
+  
+  const { setMsg } = useContext(Context);
+  const [loading, setLoading] = useState(false);
 
-const st:ReactCSS = {
-  teamCard_btn: {
-    margin: '0px -12px',
-    marginTop: -1,
-  },
-  teamCard_ctn: {
-    minWidth: 'calc(100vh * 0.95)',
-    minHeight: 52,
-    borderWidth: 1,
-    padding: '12px 24px',
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 12,
-  },
-  teamCard_name: {
-    fontFamily: "RobotoMono",
-    fontSize: 14,
-    marginTop: -3,
-    flex: 1,
-    alignSelf: "center",
-  },
-  btn_remove: {
-    justifyContent: "flex-end",
-    paddingBottom: 8,
-    padding: '0px 6px 8px',
-    // backgroundColor: "red",
-  },
+  const onConfirm = async () => {
+    setLoading(true);
+    const { status, data } = await approveTicket(ticketInfo);
+    setLoading(false);
+    if (status === 200) {
+      setTickets(data);
+      setMsg({
+        type: "success",
+        text: "Solicitud aprovada con éxito!",
+        onClose: cleanTicket,
+      });
+    } else {
+      setMsg({
+        type: "error",
+        text: data.msg,
+      });
+    }
+  };
+
+  const onCancel = () => {
+    setMsg({
+      type: "warning",
+      text: "Seguro que desea rechazar la solicitud?",
+      onConfirm:()=>{rejectTicket(ticketInfo)},
+    });
+  };
+
+  return (
+    <div className="flex flex-col gap-2 -mt-2">
+      <div>
+        <BtnSecondary text="Regresar" onPress={()=>setTickets(undefined)} />
+      </div>
+      <div className="flex flex-col md:flex-row md:gap-6 md:justify-between lg:w-full">
+        <div className="flex flex-col gap-4 md:w-100 lg:w-full">
+          <InfoLabel label="Detalles" />
+          <LabelItm label="Evento: " text={ticketInfo.event} />
+          <LabelItm label="C.I Capitán: " text={ticketInfo.users[0].card_id} />
+          <LabelItm label="Nro Telefónico: " text={ticketInfo.phone} />
+          <LabelItm
+            label="Fecha de registro: "
+            text={todayString(ticketInfo.createdAt)}
+          />
+        </div>
+        <div className="flex flex-col gap-4 pb-3 lg:w-full">
+          <InfoLabel label="Usuarios" />
+          <ViewFadeStatic className="overflow-hidden">
+            {ticketInfo.users.map((user, i) => (
+              <UserCard {...{ user, i }} key={i} />
+            ))}
+          </ViewFadeStatic>
+        </div>
+      </div>
+      <Line />
+      <div className="flex flex-col md:flex-row md:gap-12 md:flex-wrap">
+        {ticketInfo.dues.map((due, index) => (
+          <PayDisplay {...{ due, ticketInfo, index }} key={due._id} />
+        ))}
+      </div>
+      <Line />
+      <div className=" flex flex-col gap-3 md:flex-row md:w-100 md:self-end">
+        <BtnSecondary
+          bg="#9747FF"
+          color="#fff"
+          font_weigth={400}
+          onPress={onConfirm}
+          text="Aceptar Solicitud"
+          loading={loading}
+        />
+        <BtnSecondary onPress={onCancel} text="Cancelar Solicitud" />
+      </div>
+    </div>
+  );
 };
 
 const isDone = (t: TicketT) => {
@@ -119,4 +173,43 @@ const isDone = (t: TicketT) => {
   });
   if (aux >= t.duesLimit) return true;
   else return false;
+};
+
+const LabelItm = ({ label, text }: { label: string; text: string }) => {
+  return (
+    <p>
+      <span className="font-medium">{label}</span>
+      {text}
+    </p>
+  );
+};
+
+const PayDisplay = ({
+  due,
+  ticketInfo,
+  index,
+}: {
+  due: {
+    _id: string;
+    secure_url: string;
+    public_id: string;
+    transf: string;
+    payDues: number;
+  };
+  index: number;
+  ticketInfo: TicketT;
+}) => {
+  return (
+    <div className="flex flex-col gap-3">
+      <p className="font-Anton">Pago {index + 1}</p>
+      <LabelItm label="Nro. Transferencia:" text={due.transf} />
+      <LabelItm
+        label="Coutas:"
+        text={`${due.payDues}/${ticketInfo.duesLimit}`}
+      />
+      <div className="w-50 h-60 self-center p-1 border-1 border-dashed rounded-xs overflow-hidden">
+        <img className="w-full" src={due.secure_url} />
+      </div>
+    </div>
+  );
 };

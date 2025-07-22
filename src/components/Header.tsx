@@ -1,5 +1,5 @@
 import { PropsWithChildren, useContext, useEffect } from "react";
-import { Link, Outlet, useHref, useNavigate } from "react-router-dom";
+import { Link, Outlet, useHref } from "react-router-dom";
 import "../sass/header.sass";
 import "../sass/modals.sass";
 import "../sass/msg.sass";
@@ -17,9 +17,6 @@ import useScreen from "../hooks/useSize";
 export const Header = ({ children }: PropsWithChildren) => {
   const [openMenu, toggleMenu] = useModal();
 
-  const navigate = useNavigate();
-  if (false) console.log(navigate);
-
   //@ts-ignore
   const href = useHref();
 
@@ -28,6 +25,11 @@ export const Header = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     if (ww > 768 && openMenu) toggleMenu(false);
   }, [ww]);
+
+  useEffect(() => {
+    if(openMenu) toggleMenu(false)
+  }, [href])
+  
 
   return (
     <div className="page_ctn">
@@ -123,13 +125,16 @@ const Links = ({ toggleMenu }: { toggleMenu?: (state?: boolean) => void }) => {
       )}
       {userData && (
         // <div className="header_btns" onClick={()=>{navigate('Profile',{_id:userData._id})}} >
-        <div className="header_btns">
-          <div className="link">
-            <h6>{userData?.name.toUpperCase() ?? ""}</h6>
-            <Ionicons name="person-circle-outline" color="#fff" size={32} />
-          </div>
+        <>
+          <Link to={`Profile/${userData._id}`} viewTransition className="md:ml-auto" >
+            <div className="link gap-4">
+              <h6>{userData?.name.toUpperCase() ?? ""}</h6>
+              <Ionicons name="person-circle-outline" color="#fff" size={32} />
+            {href === `/Profile/${userData._id}` && <div className="link_active" />}
+            </div>
+          </Link>
           <div
-            className="link"
+            className="link gap-4"
             onClick={() => {
               closeSession();
               toggleMenu ? toggleMenu(false) : undefined;
@@ -138,7 +143,7 @@ const Links = ({ toggleMenu }: { toggleMenu?: (state?: boolean) => void }) => {
             <h6>CERRAR SESIÓN</h6>
             <Ionicons name="exit-outline" color="#fff" />
           </div>
-        </div>
+        </>
       )}
     </>
   );

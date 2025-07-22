@@ -43,7 +43,7 @@ const Table = ({
   };
 
   return (
-    <div className="table">
+    <div className="tablex flex flex-col w-full h-[70vh] overflow-auto box-border border-r-black relative">
       {category && <TableHeader {...{ wods, category, setWodInfo }} />}
       {category.updating && !adminData ? (
         <h1 className="updating_text">La tabla se está actualizando...</h1>
@@ -77,7 +77,7 @@ const TableHeader = ({ wods, category, setWodInfo }: TableHeaderT) => {
   //   // `;
   // };
   return (
-    <div className="table_header">
+    <div className="table_header flex flex-row h-16 min-h-16 box-border sticky top-0 bg-white z-1000">
       <div className="header_names">
         <div className="th_cell th_pos">
           <h1>Posicion</h1>
@@ -92,7 +92,10 @@ const TableHeader = ({ wods, category, setWodInfo }: TableHeaderT) => {
               <div
                 className={`th_cell wod_info_cell ${show?"wod_hover":''}`}
                 key={w._id}
-                onClick={() => (show ? setWodInfo(w) : undefined)}
+                onClick={() => {
+                  console.log(show + w.name);
+                  (show ? setWodInfo(w) : undefined)
+                }}
               >
                 <h1>{w.name}</h1>
               </div>
@@ -100,7 +103,7 @@ const TableHeader = ({ wods, category, setWodInfo }: TableHeaderT) => {
           }
         })}
       </div>
-      <div className="header_points">
+      <div className="header_points lg:border-r-1">
         <h1>Puntos</h1>
         <div className="line"></div>
         <h1>Total</h1>

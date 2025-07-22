@@ -8,8 +8,7 @@ import {
   pushDueSchema,
 } from "../../types/zod/registerTicket.zod";
 import { pushTicket } from "../../api/api_user";
-import { ViewFadeStatic } from "../../components/AnimatedLayouts";
-import { v, View } from "../../components/UI";
+import { v } from "../../components/UI";
 import { InfoBanner } from "./InscriptionDetails";
 import { InfoLabel } from "../../components/Info";
 import Input, { BtnSecondary, InputBase } from "../../components/Input";
@@ -64,56 +63,61 @@ const DuesPayment = ({
   };
 
   return (
-    <ViewFadeStatic style={{flexDirection:'column',display:'flex'}} >
-      <View style={{ marginTop: -1 }} />
-      <View style={{padding:'1px 1px 0px 1px',backgroundColor:'#181818'}} >
+    <div className="flex flex-col flex-1 -mt-[1px] border-black border-[1px] pb-6">
+      <div className="-mt-[1px] pt-[1px]">
         <InfoBanner />
-      </View>
-      <View style={{ gap: 12, width: "95%", paddingBottom: 52,alignSelf:'center' }}>
+      </div>
+      {/* <CategLbs showLb={false} /> */}
+      <div className="w-full p-3 self-center">
         <InfoLabel label="Pago de cuota" />
-        {/* <Input
-            {...{ errors, control }}
-            name="captain_id"
-            label="C.I Capitán"
+      </div>
+
+      <div className="flex flex-col gap-3 w-[95%] p-1.5 self-center lg:flex-row lg:justify-between">
+        <div className="flex flex-col gap-3 w-full self-center lg:self-auto lg:w-[40%]">
+          <InputBase
             isDisabled
-          /> */}
-        <InputBase isDisabled value={userData.card_id} onChange={() => {}} />
-        <Input
-          {...{ errors, control }}
-          name="payDues"
-          label="Nro. de cuota a pagar"
-          ph="1"
-          mode="select"
-          options={duesAmount()}
-        />
-        <Input
-          {...{ errors, control }}
-          name="transf"
-          label="Nro. de Transferencia"
-          ph="9876574321"
-        />
-        <Input
-          mode="image"
-          {...{ control, errors }}
-          name={`image`}
-          label="Comprobante de pago"
-        />
-        <View style={{ height: 24 }} />
-        <BtnSecondary
-          bg={v.prime}
-          color="#181818"
-          onPress={handleSubmit(confirm)}
-          text="Confirmar"
-          loading={loading}
-        />
-        <BtnSecondary
-          bg="#fff"
-          color="#181818"
-          onPress={() => setPage(2)}
-          text="Regresar"
-        />
-      </View>
-    </ViewFadeStatic>
+            value={userData.card_id}
+            onChange={() => {}}
+            label="C.I Capitan"
+          />
+          <Input
+            {...{ errors, control }}
+            name="payDues"
+            label="Nro. de cuota a pagar"
+            ph="1"
+            mode="select"
+            options={duesAmount()}
+          />
+          <Input
+            {...{ errors, control }}
+            name="transf"
+            label="Nro. de Transferencia"
+            ph="9876574321"
+          />
+        </div>
+        <div className="flex flex-col gap-3 w-full self-center lg:self-auto lg:w-[40%]">
+          <Input
+            mode="image"
+            {...{ control, errors }}
+            name={`image`}
+            label="Comprobante de pago"
+          />
+          <BtnSecondary
+            bg={v.prime}
+            color="#181818"
+            onPress={handleSubmit(confirm)}
+            text="Confirmar"
+            loading={loading}
+          />
+          <BtnSecondary
+            bg="#fff"
+            color="#181818"
+            onPress={() => setPage(2)}
+            text="Regresar"
+          />
+        </div>
+      </div>
+    </div>
   );
 };
 

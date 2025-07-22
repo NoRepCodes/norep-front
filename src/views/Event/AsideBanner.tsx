@@ -4,8 +4,9 @@ import {
   SwitchLeftIcon,
   SwitchRightIcon,
 } from "../../components/Icons";
-import { v, View } from "../../components/UI";
+import { v } from "../../components/UI";
 import { CategFields } from "../../types/event";
+import arw from '../../images/arw.jpg'
 
 const AsideBanner = ({
   categories,
@@ -15,30 +16,30 @@ const AsideBanner = ({
   setIsKg,
 }: {
   categories: CategFields[];
-  category: CategFields;
-  setCategory: React.Dispatch<React.SetStateAction<CategFields>>;
+  category: CategFields|undefined;
+  setCategory: React.Dispatch<React.SetStateAction<CategFields|undefined>>;
   isKg: boolean;
   setIsKg: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="flex-col w-60 hidden md:flex">
-      <div className="flex flex-col bg-primary border-l-1 border-b-1 border-black">
-        <View style={{ padding: "24px 12px" }}>
+    <div className="flex-col min-w-[241px] hidden md:flex 2xl:min-w-[301px]">
+      <div className="flex flex-col bg-primary border-x-1 border-b-1 border-black">
+        <div className="px-3 py-6">
           <p style={{ fontSize: 24, fontFamily: "Anton" }}>CATEGORIAS</p>
-        </View>
+        </div>
         <div className="flex flex-col relative">
           <div
             onClick={() => setOpen(!open)}
-            className="flex justify-between items-center pointer border-t-1 border-black px-3 py-4 "
+            className="flex justify-between items-center pointer border-t-1 border-black px-3 py-4 cursor-pointer"
           >
-            <p>{category.name}</p>
+            <p>{category?category.name:''}</p>
             <Ionicons name="caret-down-outline" />
           </div>
           {!open ? null : (
             <div
-              className="flex flex-col absolute bg-primary -left-[1px] border-l-1 border-black box-border"
+              className="flex flex-col absolute bg-primary -left-[1px] border-l-1 border-black box-border cursor-pointer "
               style={{
                 width: "calc(100% + 1px)",
                 top: "calc(100% + 1px)",
@@ -46,7 +47,7 @@ const AsideBanner = ({
             >
               {categories.map((c) => (
                 <p
-                  className="pointer px-3 py-4 border-b-1 border-black"
+                  className="pointer px-3 py-4 border-b-1 border-r-1 border-black hover:bg-dark hover:text-primary"
                   onClick={() => {
                     setCategory(c);
                     setOpen(false);
@@ -60,7 +61,7 @@ const AsideBanner = ({
           )}
         </div>
         <div
-          className="pointer border-t-1 border-black px-3 py-4 flex flex-row justify-between items-center"
+          className="pointer border-t-1 border-black px-3 py-4 flex flex-row justify-between items-center cursor-pointer"
           style={{ backgroundColor: isKg ? v.four : v.prime }}
           onClick={() => setIsKg(!isKg)}
         >
@@ -73,6 +74,9 @@ const AsideBanner = ({
             <SwitchRightIcon size={24} color={v.prime} />
           )}
         </div>
+      </div>
+      <div className="w-[241px] mt-10 2xl:w-[301px]">
+        <img src={arw} alt="arawak" />
       </div>
     </div>
   );

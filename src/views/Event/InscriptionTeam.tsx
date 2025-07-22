@@ -5,7 +5,6 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { TicketFields, ticketSchema } from "../../types/zod/registerTicket.zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { checkUsers, registerTicket } from "../../api/api_user";
-import { ViewFadeStatic } from "../../components/AnimatedLayouts";
 import { v, View } from "../../components/UI";
 import { InfoBanner } from "./InscriptionDetails";
 import { InfoLabel } from "../../components/Info";
@@ -115,88 +114,92 @@ const InscriptionTeam = ({
   };
 
   return (
-    <ViewFadeStatic  style={{flexDirection:'column',display:'flex'}} >
-      <View style={{ marginTop: -1 }} />
-      <View style={{padding:'1px 1px 0px 1px',backgroundColor:'#181818'}} >
+    <div className="flex flex-col flex-1 -mt-[1px] border-black border-[1px] pb-6">
+      <div className="-mt-[1px] pt-[1px]">
         <InfoBanner />
-      </View>
+      </div>
       {/* <CategLbs showLb={false} /> */}
-      <View style={{ gap: 12, width: "95%", padding:6,alignSelf:'center' }}>
+      <div className="w-full p-3 self-center">
         <InfoLabel label="Inscripcion" />
-        <Input
-          {...{ errors, control }}
-          name="category"
-          ph="Ej: Avanzado"
-          label="Categoría"
-          mode="select"
-          options={event.categories.map((c) => c.name)}
-        />
-        <Input
-          {...{ errors, control }}
-          name="name"
-          ph="Ej: Team Rayo"
-          label="Nombre de equipo"
-          isDisabled={findAmount(watch("category")) <= 1 ? true : false}
-        />
-        {fields.map(({ id }, i) => {
-          if (i === 0)
-            return (
-              <Input
-                key={id}
-                {...{ control, errors }}
-                name={`users.${i}.card_id`}
-                label="C.I Capitán:"
-                isDisabled
-              />
-            );
-          else
-            return (
-              <Input
-                key={id}
-                {...{ control, errors }}
-                name={`users.${i}.card_id`}
-                label={`C.I Atleta ${i + 1}`}
-                ph="29789456"
-              />
-            );
-        })}
-
-        <Input
-          {...{ errors, control }}
-          name="dues.0.payDues"
-          label="Cuotas a pagar"
-          ph="1"
-          mode="select"
-          options={duesAmount()}
-        />
-        <Input
-          {...{ errors, control }}
-          name="dues.0.transf"
-          label="Nro. de Transferencia"
-          ph="9876574321"
-        />
-        <Input
-          mode="image"
-          {...{ control, errors }}
-          name={`dues.0.secure_url`}
-          label="Comprobante de pago"
-        />
-        <View style={{ height: 32 }} />
-        <BtnSecondary
-          bg={v.prime}
-          color="#181818"
-          onPress={handleSubmit(confirm)}
-          text="Confirmar"
-          loading={loading}
-        />
-        <BtnSecondary
-          bg="#fff"
-          color="#181818"
-          onPress={() => setPage(2)}
-          text="Regresar"
-        />
-      </View>
-    </ViewFadeStatic>
+      </div>
+      <div className="flex flex-col gap-3 w-[95%] p-1.5 self-center lg:flex-row lg:justify-between">
+        <div className="flex flex-col gap-3 w-full self-center lg:self-auto lg:w-[40%]">
+          <Input
+            {...{ errors, control }}
+            name="category"
+            ph="Ej: Avanzado"
+            label="Categoría"
+            mode="select"
+            options={event.categories.map((c) => c.name)}
+          />
+          <Input
+            {...{ errors, control }}
+            name="name"
+            ph="Ej: Team Rayo"
+            label="Nombre de equipo"
+            isDisabled={findAmount(watch("category")) <= 1 ? true : false}
+          />
+          {fields.map(({ id }, i) => {
+            if (i === 0)
+              return (
+                <Input
+                  key={id}
+                  {...{ control, errors }}
+                  name={`users.${i}.card_id`}
+                  label="C.I Capitán:"
+                  isDisabled
+                />
+              );
+            else
+              return (
+                <Input
+                  key={id}
+                  {...{ control, errors }}
+                  name={`users.${i}.card_id`}
+                  label={`C.I Atleta ${i + 1}`}
+                  ph="29789456"
+                />
+              );
+          })}
+          <Input
+            {...{ errors, control }}
+            name="dues.0.payDues"
+            label="Cuotas a pagar"
+            ph="1"
+            mode="select"
+            options={duesAmount()}
+          />
+        </div>
+        <div className="flex flex-col gap-3 w-full self-center lg:self-auto lg:w-[40%]">
+          <Input
+            {...{ errors, control }}
+            name="dues.0.transf"
+            label="Nro. de Transferencia"
+            ph="9876574321"
+          />
+          <Input
+            mode="image"
+            {...{ control, errors }}
+            name={`dues.0.secure_url`}
+            label="Comprobante de pago"
+          />
+          <View style={{ height: 32 }} />
+          <BtnSecondary
+            bg={v.prime}
+            color="#181818"
+            onPress={handleSubmit(confirm)}
+            text="Confirmar"
+            loading={loading}
+          />
+          <BtnSecondary
+            bg="#fff"
+            color="#181818"
+            onPress={() => setPage(2)}
+            text="Regresar"
+          />
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -49,6 +49,12 @@ const Dashboard = () => {
               <Ionicons name="add-outline" />
             </div>
           </Link>
+          <Link to='/dashboard/usersdb' viewTransition>
+            <div className="create_btn">
+              <p>Usuarios</p>
+              <Ionicons name="person" />
+            </div>
+          </Link>
         </div>
         <motion.div
           className="cards_ctn"

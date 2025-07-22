@@ -44,13 +44,13 @@ export const userUpdateField: TInfo[] = [
     name: "name",
     required: true,
   },
-  {
-    label: "Cédula",
-    ph: "Ej: 22657819",
-    name: "card_id",
-    required: true,
-    isDisabled:true,
-  },
+  // {
+  //   label: "Cédula",
+  //   ph: "Ej: 22657819",
+  //   name: "card_id",
+  //   required: true,
+  //   isDisabled:true,
+  // },
   {
     label: "Género",
     ph: "Seleccionar Género",
@@ -90,13 +90,13 @@ export const userUpdateField2: TInfo[] = [
     mode: "text",
     required: true,
   },
-  {
-    label: "Email",
-    ph: "ejemplo@gmail.com",
-    name: "email",
-    required: true,
-    isDisabled:true,
-  },
+  // {
+    // label: "Email",
+    // ph: "ejemplo@gmail.com",
+    // name: "email",
+    // required: true,
+    // isDisabled:true,
+  // },
   {
     label: "Pais",
     ph: "Venezuela",

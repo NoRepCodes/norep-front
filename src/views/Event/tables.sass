@@ -1,27 +1,7 @@
 @use '../../sass/var' as v
 
-.table
-  display: flex
-  flex-direction: column
-  width: 100%
-  // min-height: 60vh
-  height: 70vh
-  overflow: auto
-  box-sizing: border-box
-  border-right: 1px solid #181818
-  position: relative
-
+.tablex
   .table_header
-    display: flex
-    flex-direction: row
-    height: 4em
-    min-height: 4em
-    box-sizing: border-box
-    position: sticky
-    top: 0
-    background-color: #fff
-    z-index: 1000
-
     .header_names
       flex: 1
       height: 100%
@@ -214,14 +194,14 @@
 @media screen and (width < 1000px)
   .empty_slot
     // display: none
-  .table
+  .tablex
     border-left: 1px solid #181818
     border-right: 1px solid #181818
     border-bottom: 1px solid #181818
 
     .table_header
-      min-height: 3em
-      height: 3em
+      // min-height: 3em
+      // height: 3em
       .header_names
         padding: 0px .3em
         gap: 1em

@@ -12,6 +12,7 @@ import EvnTable from "../../../components/EventUtils/EvnTable";
 import EvnUsers from "../../../components/EventUtils/EvnUsers";
 import EvnTickets from "../../../components/EventUtils/EvnTickets";
 import EvnTeams from "../../../components/EventUtils/EvnTeams";
+import { WodModal } from "../../Event/Event";
 
 const AdminEvent = () => {
   //   const isFocused = useIsFocused();
@@ -23,7 +24,6 @@ const AdminEvent = () => {
   // MODALS
   const [wodInfo, setWodInfo] = useState<WodFields | undefined>(undefined);
   const [teamInfo, setTeamInfo] = useState<TeamType | undefined>(undefined);
-  if (false) console.log(wodInfo);
   if (false) console.log(teamInfo);
 
   const { _id } = useParams();
@@ -45,35 +45,40 @@ const AdminEvent = () => {
     update();
   }, []);
   return (
-    <div className="adminEvent_page">
-      <h6 style={{ fontSize: 48, marginBottom: 32 }}>EVENTO - {event?.name}</h6>
-      {event && wods && !loading ? (
-        <>
-          <EvnDetails {...{ event, setMsg, setEvent }} />
-          <EvnWods
-            {...{ wods, setMsg, setWods, categories: event.categories }}
-          />
-          <EvnResults
-            {...{ wods, setMsg, setWods, categories: event.categories }}
-          />
-          <EvnTable {...{ event, wods, setWodInfo, setTeamInfo, setEvent }} />
-          <EvnTeams
-            {...{
-              categories: event.categories,
-              manualTeams: event.manual_teams,
-              forceUpdate: update,
-              event,
-            }}
-          />
-          {event.manual_teams ? null : (
-            <EvnUsers event_id={event._id ?? ""} setMsg={setMsg} />
-          )}
-          {event.manual_teams ? null : (
-            <EvnTickets categories_id={event.categories.map((c) => c.name)} />
-          )}
-        </>
-      ) : null}
-    </div>
+    <>
+      <WodModal {...{ wodInfo, setWodInfo }} />
+      <div className="adminEvent_page">
+        <h6 style={{ fontSize: 48, marginBottom: 32 }}>
+          EVENTO - {event?.name}
+        </h6>
+        {event && wods && !loading ? (
+          <>
+            <EvnDetails {...{ event, setMsg, setEvent }} />
+            <EvnWods
+              {...{ wods, setMsg, setWods, categories: event.categories }}
+            />
+            <EvnResults
+              {...{ wods, setMsg, setWods, categories: event.categories }}
+            />
+            <EvnTable {...{ event, wods, setWodInfo, setTeamInfo, setEvent }} />
+            <EvnTeams
+              {...{
+                categories: event.categories,
+                manualTeams: event.manual_teams,
+                forceUpdate: update,
+                event,
+              }}
+            />
+            {event.manual_teams ? null : (
+              <EvnUsers event_id={event._id ?? ""} setMsg={setMsg} />
+            )}
+            {event.manual_teams ? null : (
+              <EvnTickets categories_id={event.categories.map((c) => c.name)} />
+            )}
+          </>
+        ) : null}
+      </div>
+    </>
   );
 };
 

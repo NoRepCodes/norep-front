@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import Context from "../../helpers/UserContext";
-import { EvnFields, WodFields } from "../../types/event";
+import { CategFields, EvnFields, WodFields } from "../../types/event";
 import { TeamType } from "../../types/table.t";
 import { getEventTable } from "../../api/api_guest";
 import { useNavigate, useParams } from "react-router-dom";
 import { ViewFadeStatic } from "../../components/AnimatedLayouts";
-import { IconLoad } from "../../components/Icons";
-import { monthsLarge, todaySplit } from "../../helpers/date";
+import { IconLoad, Ionicons } from "../../components/Icons";
+import { convSeconds, monthsLarge, todaySplit } from "../../helpers/date";
 import EventTable from "./EventTable";
 import InscriptionDetail from "./InscriptionDetails";
 import InscriptionTeam from "./InscriptionTeam";
@@ -14,7 +14,11 @@ import DuesPayment from "./DuesPayment";
 import corner from "../../images/corner.png";
 import "./tables.sass";
 import { ArwIcon, StrongIcon } from "../../components/PartnersSvg";
-
+import useScreen from "../../hooks/useSize";
+import AsideBanner from "./AsideBanner";
+import { AnimatePresence, motion } from "framer-motion";
+import { BtnSecondary, Line } from "../../components/Input";
+import { InfoItem } from "../../components/Info";
 
 const Event = () => {
   const { _id } = useParams();
@@ -30,7 +34,10 @@ const Event = () => {
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  if (false) console.log(wodInfo);
+  const [category, setCategory] = useState<CategFields | undefined>(undefined);
+  const [isKg, setIsKg] = useState(false);
+  const { ww } = useScreen();
+
   if (false) console.log(teamInfo);
 
   useEffect(() => {
@@ -42,12 +49,13 @@ const Event = () => {
       if (status === 200) {
         setEvent(data.event);
         setWods(data.wods);
-
+        // TO DO EVENT CATEGORY SELECT HERE
+        setCategory(data.event.categories[0]);
         const serverToday = new Date(data.date).valueOf();
         const eventUntil = new Date(data.event.register_time.until).valueOf();
         if (serverToday > eventUntil) setPage(1);
         else setPage(2);
-        console.log(data.event);
+        // console.log(data.event);
       } else {
         setMsg({
           type: "error",
@@ -73,19 +81,27 @@ const Event = () => {
 
   return (
     <>
-      <div className="min-h-[90vh] p-3 md:p-6 md:px-12">
+      <WodModal {...{ wodInfo, setWodInfo }} />
+      <div className="min-h-[90vh] p-3 md:p-6 md:px-12 2xl:p-20">
         <ViewFadeStatic className="w-full max-w-[100vw] self-center relative items-center mt-3">
           <TopEvent {...{ event }} />
-          {page === 1 ? (
-            <EventTable {...{ event, wods, setWodInfo, setTeamInfo }} />
-          ) : null}
-          {page === 2 ? (
-            <InscriptionDetail {...{ event, setPage }} />
-          ) : null}
-          {page === 3 ? (
-            <InscriptionTeam {...{ event, setPage, setEvent }} />
-          ) : null}
-          {page === 4 ? <DuesPayment {...{ event, setPage }} /> : null}
+
+          <div className="flex-col flex w-full md:flex-row ">
+            <AsideBanner
+              categories={event.categories}
+              {...{ category, setCategory, isKg, setIsKg, ww }}
+            />
+            {page === 1 ? (
+              <EventTable
+                {...{ event, wods, setWodInfo, setTeamInfo, isKg, setIsKg }}
+              />
+            ) : null}
+            {page === 2 ? <InscriptionDetail {...{ event, setPage }} /> : null}
+            {page === 3 ? (
+              <InscriptionTeam {...{ event, setPage, setEvent }} />
+            ) : null}
+            {page === 4 ? <DuesPayment {...{ event, setPage }} /> : null}
+          </div>
         </ViewFadeStatic>
       </div>
     </>
@@ -96,7 +112,7 @@ export default Event;
 
 const TopEvent = ({ event }: { event: EvnFields }) => {
   return (
-    <div className="flex w-full border-neutral-950 border-1 relative">
+    <div className="flex w-full border-neutral-950 border-1 relative ">
       <img
         src={corner}
         alt="corner"
@@ -111,16 +127,21 @@ const TopEvent = ({ event }: { event: EvnFields }) => {
         </div>
       </div>
 
-      <div className="View_rn bg-neutral-950 w-[140px] h-[140px] md:w-60 md:h-60">
+      <div className="View_rn bg-neutral-950 border-r-neutral-950 border-r-1 w-[140px] h-[140px] md:w-60 md:h-60 2xl:w-[300px] 2xl:h-[300px]">
         <img className="h-full" src={event.secure_url} />
       </div>
-      <div className="View_rn bg-white p-3 justify-between md:p-6">
+      <div className="View_rn  p-3 justify-between flex-1 md:p-6 z-10">
         <div className="View_rn">
-          <p className="font-[Roboto] font-bold md:text-3xl">{event.name}</p>
-          <div className="h-[5px] bg-primary" />
+          <p className="font-[Roboto] font-bold  md:text-3xl underline decoration-primary">
+            {event.name}
+          </p>
+          {/* <div className="h-[5px] bg-primary" /> */}
+          <p className="font-[Roboto] text-xs mt-1 md:text-base">
+            {event.place}
+          </p>
           {/* <p className="lg:mt-3 px-1 font-[Roboto]">{event.place}</p> */}
         </div>
-        <div className="flex flex-row gap-3 md:gap-4">
+        <div className="flex flex-row gap-3 md:gap-4 z-50">
           <DateBox sDate={event.since} />
           <DateBox sDate={event.until} />
         </div>
@@ -1258,3 +1279,113 @@ const DateBox = ({ sDate = "" }) => {
 //   updatedAt: "2025-02-28T21:22:30.190Z",
 //   __v: 3,
 // };
+
+export const WodModal = ({
+  wodInfo,
+  setWodInfo,
+}: {
+  wodInfo?: WodFields;
+  setWodInfo: React.Dispatch<React.SetStateAction<WodFields | undefined>>;
+}) => {
+  if (wodInfo)
+    return (
+      <AnimatePresence>
+        {!wodInfo ? null : (
+          <motion.div
+            className="blackscreen"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div className="blackscreenOver">
+              <motion.div
+                className="modal_ctn msg_modal_ctn"
+                style={{
+                  minHeight: 200,
+                  alignItems: "flex-start",
+                  padding: "1.5em",
+                  justifyContent: "flex-start",
+                  position: "relative",
+                  paddingBottom: 64,
+                  overflow: "hidden",
+                }}
+                initial={{ scale: 0.3 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0.3 }}
+              >
+                <h6 style={{ fontSize: 24, color: "#181818" }}>
+                  WOD - {wodInfo.name}
+                </h6>
+                {!wodInfo.description ? null : (
+                  <>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        width: "100%",
+                        alignItems: "center",
+                        gap: 12,
+                      }}
+                    >
+                      <h6 style={{ color: "#181818" }}>Descripcion</h6>
+                      <Line />
+                    </div>
+                    <p
+                      style={{
+                        color: "#181818CC",
+                        marginTop: -6,
+                        marginBottom: 6,
+                        fontSize: 14,
+                      }}
+                    >
+                      {wodInfo.description}
+                    </p>
+                  </>
+                )}
+
+                <InfoItem
+                  Icon={Ionicons}
+                  icon_name="information-circle"
+                  label="Tipo de Wod:"
+                  value={wodInfo.wod_type}
+                />
+                {wodInfo.time_cap ? (
+                  <InfoItem
+                    Icon={Ionicons}
+                    icon_name="time"
+                    label="Tiempo:"
+                    value={convSeconds(wodInfo.time_cap)}
+                  />
+                ) : null}
+                {wodInfo.amount_cap ? (
+                  <InfoItem
+                    Icon={Ionicons}
+                    icon_name="flag"
+                    label="Objectivo:"
+                    value={`${wodInfo.amount_cap.toString()} ${
+                      wodInfo.amount_type
+                    }`}
+                  />
+                ) : null}
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 0,
+                    width: "100%",
+                    left: 0,
+                  }}
+                >
+                  <BtnSecondary
+                    text="Cerrar"
+                    bg="#181818"
+                    color="#fff"
+                    onPress={() => setWodInfo(undefined)}
+                  />
+                </div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
+};

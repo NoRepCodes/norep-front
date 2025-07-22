@@ -48,6 +48,10 @@ export const convSeconds = (s: number) => {
 };
 
 
+export const todayString = (sDate:string)=>{
+  return new Date(sDate).toISOString().split("T")[0]
+}
+
 
 
 export const months = [

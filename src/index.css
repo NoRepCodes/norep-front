@@ -143,7 +143,7 @@ button {
 }
 
 input {
-  border: none;
+  /* border: none; */
   outline: none;
   /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -217,6 +217,10 @@ input::-webkit-calendar-picker-indicator {
   --color-fourth: #181818;
   --color-light: #eeeeee;
   --color-dark: #191919;
+
+  --font-Roboto: 'Roboto';
+  --font-RobotoMono: 'RobotoMono';
+  --font-Anton: 'Anton'
 }
 
 .View_rn {
@@ -234,9 +238,6 @@ input::-webkit-calendar-picker-indicator {
   box-sizing: border-box;
 }
 
-#root{
-  display: none;
-}
 
 #payment{
   padding-top: 12px;

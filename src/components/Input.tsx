@@ -92,11 +92,11 @@ export const InputBase = ({
     <div className="input_item">
       {label ? <label style={{ width: "100%" }}>{label}</label> : null}
       <input
-        // style={{backgroundColor:'#fff'}}
+        className={isDisabled?"!bg-[#18181820] text-[#181818bb]":undefined}
         placeholder={ph}
         {...{ value }}
-        onChange={(e)=>{
-          onChange(e.target.value)
+        onChange={(e) => {
+          onChange(e.target.value);
         }}
         disabled={isDisabled}
         type={hidePass ? "password" : "text"}
@@ -156,11 +156,7 @@ export const InputImage = ({ label, value, onChange }: InputT) => {
     </div>
   );
 };
-export const InputTime = ({
-  label,
-  value,
-  onChange,
-}: InputT) => {
+export const InputTime = ({ label, value, onChange }: InputT) => {
   const [open, setOpen] = useState(false);
   const onClick = () => {
     // let aux = convSeconds(parseInt(value ?? "0"));
@@ -396,6 +392,7 @@ export const BtnSecondary = ({
   bg = "#fff",
   color = "#181818",
   b_color = "#181818",
+  font_weigth=600
 }: {
   onPress: any;
   isDisabled?: boolean;
@@ -404,6 +401,7 @@ export const BtnSecondary = ({
   bg?: string;
   color?: string;
   b_color?: string;
+  font_weigth?:300|400|500|600
 }) => {
   return (
     <button
@@ -414,6 +412,8 @@ export const BtnSecondary = ({
         backgroundColor: bg,
         color,
         borderColor: b_color,
+        fontWeight:font_weigth,
+        opacity:isDisabled ? 0.6 : 1
       }}
     >
       {loading ? <IconLoad /> : text}

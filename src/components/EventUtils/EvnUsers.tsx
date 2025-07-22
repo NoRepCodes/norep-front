@@ -87,10 +87,10 @@ const EvnUsers = ({
 
 export default EvnUsers;
 
-const UserCard = ({ user, i }: { user: UserListT; i: number }) => {
+export const UserCard = ({ user, i }: { user: UserListT; i: number }) => {
   const navigate = useNavigate();
   const gotoUser = (_id: string) => {
-    //   navigate("Profile", { _id });
+      navigate(`/Profile/${_id}`);
   };
 
   if(false) console.log(navigate);
