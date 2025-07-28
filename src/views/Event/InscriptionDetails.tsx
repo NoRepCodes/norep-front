@@ -180,10 +180,20 @@ export const CategLbs = ({
     setCategory(categ);
     setOpen(false);
   };
+
+  /**backgroundColor: v.prime,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    width: "100%",
+    position: "absolute",
+    zIndex: 200,
+    top: "100%",
+   * 
+   */
   return (
     <View style={st.categ_lbs}>
       {open ? (
-        <ViewFadeStatic style={st.absolute_categ_ctn}>
+        <ViewFadeStatic className="bg-primary border-t-1 border-b-1 w-full absolute z-200 top-[100%]">
           {categories.map((c, i) => (
             <Btn
               style={{
@@ -276,6 +286,7 @@ const st: ReactCSS = {
     borderLeft: 0,
     borderTop: 0,
     height: 43,
+    position:'relative'
   },
   categ_ctn: {
     flexDirection: "row",
