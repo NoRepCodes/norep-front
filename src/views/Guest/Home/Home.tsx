@@ -61,10 +61,10 @@ const Home = () => {
         <div className="event_cell cards_cells">
           <EventTimeText text="PRÓXIMAS" />
           {events?.map((event) => {
-            const since = todayIso(-7, event.since);
-            const until = todayIso(-7, event.until);
+            const limit = todayIso(14);
+            const since = todayIso(0, event.since);
             const t = todayIso();
-            if (t >= since && t <= until) {
+            if (since > t && since < limit) {
               return <EventCard key={event._id} event={event} />;
             } else return null;
           })}
