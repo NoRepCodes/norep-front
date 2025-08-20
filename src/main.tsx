@@ -20,6 +20,8 @@ import CreateEvent from "./views/Admin/CreateEvent/CreateEvent";
 import Event from "./views/Event/Event";
 import Profile from "./views/User/Profile/Profile";
 import { UsersDB } from "./views/Admin/UsersDB";
+import Tos from "./views/Guest/TOS/Tos";
+import Faq from "./views/Guest/TOS/Faq";
 // import Test from "./Test";
 
 const ErrorElement = () => {
@@ -42,6 +44,14 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <Home />,
+      },
+      {
+        path: "tos",
+        element: <Tos />,
+      },
+      {
+        path: "faq",
+        element: <Faq />,
       },
       {
         path: "eventos",
@@ -223,6 +233,14 @@ createRoot(document.getElementById("root")!).render(<App />);
  * - FIX TICKETS ✅
  * - - TEST IT 
  * - RE-DESIGN INPUTS
+ * - 
+ * - CONFIGURE GOOGLE PLAY ✅
+ * - - CREATE TOS ✅
+ * - - CREATE TOS PAGE ✅
+ * - - CREATE TOS FAQ PAGE ➰
+ * - - FIND 12 TESTERS
+ * - 
+ * - 
  * - 
  *
  * new pass yahoo Crossfit2024

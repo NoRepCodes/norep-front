@@ -117,7 +117,7 @@ const Links = ({ toggleMenu }: { toggleMenu?: (state?: boolean) => void }) => {
                 toggleMenu ? toggleMenu(false) : undefined;
               }}
             >
-              <h6>CERRAR SESIÓN</h6>
+              <h6 className='text-light' >CERRAR SESIÓN</h6>
               <Ionicons name="exit-outline" color="#fff" />
             </div>
           </div>
@@ -140,7 +140,7 @@ const Links = ({ toggleMenu }: { toggleMenu?: (state?: boolean) => void }) => {
               toggleMenu ? toggleMenu(false) : undefined;
             }}
           >
-            <h6>CERRAR SESIÓN</h6>
+            <h6 className='text-light' >CERRAR SESIÓN</h6>
             <Ionicons name="exit-outline" color="#fff" />
           </div>
         </>
@@ -168,7 +168,7 @@ const HeaderLink = ({
           toggleMenu ? toggleMenu(false) : undefined;
         }}
       >
-        <h6>{text}</h6>
+        <h6 className='text-light' >{text}</h6>
         {href === to && <div className="link_active" />}
       </div>
     </Link>

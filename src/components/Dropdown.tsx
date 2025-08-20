@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useState } from "react";
 import "../sass/dropdown.sass";
 import { IconLoad, Ionicons } from "./Icons";
 import { ViewFadeStatic } from "./AnimatedLayouts";
@@ -9,6 +9,7 @@ type DropdownP = PropsWithChildren & {
   onPress?: () => void;
   isLoading?: boolean;
   isOpen: boolean;
+  selfBehaviour?:boolean
 };
 const Dropdown = ({
   children,
@@ -17,11 +18,14 @@ const Dropdown = ({
   onPress,
   isOpen,
   isLoading,
+  selfBehaviour,
 }: DropdownP) => {
+  const [selfOpen, setSelfOpen] = useState(false)
+  const toggle = ()=>setSelfOpen(!selfOpen)
   return (
     <>
-      <div className="dropdown" onClick={onPress}>
-        <h6>{title}</h6>
+      <div className="dropdown" onClick={onPress?onPress:toggle}>
+        <h6 >{title}</h6>
         {isLoading ? (
           <IconLoad />
         ) : (
@@ -30,7 +34,7 @@ const Dropdown = ({
           </div>
         )}
       </div>
-      {isOpen && !isLoading ? (
+      {(isOpen && !isLoading)||(selfBehaviour && selfOpen) ? (
         <ViewFadeStatic className="dropdown_child_ctn">
           {children}
         </ViewFadeStatic>
