@@ -46,7 +46,7 @@ const DotText = ({ children, fs }: any) => {
 
 export const TOS = ({ setOpenTOS }: any) => {
   return (
-    <div className="w-[320px] md:w-[640px] h-[85vh] bg-red-50 p-6 relative rounded-xl flex flex-col gap-3 overflow-y-auto">
+    <div className="w-[320px] md:w-[640px] h-[85vh] p-6 relative rounded-xl flex flex-col gap-3 overflow-y-auto">
       <div className="w-full flex flex-col gap-3">
         {setOpenTOS ? (
           <div
