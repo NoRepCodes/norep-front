@@ -32,7 +32,7 @@ const EventTable = ({
         placeholder="Buscar Equipo..."
         className="w-full border-1 border-t-0 text-xs px-3 min-h-8.5 md:border-l-0 md:hidden"
       />
-      <div className="border-x-1 md:border-l-0 md:hidden" >
+      <div className="border-x-1 md:border-l-0 md:hidden z-1200" >
         <CategLbs
           categories={event.categories}
           {...{ category, setCategory, isKg, setIsKg }}
